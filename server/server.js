@@ -2,6 +2,7 @@ let express = require("express");
 let app = express();
 require("dotenv").config();
 let passport = require("passport");
+require("./middlewares/passport-config");
 
 // connect to mongo database
 require("mongoose").connect(
@@ -28,6 +29,9 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+// routes
+app.use("/api/auth", require("./routes/auth"));
 
 let port = process.env.PORT || 8986;
 app.listen(port, () => console.log(`server running on port -> ${port}`));

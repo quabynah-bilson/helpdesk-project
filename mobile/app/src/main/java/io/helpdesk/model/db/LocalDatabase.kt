@@ -16,7 +16,7 @@ import io.helpdesk.model.data.User
     TicketTypeConverter::class,
     TicketPriorityConverter::class,
 )
-@Database(entities = [User::class, Ticket::class], version = 3, exportSchema = true)
+@Database(entities = [User::class, Ticket::class], version = 4, exportSchema = true)
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun ticketDao(): TicketDao

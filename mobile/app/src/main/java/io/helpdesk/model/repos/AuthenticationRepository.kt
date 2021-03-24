@@ -1,6 +1,7 @@
 package io.helpdesk.model.repos
 
 import io.helpdesk.core.storage.BaseUserPersistentStorage
+import io.helpdesk.core.util.Result
 import io.helpdesk.model.data.AuthRequestParams
 import io.helpdesk.model.data.User
 import io.helpdesk.model.services.AuthWebService
@@ -14,72 +15,64 @@ import retrofit2.await
 import javax.inject.Inject
 
 /**
- *
+ * base authentication repository
  */
-sealed class AuthState {
-    object Loading : AuthState()
-    data class Success(val data: User) : AuthState()
-    data class Error(val reason: String?) : AuthState()
-}
-
-val AuthState.isSuccessful: Boolean
-    get() = this is AuthState.Success
-
 interface BaseAuthenticationRepository {
-    fun login(params: AuthRequestParams): Flow<AuthState>
 
-    fun register(params: AuthRequestParams): Flow<AuthState>
+    fun login(params: AuthRequestParams): Flow<Result<User>>
 
-    fun googleAuth(): Flow<AuthState>
+    fun register(params: AuthRequestParams): Flow<Result<User>>
+
+    fun googleAuth(): Flow<Result<User>>
 
     fun dispose()
 }
 
 class AuthenticationRepository @Inject constructor(
     private val service: AuthWebService,
-    private val storage: BaseUserPersistentStorage
+    private val storage: BaseUserPersistentStorage,
 ) :
     BaseAuthenticationRepository {
     private val job = Job()
-    var authScope: CoroutineScope? = null
+    private var authScope: CoroutineScope? = null
 
     @ExperimentalCoroutinesApi
-    override fun login(params: AuthRequestParams): Flow<AuthState> = channelFlow {
+    override fun login(params: AuthRequestParams): Flow<Result<User>> = channelFlow {
         authScope = this + job
-        offer(AuthState.Loading)
+        offer(Result.Loading)
         try {
             val token = service.login(params).await()
             storage.userId = token.token
-            offer(AuthState.Success(token.data))
+            offer(Result.Success(token.data))
         } catch (e: Exception) {
-            offer(AuthState.Error(e.localizedMessage))
+            offer(Result.Error(e))
         }
 
     }
 
     @ExperimentalCoroutinesApi
-    override fun register(params: AuthRequestParams): Flow<AuthState> = channelFlow {
+    override fun register(params: AuthRequestParams): Flow<Result<User>> = channelFlow {
         authScope = this + job
-        offer(AuthState.Loading)
+        offer(Result.Loading)
         try {
             val token = service.register(params).await()
             storage.userId = token.token
-            offer(AuthState.Success(token.data))
+            offer(Result.Success(token.data))
         } catch (e: Exception) {
-            offer(AuthState.Error(e.localizedMessage))
+            offer(Result.Error(e))
         }
     }
 
     @ExperimentalCoroutinesApi
-    override fun googleAuth(): Flow<AuthState> = channelFlow {
+    override fun googleAuth(): Flow<Result<User>> = channelFlow {
         authScope = this + job
-        offer(AuthState.Loading)
+        offer(Result.Loading)
         try {
             val token = service.googleAuth().await()
             storage.userId = token.token
-            offer(AuthState.Success(token.data))
+            offer(Result.Success(token.data))
         } catch (e: Exception) {
-            offer(AuthState.Error(e.localizedMessage))
+            offer(Result.Error(e))
         }
     }
 
