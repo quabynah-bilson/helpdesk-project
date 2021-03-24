@@ -1,9 +1,10 @@
 let express = require("express");
 let app = express();
 require("dotenv").config();
-let mongoose = require("mongoose");
+let passport = require("passport");
 
-mongoose.connect(
+// connect to mongo database
+require("mongoose").connect(
   process.env.MONGODB_CONNECTION_URL,
   { useUnifiedTopology: true, useNewUrlParser: true },
   (err) => {
@@ -14,6 +15,19 @@ mongoose.connect(
     }
   }
 );
+
+// middlewares
+app.use(require("cors")());
+app.use(require("morgan")("combined"));
+app.use(
+  require("express-session")({
+    resave: false,
+    saveUninitialized: false,
+    secret: require("uuid").v4(),
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 let port = process.env.PORT || 8986;
 app.listen(port, () => console.log(`server running on port -> ${port}`));

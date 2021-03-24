@@ -16,7 +16,7 @@ data class User(
     @ColumnInfo(name = "_id") val id: String,
     @ColumnInfo(name = "username")
     val email: String,
-    var avatar: String?,
+    var avatar: String? = "",
     @ColumnInfo(name = "phoneNumber")
-    var phone: String?,
+    var phone: String? = "",
 ) : Parcelable

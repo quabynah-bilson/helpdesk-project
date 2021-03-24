@@ -5,8 +5,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.model.services.AuthWebService
+import io.helpdesk.model.services.TokenizedInterceptor
 import io.helpdesk.model.services.TokenizedWebService
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
@@ -24,20 +27,30 @@ import javax.inject.Singleton
 @Module
 object NetworkModule {
     // todo -> replace this when deployed to a remote server
-    private const val BASE_URL = "http://10.0.2.2/"
+    private const val BASE_URL = "http://10.0.2.2:2021/"
 
     @Singleton
     @Provides
     fun provideLoggingInterceptor(): HttpLoggingInterceptor =
-        HttpLoggingInterceptor { message -> Timber.tag("WebService").d(message) }.apply {
+        HttpLoggingInterceptor { message ->
+            Timber.tag("HelpDesk Mobile Service").d(message)
+        }.apply {
             level = HttpLoggingInterceptor.Level.BASIC
         }
 
     @Singleton
     @Provides
-    fun provideHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+    fun provideTokenizedInterceptor(storage: BaseUserPersistentStorage): Interceptor =
+        TokenizedInterceptor(storage)
+
+    @Singleton
+    @Provides
+    fun provideHttpClient(
+        interceptor: Interceptor,
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient =
         OkHttpClient.Builder()
-//            .addNetworkInterceptor()
+            .addNetworkInterceptor(interceptor)
             .addInterceptor(loggingInterceptor).build()
 
     @Singleton

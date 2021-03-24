@@ -18,6 +18,7 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
     private val prefs = context.getSharedPreferences("helpdesk.prefs", Context.MODE_PRIVATE)
     private val _loginState = MutableStateFlow(false)
 
+
     /**
      * authenticated user id storage
      */
