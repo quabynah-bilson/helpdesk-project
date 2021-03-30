@@ -31,10 +31,10 @@ class MainActivity : AppCompatActivity() {
             (supportFragmentManager.findFragmentById(R.id.nav_fragment) as NavHostFragment).navController
 
         lifecycleScope.launchWhenCreated {
-            repository.login(AuthRequestParams("quab@gmail.com", "Quabynah@2021"))
-                .collectLatest {
-                    logger.i("current auth state -> $it")
-                }
+//            repository.login(AuthRequestParams("quab@gmail.com", "Quabynah@2021"))
+//                .collectLatest {
+//                    logger.i("current auth state -> $it")
+//                }
         }
     }
 

@@ -58,6 +58,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    // firebase
+    
+
     // navigation
     def nav_version = "2.3.4"
     implementation "androidx.navigation:navigation-runtime-ktx:2.3.4"

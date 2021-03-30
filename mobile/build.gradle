@@ -7,7 +7,7 @@ buildscript {
 
     ext.hilt_version = '2.33-beta'
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha11'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha12'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30"
 
         // NOTE: Do not place your application dependencies here; they belong
