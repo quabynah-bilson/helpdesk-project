@@ -3,11 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/nav_welcome">
+    app:startDestination="@id/nav_login">
 
     <fragment
         android:id="@id/nav_welcome"
         android:name="io.helpdesk.view.WelcomeFragment"
         android:label="@string/fragment_welcome"
         tools:layout="@layout/fragment_welcome" />
+    <fragment
+        android:id="@id/nav_login"
+        android:name="io.helpdesk.view.LoginFragment"
+        android:label="@string/fragment_login"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_nav_welcome"
+            app:destination="@id/nav_welcome"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

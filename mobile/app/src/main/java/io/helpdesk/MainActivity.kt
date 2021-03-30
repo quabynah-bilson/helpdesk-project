@@ -6,10 +6,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import dagger.hilt.android.AndroidEntryPoint
-import io.helpdesk.model.data.AuthRequestParams
 import io.helpdesk.model.repos.BaseAuthenticationRepository
-import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,11 +31,25 @@ class MainActivity : AppCompatActivity() {
             (supportFragmentManager.findFragmentById(R.id.nav_fragment) as NavHostFragment).navController
 
         lifecycleScope.launchWhenCreated {
-//            repository.login(AuthRequestParams("quab@gmail.com", "Quabynah@2021"))
-//                .collectLatest {
-//                    logger.i("current auth state -> $it")
-//                }
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build()
+            val client = GoogleSignIn.getClient(this@MainActivity, gso)
+            client.silentSignIn().addOnCompleteListener(this@MainActivity) { task ->
+                if (task.isSuccessful) {
+                    val email = task.result?.email
+                    Timber.tag("Sign in result").d("Signed in as -> $email")
+                } else {
+                    Timber.tag("Sign in failed").e(task.exception?.localizedMessage)
+                }
+            }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val lastSignedInAccount = GoogleSignIn.getLastSignedInAccount(this)
+        Timber.tag("Get last sign in a/c").d("Last sign in -> ${lastSignedInAccount?.email}")
     }
 
     override fun onSupportNavigateUp(): Boolean = NavigationUI.navigateUp(navController, null)

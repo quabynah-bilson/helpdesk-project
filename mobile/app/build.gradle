@@ -5,9 +5,21 @@ plugins {
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs.kotlin'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
 }
 
+// generate keystore SHA-1: https://stackoverflow.com/questions/27609442/how-to-get-the-sha-1-fingerprint-certificate-in-android-studio-for-debug-mode
+// keytool -list -v -keystore project-absolute-path\path-to\key.jks  -alias helpdesk -storepass helpdesk -keypass helpdesk
+// 83:41:45:32:C2:A0:DB:3A:56:D2:D3:72:54:04:5D:DD:CC:38:B7:4F
 android {
+    signingConfigs {
+        release {
+            storeFile file(store_file)
+            storePassword password
+            keyAlias alias
+            keyPassword password
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
@@ -43,6 +55,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    ndkVersion '23.0.7123448 rc1'
 }
 
 dependencies {
@@ -54,12 +67,22 @@ dependencies {
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:22.1.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // firebase
-    
+    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+    implementation platform('com.google.firebase:firebase-analytics-ktx')
+    implementation platform('com.google.firebase:firebase-auth-ktx')
+    implementation platform('com.google.firebase:firebase-firestore-ktx')
+    implementation platform('com.google.firebase:firebase-storage-ktx')
+    implementation platform('com.google.firebase:firebase-messaging-ktx')
+    implementation platform('com.google.firebase:firebase-functions-ktx')
+
+    // google auth
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
     // navigation
     def nav_version = "2.3.4"
@@ -68,7 +91,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     // lifecycle
-    def lifecycle_version = "2.3.0"
+    def lifecycle_version = "2.3.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
