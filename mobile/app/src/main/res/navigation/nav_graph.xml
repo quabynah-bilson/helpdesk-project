@@ -18,7 +18,6 @@
         <action
             android:id="@+id/action_loginFragment_to_nav_welcome"
             app:destination="@id/nav_welcome"
-            app:launchSingleTop="true"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

@@ -15,19 +15,18 @@ interface BaseUserPersistentStorage {
 }
 
 class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPersistentStorage {
-    private val prefs = context.getSharedPreferences("helpdesk.prefs", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE)
     private val _loginState = MutableStateFlow(false)
-
 
     /**
      * authenticated user id storage
      */
     override var userId: String? = ""
-        get() = prefs.getString("helpdesk.user_id", null)
+        get() = prefs.getString(USER_ID_KEY, null)
         set(value) {
             if (field == value) return
             prefs.edit {
-                putString("helpdesk.user_id", value)
+                putString(USER_ID_KEY, value)
                 apply()
             }
             // notify all observers
@@ -39,4 +38,9 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
      */
     override val loginState: StateFlow<Boolean>
         get() = _loginState
+
+    companion object {
+        private const val USER_ID_KEY = "helpdesk.user_id"
+        private const val PREFS_KEY = "helpdesk.prefs"
+    }
 }
