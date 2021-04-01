@@ -12,6 +12,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
 import io.helpdesk.core.util.visible
 import io.helpdesk.databinding.FragmentHomeBinding
@@ -23,6 +24,7 @@ import kotlin.math.max
  *
  * ref -> https://developer.android.com/guide/navigation/navigation-swipe-view-2#add_tabs_using_a_tablayout
  */
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var binding: FragmentHomeBinding? = null
 
@@ -75,8 +77,8 @@ class HomeFragment : Fragment() {
                             setPositiveButton("yes") { dialog, _ ->
                                 run {
                                     // leave app
-                                    requireActivity().onBackPressed()
                                     dialog.dismiss()
+                                    findNavController().popBackStack(R.id.nav_welcome, true)
                                 }
                             }
                             setNegativeButton("no") { dialog, _ -> dialog.cancel() }

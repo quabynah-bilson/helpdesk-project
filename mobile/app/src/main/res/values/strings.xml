@@ -7,4 +7,5 @@
     <string name="sign_in">Sign in</string>
     <string name="leave_app_prompt_title">Leaving so soon, 😥?</string>
     <string name="leave_app_prompt_content">Do you wish to leave this session?</string>
+    <string name="empty_tickets_state">Your tickets will appear here</string>
 </resources>

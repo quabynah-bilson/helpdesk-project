@@ -1,33 +1,34 @@
 package io.helpdesk.view.home
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import io.helpdesk.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
+import io.helpdesk.databinding.TicketsFragmentBinding
 import io.helpdesk.viewmodel.TicketsViewModel
 
+@AndroidEntryPoint
 class TicketsFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = TicketsFragment()
-    }
+    private var binding: TicketsFragmentBinding? = null
 
-    private lateinit var viewModel: TicketsViewModel
+    private val viewModel by viewModels<TicketsViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tickets_fragment, container, false)
+        binding = TicketsFragmentBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TicketsViewModel::class.java)
-        // TODO: Use the ViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
     }
 
 }

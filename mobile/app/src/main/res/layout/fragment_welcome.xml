@@ -8,11 +8,11 @@
 
     <!-- animation -->
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/welcome_animation_view"
+        android:id="@+id/tickets_animation_view"
         android:layout_width="0dp"
         android:layout_height="@dimen/spacing_300"
         android:layout_marginTop="@dimen/spacing_56"
-        app:layout_constraintBottom_toTopOf="@id/welcome_title"
+        app:layout_constraintBottom_toTopOf="@id/tickets_empty_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,7 +22,7 @@
 
     <!-- intro -->
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/welcome_intro_text"
+        android:id="@+id/tickets_empty_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_36"
@@ -32,7 +32,7 @@
         android:text="@string/hello_header"
         android:textAppearance="?textAppearanceHeadline6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcome_animation_view" />
+        app:layout_constraintTop_toBottomOf="@id/tickets_animation_view" />
 
     <!-- logo -->
     <androidx.appcompat.widget.AppCompatImageView
@@ -57,7 +57,7 @@
         android:textAppearance="?textAppearanceHeadline4"
         android:textColor="?attr/colorControlNormal"
         app:layout_constraintStart_toEndOf="@id/app_logo"
-        app:layout_constraintTop_toBottomOf="@id/welcome_intro_text" />
+        app:layout_constraintTop_toBottomOf="@id/tickets_empty_text" />
 
     <!-- description -->
     <com.google.android.material.textview.MaterialTextView
