@@ -2,4 +2,7 @@
 <resources>
     <item name="nav_welcome" type="id"/>
     <item name="nav_login" type="id"/>
+    <item name="nav_post_ticket" type="id"/>
+    <item name="nav_ticket_info" type="id"/>
+    <item name="nav_home" type="id"/>
 </resources>

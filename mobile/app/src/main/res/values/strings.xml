@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">KronoDesk</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_desc">If you cannot find answers to your FAQs, you can always contact us. We will answer you shortly!</string>
+    <string name="hello_header">Hey there, 👋! I\'m…</string>
+    <string name="get_started">Get started</string>
+    <string name="sign_in">Sign in</string>
+    <string name="leave_app_prompt_title">Leaving so soon, 😥?</string>
+    <string name="leave_app_prompt_content">Do you wish to leave this session?</string>
 </resources>

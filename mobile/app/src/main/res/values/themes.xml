@@ -6,14 +6,53 @@
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/blue_200</item>
+        <item name="colorSecondaryVariant">@color/blue_200</item>
+        <item name="colorOnSecondary">@color/white</item>
         <item name="backgroundColor">@color/white</item>
+        <item name="colorControlNormal">@color/blue_200</item>
+        <item name="divider">@color/divider</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/backgroundColor</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">?attr/backgroundColor</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <!-- Emphasis -->
+        <item name="emphasis_low">0.37</item>
+        <item name="emphasis_medium">0.65</item>
+        <item name="emphasis_high">0.86</item>
+        <!-- Type -->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.MdcTypographyStyles.Headline1
+        </item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.MdcTypographyStyles.Headline2
+        </item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.MdcTypographyStyles.Headline3
+        </item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.MdcTypographyStyles.Headline4
+        </item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.MdcTypographyStyles.Headline5
+        </item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.MdcTypographyStyles.Headline6
+        </item>
+        <item name="textAppearanceBody1">@style/TextAppearance.MdcTypographyStyles.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.MdcTypographyStyles.Body2</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.MdcTypographyStyles.Subtitle1
+        </item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.MdcTypographyStyles.Subtitle2
+        </item>
+        <item name="textAppearanceCaption">@style/TextAppearance.MdcTypographyStyles.Caption</item>
+        <item name="textAppearanceButton">@style/TextAppearance.MdcTypographyStyles.Button</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.MdcTypographyStyles.Overline
+        </item>
+        <!-- dialogs -->
+        <item name="materialAlertDialogTitleTextStyle">
+            @style/TextAppearance.MdcTypographyStyles.Headline6
+        </item>
+        <item name="materialAlertDialogBodyTextStyle">
+            @style/TextAppearance.MdcTypographyStyles.Body2
+        </item>
+        <item name="materialAlertDialogTitlePanelStyle">
+            @style/MaterialAlertDialog.MaterialComponents.Title.Panel.CenterStacked
+        </item>
     </style>
 </resources>

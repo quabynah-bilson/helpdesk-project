@@ -10,6 +10,8 @@ import java.io.InputStreamReader
 
 /**
  * JSON deserialization helper function
+ *
+ * https://howtodoinjava.com/gson/gson-parse-json-array
  */
 inline fun <reified T> Context.deserializeJson(
     source: String,

@@ -1,16 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
     tools:context=".view.WelcomeFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fontFamily="@font/rubik_medium"
-        android:text="@string/fragment_welcome"
-        android:textAppearance="?textAppearanceHeadline5" />
+    <!-- animation -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/welcome_animation_view"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/spacing_300"
+        android:layout_marginTop="@dimen/spacing_56"
+        app:layout_constraintBottom_toTopOf="@id/welcome_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/helpdesk_info_1" />
 
-</FrameLayout>
+    <!-- intro -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/welcome_intro_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_36"
+        android:alpha="?emphasis_medium"
+        android:paddingStart="@dimen/spacing_24"
+        android:paddingEnd="@dimen/spacing_none"
+        android:text="@string/hello_header"
+        android:textAppearance="?textAppearanceHeadline6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcome_animation_view" />
+
+    <!-- logo -->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/app_logo"
+        android:layout_width="@dimen/spacing_36"
+        android:layout_height="@dimen/spacing_36"
+        android:layout_marginStart="@dimen/spacing_20"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_logo"
+        app:layout_constraintBottom_toBottomOf="@id/welcome_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/welcome_title" />
+
+    <!-- title -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/welcome_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_8"
+        android:layout_marginTop="@dimen/spacing_4"
+        android:text="@string/app_name"
+        android:textAppearance="?textAppearanceHeadline4"
+        android:textColor="?attr/colorControlNormal"
+        app:layout_constraintStart_toEndOf="@id/app_logo"
+        app:layout_constraintTop_toBottomOf="@id/welcome_intro_text" />
+
+    <!-- description -->
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/welcome_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_4"
+        android:alpha="?emphasis_medium"
+        android:paddingStart="@dimen/spacing_24"
+        android:paddingEnd="@dimen/spacing_36"
+        android:text="@string/app_desc"
+        android:textAlignment="textStart"
+        android:textAppearance="?textAppearanceBody2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcome_title" />
+
+    <!-- get started -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/skip_button"
+        android:layout_width="@dimen/spacing_none"
+        android:layout_height="@dimen/spacing_64"
+        android:layout_marginStart="@dimen/spacing_36"
+        android:layout_marginEnd="@dimen/spacing_36"
+        android:layout_marginBottom="@dimen/spacing_8"
+        android:text="@string/get_started"
+        app:layout_constraintBottom_toTopOf="@id/auth_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- authentication button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/auth_button"
+        style="?materialButtonOutlinedStyle"
+        android:layout_width="@dimen/spacing_none"
+        android:layout_height="@dimen/spacing_64"
+        android:layout_marginStart="@dimen/spacing_36"
+        android:layout_marginEnd="@dimen/spacing_36"
+        android:layout_marginBottom="@dimen/spacing_16"
+        android:text="@string/sign_in"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

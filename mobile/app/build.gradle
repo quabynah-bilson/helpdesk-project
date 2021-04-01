@@ -121,6 +121,10 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
     implementation 'androidx.hilt:hilt-work:1.0.0-beta01'
 
+    // lottie
+    def lottie_version = "3.6.1"
+    implementation "com.airbnb.android:lottie:$lottie_version"
+
     // paging
     def paging_version = "3.0.0-beta03"
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"

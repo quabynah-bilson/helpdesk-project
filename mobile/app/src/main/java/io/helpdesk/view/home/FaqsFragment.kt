@@ -1,4 +1,4 @@
-package io.helpdesk.view
+package io.helpdesk.view.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,15 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import io.helpdesk.R
+import io.helpdesk.databinding.FaqsFragmentBinding
+import io.helpdesk.model.data.Question
 import io.helpdesk.model.db.QuestionDao
 import io.helpdesk.viewmodel.FaqsViewModel
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class FaqsFragment : Fragment() {
+    private var binding: FaqsFragmentBinding? = null
+    private var faqs: List<Question> = emptyList()
 
     @Inject
     lateinit var dao: QuestionDao
@@ -27,7 +29,8 @@ class FaqsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.faqs_fragment, container, false)
+        binding = FaqsFragmentBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,7 +38,7 @@ class FaqsFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             dao.faqs().collectLatest {
-                Timber.tag("faqs page").d("faqs -> $it")
+                faqs = it
             }
         }
     }

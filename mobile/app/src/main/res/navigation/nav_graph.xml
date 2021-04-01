@@ -3,21 +3,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/nav_login">
+    app:startDestination="@id/nav_welcome">
 
     <fragment
         android:id="@id/nav_welcome"
         android:name="io.helpdesk.view.WelcomeFragment"
         android:label="@string/fragment_welcome"
-        tools:layout="@layout/fragment_welcome" />
+        tools:layout="@layout/fragment_welcome">
+        <action
+            android:id="@+id/action_nav_welcome_to_nav_login"
+            app:destination="@id/nav_login" />
+        <action
+            android:id="@+id/action_nav_welcome_to_nav_home"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/nav_welcome"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@id/nav_login"
         android:name="io.helpdesk.view.LoginFragment"
         android:label="@string/fragment_login"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment_to_nav_welcome"
-            app:destination="@id/nav_welcome"
+            android:id="@+id/action_nav_login_to_nav_home"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/nav_welcome"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@id/nav_home"
+        android:name="io.helpdesk.view.home.HomeFragment"
+        android:label="@string/fragment_home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_nav_home_to_nav_post_ticket"
+            app:destination="@id/nav_post_ticket" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_ticket_info"
+            app:destination="@id/nav_ticket_info" />
+    </fragment>
+    <fragment
+        android:id="@id/nav_post_ticket"
+        android:name="io.helpdesk.view.PostTicketFragment"
+        android:label="@string/fragment_post_ticket"
+        tools:layout="@layout/fragment_post_ticket" />
+    <fragment
+        android:id="@id/nav_ticket_info"
+        android:name="io.helpdesk.view.TicketInfoFragment"
+        android:label="@string/fragment_ticket_info"
+        tools:layout="@layout/fragment_ticket_info" />
 </navigation>
