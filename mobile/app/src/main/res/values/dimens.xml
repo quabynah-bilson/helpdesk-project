@@ -15,4 +15,5 @@
     <dimen name="spacing_2">2dp</dimen>
     <dimen name="spacing_1">1dp</dimen>
     <dimen name="spacing_120">120dp</dimen>
+    <dimen name="spacing_avatar">48dp</dimen>
 </resources>

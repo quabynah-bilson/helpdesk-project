@@ -58,6 +58,7 @@ android {
     ndkVersion '23.0.7123448 rc1'
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
 }
 

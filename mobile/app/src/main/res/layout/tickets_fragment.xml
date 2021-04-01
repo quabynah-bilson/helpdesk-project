@@ -1,36 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context=".view.home.TicketsFragment">
 
-    <!-- animation -->
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/tickets_animation_view"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/spacing_300"
-        android:layout_marginTop="@dimen/spacing_64"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/people" />
+    <data>
 
-    <!-- intro -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tickets_empty_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_20"
-        android:alpha="?emphasis_high"
-        android:text="@string/empty_tickets_state"
-        android:textAlignment="center"
-        android:textAppearance="?textAppearanceHeadline6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tickets_animation_view" />
+        <import type="android.view.View" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <import type="io.helpdesk.viewmodel.TicketsViewModel" />
+
+        <import type="io.helpdesk.viewmodel.LatestTicketUIState" />
+
+        <variable
+            name="viewModel"
+            type="TicketsViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- empty view -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <!-- animation -->
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/tickets_animation_view"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spacing_300"
+                android:layout_marginTop="@dimen/spacing_64"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="false"
+                app:lottie_rawRes="@raw/people" />
+
+            <!-- intro -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tickets_empty_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_20"
+                android:alpha="?emphasis_high"
+                android:text="@string/empty_tickets_state"
+                android:textAlignment="center"
+                android:textAppearance="?textAppearanceHeadline6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tickets_animation_view" />
+
+            <!-- desc -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tickets_empty_text_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_8"
+                android:alpha="?emphasis_medium"
+                android:paddingHorizontal="@dimen/spacing_20"
+                android:text="@string/empty_tickets_state_desc"
+                android:textAlignment="center"
+                android:textAppearance="?textAppearanceSubtitle2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tickets_empty_text" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- content view -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tickets_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="5"
+            tools:listitem="@layout/item_ticket" />
+
+        <!-- loading view -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:indeterminateAnimationType="disjoint"
+            app:indicatorColor="?colorSecondary"
+            app:indicatorDirectionLinear="endToStart"
+            tools:visibility="visible" />
+
+
+    </FrameLayout>
+</layout>
