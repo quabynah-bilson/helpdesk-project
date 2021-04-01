@@ -6,6 +6,7 @@
         android:width="@dimen/spacing_1"
         android:color="?attr/divider" />
 
+    <corners android:radius="@dimen/spacing_12" />
 
 
 </shape>

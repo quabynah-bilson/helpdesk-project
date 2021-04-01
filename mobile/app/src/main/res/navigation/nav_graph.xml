@@ -46,10 +46,20 @@
         android:id="@id/nav_post_ticket"
         android:name="io.helpdesk.view.PostTicketFragment"
         android:label="@string/fragment_post_ticket"
-        tools:layout="@layout/fragment_post_ticket" />
+        tools:layout="@layout/fragment_post_ticket" >
+        <argument
+            android:name="question"
+            app:argType="io.helpdesk.model.data.Question"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
     <fragment
         android:id="@id/nav_ticket_info"
         android:name="io.helpdesk.view.TicketInfoFragment"
         android:label="@string/fragment_ticket_info"
-        tools:layout="@layout/fragment_ticket_info" />
+        tools:layout="@layout/fragment_ticket_info" >
+        <argument
+            android:name="ticket"
+            app:argType="io.helpdesk.model.data.Ticket" />
+    </fragment>
 </navigation>

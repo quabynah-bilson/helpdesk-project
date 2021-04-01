@@ -1,34 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/faq_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/spacing_12"
-    android:layout_marginBottom="@dimen/spacing_8"
+    android:layout_marginTop="@dimen/spacing_8"
     android:background="@drawable/outlined_border_background"
     android:paddingHorizontal="@dimen/spacing_16"
-    android:paddingVertical="@dimen/spacing_24">
+    android:paddingVertical="@dimen/spacing_24"
+    app:layoutDescription="@xml/item_faq_scene">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/faq_title"
         android:layout_width="@dimen/spacing_none"
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceBody1"
+        android:textColor="?colorSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="?colorSecondary"
         tools:text="@sample/samples_faqs.json/data/question" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/faq_answer"
         android:layout_width="@dimen/spacing_none"
         android:layout_height="wrap_content"
-        android:textAppearance="?textAppearanceBody2"
         android:layout_marginTop="@dimen/spacing_8"
+        android:textAppearance="?textAppearanceBody2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/faq_title"
         tools:text="@sample/samples_faqs.json/data/question" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.motion.widget.MotionLayout>

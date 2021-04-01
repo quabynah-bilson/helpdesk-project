@@ -83,6 +83,7 @@
         android:layout_marginEnd="@dimen/spacing_36"
         android:layout_marginBottom="@dimen/spacing_8"
         android:text="@string/get_started"
+        app:backgroundTint="?colorSecondary"
         app:layout_constraintBottom_toTopOf="@id/auth_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -97,6 +98,7 @@
         android:layout_marginEnd="@dimen/spacing_36"
         android:layout_marginBottom="@dimen/spacing_16"
         android:text="@string/sign_in"
+        android:textColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

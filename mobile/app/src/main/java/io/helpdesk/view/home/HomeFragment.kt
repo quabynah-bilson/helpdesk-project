@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import io.helpdesk.R
+import io.helpdesk.core.util.visible
 import io.helpdesk.databinding.FragmentHomeBinding
 import kotlin.math.abs
 import kotlin.math.max
@@ -41,6 +42,13 @@ class HomeFragment : Fragment() {
         val pagerAdapter = HomePagerAdapter(this)
         binding?.pager?.adapter = pagerAdapter
         binding?.pager?.setPageTransformer(DepthPageTransformer())
+        binding?.pager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                // hide FAB for chat screen
+                binding?.fabPostTicket?.visible(position != 2)
+                super.onPageSelected(position)
+            }
+        })
 
         // link tab layout to pager
         TabLayoutMediator(binding!!.tabLayout, binding!!.pager) { tab, position ->
