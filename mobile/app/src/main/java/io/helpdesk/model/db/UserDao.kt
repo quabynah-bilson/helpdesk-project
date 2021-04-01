@@ -9,8 +9,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao : BaseDao<User> {
-    @Query("select * from users order by _id desc")
-    fun allUsers(): Flow<List<User>>
+    @Query("select * from users where userType = :userType order by _id desc")
+    fun allUsers(userType: Int = 1): Flow<List<User>>
+
+    @Query("select * from users where userType = 0 order by _id desc")
+    fun getTechnicians(): Flow<List<User>>
 
     @Transaction
     @Query("select * from users")

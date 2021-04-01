@@ -83,17 +83,11 @@
             tools:listitem="@layout/item_ticket" />
 
         <!-- loading view -->
-        <com.google.android.material.progressindicator.LinearProgressIndicator
+        <include
             android:id="@+id/progress_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            layout="@layout/progress_indicator"
             android:visibility="gone"
-            app:indeterminateAnimationType="disjoint"
-            app:indicatorColor="?colorSecondary"
-            app:indicatorDirectionLinear="endToStart"
             tools:visibility="visible" />
-
 
     </FrameLayout>
 </layout>

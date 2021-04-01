@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import io.helpdesk.databinding.ProgressIndicatorBinding
 import io.helpdesk.databinding.TicketsFragmentBinding
+import io.helpdesk.view.recyclerview.TicketsListAdapter
 import io.helpdesk.viewmodel.LatestTicketUIState
 import io.helpdesk.viewmodel.TicketsViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -17,34 +20,57 @@ import kotlinx.coroutines.flow.collectLatest
 @AndroidEntryPoint
 class TicketsFragment : Fragment() {
     private var binding: TicketsFragmentBinding? = null
+    private var progressBinding: ProgressIndicatorBinding? = null
 
-    private val ticketsViewModel by viewModels<TicketsViewModel>()
+    private val ticketsViewModel by activityViewModels<TicketsViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = TicketsFragmentBinding.inflate(inflater, container, false)
+        if (binding != null) progressBinding =
+            ProgressIndicatorBinding.bind(binding?.progressIndicator!!.root)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // get adapter
+        val ticketsAdapter = TicketsListAdapter()
+
         // observe UI state
         lifecycleScope.launchWhenCreated {
-            ticketsViewModel.uiState.collectLatest { state ->
-                binding?.progressIndicator?.isVisible = state is LatestTicketUIState.Loading
-                binding?.ticketsList?.isVisible =
-                    state is LatestTicketUIState.Success && state.tickets.isNotEmpty()
-                binding?.container?.isVisible =
-                    state is LatestTicketUIState.Success && state.tickets.isEmpty() || state is LatestTicketUIState.Error
+
+            ticketsViewModel.ticketsUIState.collectLatest { state ->
+                binding?.run {
+                    // update UI based on current state
+                    if (state is LatestTicketUIState.Success) {
+                        ticketsAdapter.submitData(state.tickets)
+                        ticketsList.isVisible = ticketsAdapter.itemCount > 0
+                        container.isVisible = ticketsAdapter.itemCount == 0
+                    } else if (state is LatestTicketUIState.Error) {
+                        Snackbar.make(container, state.reason, Snackbar.LENGTH_LONG).show()
+                    }
+
+                    // show loading view
+                    progressBinding?.root?.isVisible = state is LatestTicketUIState.Loading
+
+                    // show empty view
+                    container.isVisible = state is LatestTicketUIState.Error
+
+                }
+
             }
         }
 
         // perform binding
         binding?.run {
             viewModel = ticketsViewModel
+            ticketsList.run {
+                adapter = ticketsAdapter
+            }
             executePendingBindings()
         }
 

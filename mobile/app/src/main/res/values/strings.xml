@@ -9,4 +9,13 @@
     <string name="leave_app_prompt_content">Do you wish to leave this session?</string>
     <string name="empty_tickets_state">Your tickets will appear here</string>
     <string name="empty_tickets_state_desc">If you cannot find what you are looking for in the \"FAQs\" section, you can create a new ticket by tapping on the button below to get started. A technician will be assigned to you shortly</string>
+    <string name="type_question">Question</string>
+    <string name="type_enquiry">Enquiry</string>
+    <string name="type_other">Other</string>
+    <string name="ticket_type">Ticket Type</string>
+    <string name="available_technicians">Available Technicians</string>
+    <string name="description_optional">Description (Optional)</string>
+    <string name="ticket_name">Ticket Name</string>
+    <string name="submit">Submit</string>
+    <string name="no_technicians">No technicians available at the moment</string>
 </resources>

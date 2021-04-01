@@ -20,6 +20,7 @@ import io.helpdesk.model.data.User
     TicketStateConverter::class,
     TicketTypeConverter::class,
     TicketPriorityConverter::class,
+    UserTypeConverter::class,
     ListOfStringConverter::class,
 )
 @Database(
@@ -31,6 +32,7 @@ abstract class LocalDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun ticketDao(): TicketDao
     abstract fun faqDao(): QuestionDao
+
 
     companion object {
         @Volatile

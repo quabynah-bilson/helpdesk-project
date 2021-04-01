@@ -5,15 +5,17 @@
 
     <data>
 
-        <import type="io.helpdesk.model.data.Ticket" />
+        <import type="io.helpdesk.model.data.UserAndTicket" />
 
         <import type="io.helpdesk.model.data.User" />
+
+        <import type="io.helpdesk.model.data.Ticket" />
 
         <import type="android.view.View" />
 
         <variable
-            name="ticket"
-            type="Ticket" />
+            name="data"
+            type="UserAndTicket" />
 
         <variable
             name="technician"
@@ -34,7 +36,7 @@
             android:id="@+id/ticket_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{ticket.name}"
+            android:text="@{data.ticket.name}"
             android:textAppearance="?textAppearanceBody1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -49,7 +51,7 @@
             android:alpha="?emphasis_medium"
             android:ellipsize="end"
             android:maxLines="3"
-            android:text="@{ticket.comment}"
+            android:text="@{data.ticket.comment}"
             android:textAppearance="?textAppearanceSubtitle2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ticket_name"
@@ -74,9 +76,13 @@
             android:layout_height="@dimen/spacing_avatar"
             android:layout_marginTop="@dimen/spacing_12"
             android:background="@drawable/avatar_circular_clip"
-            android:contentDescription="@{ticket.name}"
+            android:contentDescription="@{data.user.avatar}"
+            app:circleCrop="@{true}"
+            app:error="@{@drawable/avatar_circular_clip}"
+            app:imageUrl="@{data.user.avatar}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/separator"
+            app:placeholder="@{@drawable/avatar_circular_clip}"
             tools:src="@tools:sample/avatars" />
 
         <!-- technician's name -->
@@ -87,7 +93,7 @@
             android:layout_marginHorizontal="@dimen/spacing_16"
             android:layout_marginTop="@dimen/spacing_6"
             android:alpha="?emphasis_high"
-            android:text="@{technician.name}"
+            android:text="@{data.user.name}"
             android:textAlignment="textStart"
             android:textAppearance="?textAppearanceSubtitle2"
             app:layout_constraintEnd_toStartOf="@id/chat_button"
@@ -103,7 +109,7 @@
             android:layout_marginHorizontal="@dimen/spacing_16"
             android:layout_marginTop="@dimen/spacing_2"
             android:alpha="?emphasis_high"
-            android:text="@{technician.phone}"
+            android:text="@{data.user.phone}"
             android:textAlignment="textStart"
             android:textAppearance="?textAppearanceCaption"
             app:layout_constraintEnd_toStartOf="@id/chat_button"

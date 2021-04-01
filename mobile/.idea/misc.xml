@@ -4,19 +4,25 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/drawable/avatar_circular_clip.xml" value="0.383515559293524" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/drawable/checkable_avatar.xml" value="0.38974358974358975" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/drawable/ic_account.xml" value="0.3687973086627418" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/drawable/ic_back.xml" value="0.383515559293524" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/drawable/ic_close.xml" value="0.383515559293524" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/drawable/ic_logo.xml" value="0.3687973086627418" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/drawable/ic_phone.xml" value="0.383515559293524" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/drawable/ic_send.xml" value="0.2564814814814815" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/drawable/outlined_border_background.xml" value="0.3687973086627418" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/activity_main.xml" value="0.3671152228763667" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/faqs_fragment.xml" value="0.34814814814814815" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_home.xml" value="0.34814814814814815" />
-        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_post_ticket.xml" value="0.4111338100102145" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_post_ticket.xml" value="0.34814814814814815" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_ticket_info.xml" value="0.4279877425944842" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_welcome.xml" value="0.34814814814814815" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/item_faq.xml" value="0.3581196581196581" />
-        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/item_ticket.xml" value="0.3730769230769231" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/item_technician_avatar.xml" value="0.2128205128205128" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/item_ticket.xml" value="0.34814814814814815" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/live_chat_fragment.xml" value="0.4279877425944842" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/progress_indicator.xml" value="0.3507148864592094" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/tickets_fragment.xml" value="0.34814814814814815" />
       </map>
     </option>

@@ -2,7 +2,7 @@
 <resources>
     <string name="fragment_welcome">Welcome</string>
     <string name="fragment_login">Login</string>
-    <string name="fragment_post_ticket">Post New Ticket</string>
+    <string name="fragment_post_ticket">Create Ticket</string>
     <string name="fragment_home">Home</string>
     <string name="fragment_ticket_info">Ticket Info</string>
     <string name="fragment_live_chat">Live Chats</string>

@@ -32,7 +32,7 @@ data class Ticket(
     val name: String,
     val comment: String = "no comments",
     var status: TicketCompletionState = TicketCompletionState.Pending,
-    var technician: String? = null,
+    var technician: String,
     var type: TicketType = TicketType.Question,
     val linkedTickets: List<String> = emptyList(),
     var priority: TicketPriority = TicketPriority.Medium,
@@ -49,7 +49,7 @@ data class UserAndTicket(
     @Embedded val user: User,
     @Relation(
         parentColumn = "_id",
-        entityColumn = "user",
+        entityColumn = "technician",
     )
     val ticket: Ticket
 )

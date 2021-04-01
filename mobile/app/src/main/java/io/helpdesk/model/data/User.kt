@@ -4,20 +4,41 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
+import com.google.gson.internal.LinkedTreeMap
 import kotlinx.parcelize.Parcelize
+
+enum class UserType { Technician, Customer }
 
 /**
  * user data model
  */
 @Parcelize
-@Entity(tableName = "users")
+@Entity(tableName = User.TABLE_NAME)
 data class User(
     @PrimaryKey
     @ColumnInfo(name = "_id") val id: String,
+    @SerializedName("username")
     @ColumnInfo(name = "username")
     val email: String,
     val name: String,
     var avatar: String? = "",
+    @SerializedName("phone_number")
     @ColumnInfo(name = "phoneNumber")
     var phone: String? = "",
-) : Parcelable
+    @SerializedName("user_type")
+    @ColumnInfo(name = "userType")
+    var type: UserType = UserType.Customer,
+) : Parcelable {
+
+    companion object {
+        const val TABLE_NAME = "users"
+        fun parser(map: LinkedTreeMap<String, Any?>) = User(
+            id = map["_id"].toString(),
+            name = map["name"].toString(),
+            email = map["username"].toString(),
+            phone = map["phoneNumber"].toString(),
+            type = UserType.values()[(map["user_type"] as Double).toInt()]
+        )
+    }
+}

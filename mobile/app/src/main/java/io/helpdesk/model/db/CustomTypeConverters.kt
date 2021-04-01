@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken
 import io.helpdesk.model.data.TicketCompletionState
 import io.helpdesk.model.data.TicketPriority
 import io.helpdesk.model.data.TicketType
+import io.helpdesk.model.data.UserType
 
 /**
  * [TypeConverter] for [TicketCompletionState]
@@ -39,6 +40,17 @@ class TicketPriorityConverter {
 
     @TypeConverter
     fun fromTicketPriority(value: TicketPriority): Int = value.ordinal
+}
+
+/**
+ * [TypeConverter] for [UserType]
+ */
+class UserTypeConverter {
+    @TypeConverter
+    fun toUserType(value: Int): UserType = enumValues<UserType>()[value]
+
+    @TypeConverter
+    fun fromUserType(value: UserType): Int = value.ordinal
 }
 
 class ListOfStringConverter {

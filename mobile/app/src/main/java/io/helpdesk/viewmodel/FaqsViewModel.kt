@@ -2,36 +2,37 @@ package io.helpdesk.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.*
+import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.model.data.Question
 import io.helpdesk.model.db.QuestionDao
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class FaqsViewModel @Inject constructor(private val dao: QuestionDao) : ViewModel() {
-    val questions = Pager(PagingConfig(pageSize = 10)) {
-        QuestionsDataSource(dao)
-    }.flow.cachedIn(viewModelScope)
-}
+    private val _uiState = MutableStateFlow<QuestionsUIState>(QuestionsUIState.Loading)
+    val uiState: StateFlow<QuestionsUIState> get() = _uiState
 
-/**
- * data source for [Question] using [PagingSource]
- */
-private class QuestionsDataSource(private val dao: QuestionDao) : PagingSource<Int, Question>() {
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.emit(QuestionsUIState.Loading)
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Question> {
-        return try {
-            val questions = dao.faqs()
-            LoadResult.Page(
-                data = questions,
-                prevKey = null,
-                nextKey = null
-            )
-        } catch (e: Exception) {
-            LoadResult.Error(e)
+            dao.faqs().collectLatest { faqs ->
+                if (faqs.isEmpty()) _uiState.emit(QuestionsUIState.Error("no questions found"))
+                else _uiState.emit(QuestionsUIState.Success(PagingData.from(faqs)))
+            }
         }
     }
+}
 
-    override fun getRefreshKey(state: PagingState<Int, Question>): Int? = null
+
+sealed class QuestionsUIState {
+    data class Success(val faqs: PagingData<Question>) : QuestionsUIState()
+    data class Error(val reason: String) : QuestionsUIState()
+    object Loading : QuestionsUIState()
 }
