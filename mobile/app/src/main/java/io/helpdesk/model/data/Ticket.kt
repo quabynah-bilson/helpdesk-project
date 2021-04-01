@@ -2,10 +2,12 @@ package io.helpdesk.model.data
 
 import android.os.Parcelable
 import androidx.room.*
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+import java.sql.Date
 
 enum class TicketCompletionState {
-    Done, Pending, Cancelled
+    Pending, Done, Cancelled,
 }
 
 enum class TicketType {
@@ -13,7 +15,7 @@ enum class TicketType {
 }
 
 enum class TicketPriority {
-    High, Medium, Low
+    Low, Medium, High,
 }
 
 /**
@@ -23,17 +25,21 @@ enum class TicketPriority {
 @Entity(tableName = "tickets")
 data class Ticket(
     @PrimaryKey
+    @SerializedName("_id")
     @ColumnInfo(name = "_id")
     val id: String,
     val user: String,
     val name: String,
-    val comment: String,
-    var status: TicketCompletionState,
-    var type: TicketType,
-    var priority: TicketPriority,
+    val comment: String = "no comments",
+    var status: TicketCompletionState = TicketCompletionState.Pending,
+    var technician: String? = null,
+    var type: TicketType = TicketType.Question,
+    val linkedTickets: List<String> = emptyList(),
+    var priority: TicketPriority = TicketPriority.Medium,
+    @SerializedName("createdAt")
     @ColumnInfo(name = "createdAt")
-    val timestamp: String,
-    val dueDate: String,
+    val timestamp: String = Date(System.currentTimeMillis()).toString(),
+    val dueDate: String = Date(System.currentTimeMillis() + 720000000).toString(),
 ) : Parcelable
 
 /**

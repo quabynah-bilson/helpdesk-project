@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.helpdesk.model.db.LocalDatabase
+import io.helpdesk.model.db.QuestionDao
 import io.helpdesk.model.db.TicketDao
 import io.helpdesk.model.db.UserDao
 import javax.inject.Singleton
@@ -32,4 +33,8 @@ object LocalDatabaseModule {
     @Singleton
     @Provides
     fun provideTicketDao(db: LocalDatabase): TicketDao = db.ticketDao()
+
+    @Singleton
+    @Provides
+    fun provideFAQsDao(db: LocalDatabase): QuestionDao = db.faqDao()
 }

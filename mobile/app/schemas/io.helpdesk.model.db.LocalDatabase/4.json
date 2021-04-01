@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "47002c72a9518df426b953497722207d",
+    "identityHash": "e3eb56ec9fe6d6947a617971f5f60f5b",
     "entities": [
       {
         "tableName": "users",
@@ -50,7 +50,7 @@
       },
       {
         "tableName": "tickets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `user` TEXT NOT NULL, `name` TEXT NOT NULL, `comment` TEXT NOT NULL, `status` TEXT NOT NULL, `type` TEXT NOT NULL, `priority` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `dueDate` TEXT NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `user` TEXT NOT NULL, `name` TEXT NOT NULL, `comment` TEXT NOT NULL, `status` TEXT NOT NULL, `technician` TEXT, `type` TEXT NOT NULL, `priority` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `dueDate` TEXT NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -81,6 +81,12 @@
             "columnName": "status",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "technician",
+            "columnName": "technician",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "type",
@@ -120,7 +126,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '47002c72a9518df426b953497722207d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e3eb56ec9fe6d6947a617971f5f60f5b')"
     ]
   }
 }

@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 2,
-    "identityHash": "e8c8be9831b2fa1ddbf89ba48d81a80f",
+    "version": 5,
+    "identityHash": "e3eb56ec9fe6d6947a617971f5f60f5b",
     "entities": [
       {
         "tableName": "users",
@@ -50,7 +50,7 @@
       },
       {
         "tableName": "tickets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `user` TEXT NOT NULL, `name` TEXT NOT NULL, `comment` TEXT NOT NULL, `status` INTEGER NOT NULL, `technician` TEXT, `type` INTEGER NOT NULL, `linkedTickets` TEXT NOT NULL, `priority` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `dueDate` TEXT NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `user` TEXT NOT NULL, `name` TEXT NOT NULL, `comment` TEXT NOT NULL, `status` TEXT NOT NULL, `technician` TEXT, `type` TEXT NOT NULL, `priority` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `dueDate` TEXT NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -79,7 +79,7 @@
           {
             "fieldPath": "status",
             "columnName": "status",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -91,19 +91,13 @@
           {
             "fieldPath": "type",
             "columnName": "type",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "linkedTickets",
-            "columnName": "linkedTickets",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "priority",
             "columnName": "priority",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -127,50 +121,12 @@
         },
         "indices": [],
         "foreignKeys": []
-      },
-      {
-        "tableName": "faqs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `question` TEXT NOT NULL, `answer` TEXT NOT NULL, `priority` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "_id",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "title",
-            "columnName": "question",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "answer",
-            "columnName": "answer",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "priority",
-            "columnName": "priority",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "_id"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e8c8be9831b2fa1ddbf89ba48d81a80f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e3eb56ec9fe6d6947a617971f5f60f5b')"
     ]
   }
 }

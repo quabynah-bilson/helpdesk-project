@@ -56,6 +56,9 @@ android {
         jvmTarget = '1.8'
     }
     ndkVersion '23.0.7123448 rc1'
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -98,7 +101,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
 
     // ktx extensions
-    implementation "androidx.fragment:fragment-ktx:1.3.1"
+    implementation "androidx.fragment:fragment-ktx:1.3.2"
 
     // work manager
     def work_version = "2.5.0"
@@ -116,9 +119,10 @@ dependencies {
     // hilt dagger
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    implementation 'androidx.hilt:hilt-work:1.0.0-beta01'
 
     // paging
-    def paging_version = "3.0.0-beta02"
+    def paging_version = "3.0.0-beta03"
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
     // glide

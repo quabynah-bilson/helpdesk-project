@@ -1,0 +1,100 @@
+{
+  "data": [
+    {
+      "_id": "03d6d9ca-398d-494a-8b57-a1042f2392d4",
+      "question": "What makes KronoDesk better than other Help Desk Ticketing systems?",
+      "priority": 0,
+      "answer": "KronoDesk has all the features you would expect in a world-class help desk ticketing application yet is only a fraction of the price of our competitors. You just won't find a more feature-rich help desk suite at anywhere near the price of KronoDesk."
+    },
+    {
+      "_id": "a3abd26a-8df3-4856-80c8-7c266ce1e34b",
+      "question": "What makes KronoDesk better than other Customer Support Forum tools?",
+      "priority": 1,
+      "answer": "KronoDesk provides all the features you'd expect for managing an online customer support forum, yet for the same price as many standalone support forum applciations you also get a fully-featured help desk ticketing system and online customer knowledge base."
+    },
+    {
+      "_id": "9b6551c6-9316-485e-880d-b7e485fb0a8d",
+      "question": "What makes KronoDesk better than other online Knowledge Base tools?",
+      "priority": 0,
+      "answer": "KronoDesk provides all the features you'd expect for creating and managing an online customer knowledge base of best practices and support notes, yet for the same price as many standalone knowledge base systems, you also get also get a fully-featured help desk ticketing system and customer support forums."
+    },
+    {
+      "_id": "df8227e2-f5bf-42a9-9d5c-e66d739a810d",
+      "question": "Can I pay for the software using a purchase order?",
+      "priority": 0,
+      "answer": "Yes. We gladly accept purchase orders. Please contact us at sales@inflectra.com for more information."
+    },
+    {
+      "_id": "200a5227-4e49-48e3-8210-321c0dc948eb",
+      "question": "Do you offer a discount for Government, Non-Profit, and Academic Institutions?",
+      "priority": 0,
+      "answer": "Yes. We offer a 20% discount off our already low price for non-profit, Government and academic institutions. Please contact us at sales@inflectra.com for more information."
+    },
+    {
+      "_id": "e0fa9c5d-4e33-44e0-bc11-907658462fef",
+      "question": "Can I pay for the software using a wire transfer or ACH payment?\n",
+      "priority": 0,
+      "answer": "Yes. We gladly accept wire transfers and ACH payments. Please contact us at sales@inflectra.com for more information."
+    },
+    {
+      "_id": "35a5cba6-2f88-416a-ba70-f4221ff5c220",
+      "question": "How will I receive my copy of KronoDesk?",
+      "priority": 1,
+      "answer": "Once your purchase has been confirmed you will be logged into the secure customer area of the website. This will contain the link to download the software as well as the license key for the version you purchased. Should you ever lose your copy of the installation file or your license key, you can always log back into the secure customer area to retrieve them. You will automatically be entitled to one year of free upgrades, which will also be posted to this secure customer area for download."
+    },
+    {
+      "_id": "ce27e988-b70d-4450-8990-6918b48f7403",
+      "question": "Do you have a guarantee? What if I'm not happy with KronoDesk?",
+      "priority": 1,
+      "answer": "We are so confident that you will be fully satisfied with our software that we offer an unconditional, 30-day money back guarantee!"
+    },
+    {
+      "_id": "52fd7085-89ac-462e-ad9d-32178e742269",
+      "question": "How do I know if KronoDesk will run on my web server?",
+      "priority": 2,
+      "answer": "KronoDesk runs on any Windows web server that has Microsoft .NET framework version 4.0 and ASP.NET version 4.0 installed. To know for sure, just ask your system administrator or ISP if you have a Windows server with ASP.NET version 4.0 installed."
+    },
+    {
+      "_id": "05937613-0420-440e-9849-70f4c82102b7",
+      "question": "I do not have a web server available. Can you host the application for me?",
+      "priority": 1,
+      "answer": "Absolutely. We offer KronoDesk as a hosted Software as a Service (SaaS) - also known as Cloud - subscription as well as an on-premise install. When you purchase a KronoDesk SaaS subscription, we will host the application for you, manage the data backups, and handle all the technical aspects. That way you can focus on using the software to run you business hassle-free."
+    },
+    {
+      "_id": "50e3b0e4-9a75-4d5c-9121-2677e60cac32",
+      "question": "How do I install KronoDesk?",
+      "priority": 0,
+      "answer": "Installing KronoDesk is extremely simple, and generally takes less than 10 minutes. All that is required is to download the application, double-click on the Microsoft Installer (.msi) file, follow the prompts, enter your license key and database information and the installation wizard will do everything else for you. In addition, the application comes with a thorough installation document that explains each step in great detail."
+    },
+    {
+      "_id": "f31a4935-9680-4f03-af37-64db312076e6",
+      "question": "Can I have a demo copy of the application to try on my own computer before I purchase?",
+      "priority": 0,
+      "answer": "We recommend users initially look at our online demo, which enables you to try out all of the features of KronoDesk on our hosted environment. However, once you have decided that KronoDesk is a good fit for your needs, you are encouraged to download our 30-day trial version which can be installed on your own web-server and loaded with real project data."
+    },
+    {
+      "_id": "f9a9634f-31bd-4a23-b9b9-e07c174f298e",
+      "question": "I'm a web developer with ASP.NET experience. Why should I purchase KronoDesk instead of writing my own project management and quality management software?",
+      "priority": 0,
+      "answer": "With several thousand hours of development time invested in creating KronoDesk, you can purchase our time at pennies per hour. Plus, you get a proven solution that has been put through our rigorous testing and validation processes. The alternative would be to start from scratch or reverse engineer our software. But ask yourself how long it would take you to code an application like this. Then ask yourself how much your time is worth. We think you'll agree that it's worth more than a few pennies an hour."
+    },
+    {
+      "_id": "f90bd9ff-5f08-4886-b199-1d7a29f9d913",
+      "question": "Why is KronoDesk licensed by concurrent user rather than per-server?",
+      "priority": 2,
+      "answer": "One of the missions of Inflectra is to provide high quality software at an affordable price to individuals, small businesses as well as large corporations. By having different prices for different levels of usage we are able to provide a solution that is affordable for every budget. For heavy users, we offer an enterprise license that offers unlimited usage at an unbeatable price."
+    },
+    {
+      "_id": "1d98cfe2-3187-49ff-8c70-7a4dfbd49e27",
+      "question": "What is the price to upgrade from one edition of KronoDesk to a higher edition?",
+      "priority": 1,
+      "answer": "The price to upgrade from one edition to a higher edition (e.g. from the 10-user to the 20-user edition) is just the incremental difference in price between the two editions. For example if you paid $499.99USD for the 5-user edition and you want to purchase the $899.99USD 10-user edition, the upgrade price is just $899.99 - $499.99 = $400.00USD."
+    },
+    {
+      "_id": "82514f1f-b1b1-4b3e-a4a7-79e13425d6ba",
+      "question": "How do I upgrade from one edition of KronoDesk to a higher edition? Do I need to reinstall the application?",
+      "priority": 2,
+      "answer": "To upgrade from your current edition to a higher one, you just need to access the Customer Area and click on the [Upgrade] link next to your previous order. Once you have completed the purchase you will receive a new license key which you can enter into your existing installation. No reinstallation of the software is necessary."
+    }
+  ]
+}

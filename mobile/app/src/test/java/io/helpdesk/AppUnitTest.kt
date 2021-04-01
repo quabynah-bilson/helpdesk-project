@@ -1,17 +1,20 @@
 package io.helpdesk
 
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
-
-import org.junit.Assert.*
+import timber.log.Timber
+import java.util.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
+class AppUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun generateIds() {
+        for (i in 0..16) {
+            println("id -> ${UUID.randomUUID()}")
+        }
     }
 }
