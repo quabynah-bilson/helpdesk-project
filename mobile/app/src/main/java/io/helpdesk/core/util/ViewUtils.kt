@@ -11,7 +11,7 @@ fun View.visible(isVisible: Boolean) {
 }
 
 fun ImageView.loadImage(url: String?, @DrawableRes placeholder: Int, @DrawableRes error: Int) {
-    Glide.with(this)
+    GlideApp.with(this)
         .asBitmap()
         .load(url)
         .placeholder(placeholder)

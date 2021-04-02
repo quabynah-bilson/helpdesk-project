@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="7"
-    tools:context=".view.auth.LoginFragment">
+    android:weightSum="8"
+    tools:context=".view.auth.RegisterUserFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_section"
@@ -16,6 +16,15 @@
         android:background="?colorSurface"
         android:paddingHorizontal="@dimen/spacing_24"
         android:paddingVertical="@dimen/spacing_20">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/top_header_logo"
@@ -44,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:alpha="?emphasis_medium"
-            android:text="@string/login_prompt"
+            android:text="@string/register_prompt"
             android:textAlignment="textStart"
             android:textAppearance="?textAppearanceSubtitle2"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -56,7 +65,7 @@
         android:id="@+id/bottom_section"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_none"
-        android:layout_weight="4"
+        android:layout_weight="5"
         android:background="?android:colorBackground"
         android:paddingHorizontal="@dimen/spacing_24"
         android:paddingVertical="@dimen/spacing_20">

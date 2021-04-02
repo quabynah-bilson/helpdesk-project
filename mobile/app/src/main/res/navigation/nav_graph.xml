@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@id/nav_login"
-        android:name="io.helpdesk.view.LoginFragment"
+        android:name="io.helpdesk.view.auth.LoginFragment"
         android:label="@string/fragment_login"
         tools:layout="@layout/fragment_login">
         <action
@@ -29,6 +29,12 @@
             app:destination="@id/nav_home"
             app:popUpTo="@id/nav_welcome"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_nav_login_to_nav_user_type"
+            app:destination="@id/nav_user_type" />
+        <action
+            android:id="@+id/action_nav_login_to_nav_register"
+            app:destination="@id/nav_register" />
     </fragment>
     <fragment
         android:id="@id/nav_home"
@@ -62,4 +68,20 @@
             android:name="ticket"
             app:argType="io.helpdesk.model.data.Ticket" />
     </fragment>
+    <fragment
+        android:id="@id/nav_user_type"
+        android:name="io.helpdesk.view.auth.UserTypeFragment"
+        android:label="@string/fragment_user_type"
+        tools:layout="@layout/fragment_user_type" >
+        <action
+            android:id="@+id/action_nav_user_type_to_nav_home"
+            app:destination="@id/nav_home"
+            app:popUpTo="@id/nav_welcome"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@id/nav_register"
+        android:name="io.helpdesk.view.auth.RegisterUserFragment"
+        android:label="@string/fragment_register_user"
+        tools:layout="@layout/fragment_register_user" />
 </navigation>

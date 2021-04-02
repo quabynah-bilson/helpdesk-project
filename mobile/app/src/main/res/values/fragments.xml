@@ -8,4 +8,6 @@
     <string name="fragment_live_chat">Live Chats</string>
     <string name="fragment_tickets">Tickets</string>
     <string name="fragment_faqs">FAQs</string>
+    <string name="fragment_user_type">User Type</string>
+    <string name="fragment_register_user">Register</string>
 </resources>

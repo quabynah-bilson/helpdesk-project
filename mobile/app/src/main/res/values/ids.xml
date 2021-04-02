@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="nav_welcome" type="id"/>
-    <item name="nav_login" type="id"/>
-    <item name="nav_post_ticket" type="id"/>
-    <item name="nav_ticket_info" type="id"/>
-    <item name="nav_home" type="id"/>
+    <item name="nav_welcome" type="id" />
+    <item name="nav_register" type="id" />
+    <item name="nav_login" type="id" />
+    <item name="nav_user_type" type="id" />
+    <item name="nav_post_ticket" type="id" />
+    <item name="nav_ticket_info" type="id" />
+    <item name="nav_home" type="id" />
 </resources>

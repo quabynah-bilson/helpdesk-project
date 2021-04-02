@@ -18,4 +18,10 @@
     <string name="ticket_name">Ticket Name</string>
     <string name="submit">Submit</string>
     <string name="no_technicians">No technicians available at the moment</string>
+    <string name="login_prompt">Sign in to access your account</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="no_account_yet">No account yet?</string>
+    <string name="create_one">Create one…</string>
+    <string name="register_prompt">Join now to query FAQs and get support from professional helpdesk technicians with ease.</string>
 </resources>

@@ -280,7 +280,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/post_ticket"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_64"
+            android:layout_height="@dimen/spacing_56"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginHorizontal="@dimen/spacing_24"
             android:enabled="false"

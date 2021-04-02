@@ -2,6 +2,7 @@ package io.helpdesk.core.storage
 
 import android.content.Context
 import androidx.core.content.edit
+import io.helpdesk.model.data.UserType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -11,12 +12,23 @@ import javax.inject.Inject
  */
 interface BaseUserPersistentStorage {
     var userId: String?
+    var userType: Int
     val loginState: StateFlow<Boolean>
 }
 
 class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPersistentStorage {
     private val prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE)
     private val _loginState = MutableStateFlow(false)
+
+    override var userType: Int = UserType.Customer.ordinal
+        get() = prefs.getInt(USER_TYPE_KEY, UserType.Customer.ordinal)
+        set(value) {
+            if (field == value) return
+            prefs.edit {
+                putInt(USER_TYPE_KEY, value)
+                apply()
+            }
+        }
 
     /**
      * authenticated user id storage
@@ -41,6 +53,7 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
 
     companion object {
         private const val USER_ID_KEY = "helpdesk.user_id"
+        private const val USER_TYPE_KEY = "helpdesk.user_type"
         private const val PREFS_KEY = "helpdesk.prefs"
     }
 }
