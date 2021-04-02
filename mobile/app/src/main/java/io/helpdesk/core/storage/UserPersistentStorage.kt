@@ -14,6 +14,8 @@ interface BaseUserPersistentStorage {
     var userId: String?
     var userType: Int
     val loginState: StateFlow<Boolean>
+
+    suspend fun clear()
 }
 
 class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPersistentStorage {
@@ -50,6 +52,14 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
      */
     override val loginState: StateFlow<Boolean>
         get() = _loginState
+
+    override suspend fun clear() {
+        prefs.edit {
+            clear()
+            apply()
+            _loginState.emit(false)
+        }
+    }
 
     companion object {
         private const val USER_ID_KEY = "helpdesk.user_id"

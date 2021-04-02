@@ -78,7 +78,7 @@ class HomeFragment : Fragment() {
                                 run {
                                     // leave app
                                     dialog.dismiss()
-                                    findNavController().popBackStack(R.id.nav_welcome, true)
+                                    requireActivity().onBackPressed()
                                 }
                             }
                             setNegativeButton("no") { dialog, _ -> dialog.cancel() }

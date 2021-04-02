@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,108 +47,134 @@ class AuthViewModel @Inject constructor(
     }
 
     // set user type
-    fun updateUserType(type: UserType) = viewModelScope.launch {
-        _userTypeState.emit(type)
+    fun updateUserType(type: Int) = viewModelScope.launch {
+        storage.userType = type
+        _userTypeState.emit(UserType.values()[type])
     }
 
     // login with email & password
     fun login(email: String?, password: String?) = viewModelScope.launch {
-        _authState.emit(AuthState.Loading)
         if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
             _authState.emit(AuthState.Error("cannot validate fields"))
             return@launch
         }
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
+        try {
+            _authState.emit(AuthState.Loading)
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
 
-                val firebaseUser = task.result?.user
-                if (firebaseUser == null) {
-                    launch(Dispatchers.IO) {
-                        _authState.emit(AuthState.Error("failed to sign in user"))
-                    }
-                } else {
-                    var user: User
-                    firestore.collection(User.TABLE_NAME)
-                        .document(firebaseUser.uid)
-                        .get(Source.SERVER)
-                        .addOnCompleteListener { userTask ->
-                            if (userTask.isSuccessful && userTask.result != null) {
-                                user = userTask.result!!.toObject(User::class.java) ?: User(
-                                    id = firebaseUser.uid,
-                                    email = firebaseUser.email!!,
-                                    avatar = firebaseUser.photoUrl?.toString(),
-                                    type = _userTypeState.value,
-                                    name = firebaseUser.displayName ?: "No name"
-                                )
+                    val firebaseUser = task.result?.user
+                    if (firebaseUser == null) {
+                        launch(Dispatchers.IO) {
+                            _authState.emit(AuthState.Error("failed to sign in user"))
+                        }
+                    } else {
+                        var user: User
+                        firestore.collection(User.TABLE_NAME)
+                            .document(firebaseUser.uid)
+                            .get(Source.SERVER)
+                            .addOnCompleteListener { userTask ->
+                                if (userTask.isSuccessful && userTask.result != null) {
+                                    user = userTask.result!!.toObject(User::class.java) ?: User(
+                                        id = firebaseUser.uid,
+                                        email = firebaseUser.email!!,
+                                        avatar = firebaseUser.photoUrl?.toString(),
+                                        type = _userTypeState.value,
+                                        name = firebaseUser.displayName ?: "No name"
+                                    )
 
-                                launch(Dispatchers.IO) {
-                                    // save locally
-                                    userDao.insert(user)
+                                    launch(Dispatchers.IO) {
+                                        // save locally
+                                        userDao.insert(user)
 
-                                    storage.userId = firebaseUser.uid
-                                    storage.userType = _userTypeState.value.ordinal
-                                    _authState.emit(AuthState.Success(user))
+                                        storage.userId = firebaseUser.uid
+                                        storage.userType = _userTypeState.value.ordinal
+                                        _authState.emit(AuthState.Success(user))
 
+                                    }
                                 }
                             }
-                        }
-                }
+                    }
 
-            } else {
-                launch(Dispatchers.IO) {
-                    _authState.emit(
-                        AuthState.Error(
-                            task.exception?.localizedMessage ?: "failed to sign in user"
+                } else {
+                    launch(Dispatchers.IO) {
+                        _authState.emit(
+                            AuthState.Error(
+                                task.exception?.localizedMessage ?: "failed to sign in user"
+                            )
                         )
-                    )
+                    }
                 }
+            }
+        } catch (e: Exception) {
+            Timber.tag(AuthViewModel::class.java.canonicalName).e(e)
+            launch(Dispatchers.IO) {
+                _authState.emit(AuthState.Error("failed to create user"))
             }
         }
     }
 
     // register with username, email & password
-    fun register(username: String, email: String, password: String) = viewModelScope.launch {
+    fun register(username: String?, email: String?, password: String?) = viewModelScope.launch {
         _authState.emit(AuthState.Loading)
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                launch(Dispatchers.IO) {
-                    val firebaseUser = task.result?.user
-                    if (firebaseUser == null) {
-                        _authState.emit(AuthState.Error("cannot create new user account"))
-                    } else {
-                        val user = User(
-                            id = firebaseUser.uid, email = firebaseUser.email!!,
-                            avatar = firebaseUser.photoUrl?.toString(), type = _userTypeState.value,
-                            name = firebaseUser.displayName ?: username
+        if (email.isNullOrEmpty() || password.isNullOrEmpty() || username.isNullOrEmpty()) {
+            _authState.emit(AuthState.Error("cannot validate fields"))
+            return@launch
+        }
+        try {
+            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    launch(Dispatchers.IO) {
+                        val firebaseUser = task.result?.user
+                        if (firebaseUser == null) {
+                            _authState.emit(AuthState.Error("cannot create new user account"))
+                        } else {
+                            val user = User(
+                                id = firebaseUser.uid,
+                                email = firebaseUser.email!!,
+                                avatar = firebaseUser.photoUrl?.toString(),
+                                type = _userTypeState.value,
+                                name = firebaseUser.displayName ?: username
+                            )
+
+                            // save locally
+                            userDao.insert(user)
+
+                            // save remotely
+                            firestore.collection(User.TABLE_NAME).document(user.id)
+                                .set(user, SetOptions.merge())
+
+
+                            storage.userId = firebaseUser.uid
+                            storage.userType = _userTypeState.value.ordinal
+                            _authState.emit(AuthState.Success(user))
+                        }
+                    }
+
+                } else {
+                    launch(Dispatchers.IO) {
+                        _authState.emit(
+                            AuthState.Error(
+                                task.exception?.localizedMessage ?: "failed to sign in user"
+                            )
                         )
-
-                        // save locally
-                        userDao.insert(user)
-
-                        // save remotely
-                        firestore.collection(User.TABLE_NAME).document(user.id)
-                            .set(user, SetOptions.merge())
-
-
-                        storage.userId = firebaseUser.uid
-                        storage.userType = _userTypeState.value.ordinal
-                        _authState.emit(AuthState.Success(user))
                     }
                 }
-
-            } else {
-                launch(Dispatchers.IO) {
-                    _authState.emit(
-                        AuthState.Error(
-                            task.exception?.localizedMessage ?: "failed to sign in user"
-                        )
-                    )
-                }
+            }
+        } catch (e: Exception) {
+            Timber.tag(AuthViewModel::class.java.canonicalName).e(e)
+            launch(Dispatchers.IO) {
+                _authState.emit(AuthState.Error("failed to sign in user"))
             }
         }
     }
 
-
+    // sign out
+    fun logout() = viewModelScope.launch(Dispatchers.IO) {
+        auth.signOut()
+        storage.clear()
+        _authState.emit(AuthState.Initial)
+    }
 }
 
 sealed class AuthState {

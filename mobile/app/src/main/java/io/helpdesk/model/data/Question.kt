@@ -9,7 +9,7 @@ import com.google.gson.internal.LinkedTreeMap
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "faqs")
+@Entity(tableName = Question.TABLE_NAME)
 data class Question(
     @PrimaryKey
     @ColumnInfo(name = "_id")
@@ -23,6 +23,7 @@ data class Question(
 ) : Parcelable {
 
     companion object {
+        const val TABLE_NAME = "faqs"
         fun parser(map: LinkedTreeMap<String, Any?>) = Question(
             id = map["_id"].toString(),
             title = map["question"].toString(),

@@ -22,7 +22,7 @@ enum class TicketPriority {
  * ticket data model
  */
 @Parcelize
-@Entity(tableName = "tickets")
+@Entity(tableName = Ticket.TABLE_NAME)
 data class Ticket(
     @PrimaryKey
     @SerializedName("_id")
@@ -40,7 +40,13 @@ data class Ticket(
     @ColumnInfo(name = "createdAt")
     val timestamp: String = Date(System.currentTimeMillis()).toString(),
     val dueDate: String = Date(System.currentTimeMillis() + 720000000).toString(),
-) : Parcelable
+) : Parcelable {
+
+
+    companion object {
+        const val TABLE_NAME = "tickets"
+    }
+}
 
 /**
  * one-to-one relationship between ticket and user
