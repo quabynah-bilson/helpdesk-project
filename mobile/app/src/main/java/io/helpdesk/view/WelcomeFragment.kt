@@ -4,12 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import io.helpdesk.R
 import io.helpdesk.databinding.FragmentWelcomeBinding
 
 /**
@@ -32,8 +29,9 @@ class WelcomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // handle button clicks
-        // todo -> nav to login
-        binding?.authButton?.setOnClickListener { findNavController().navigate(R.id.nav_user_type) }
+        binding?.authButton?.setOnClickListener {
+            findNavController().navigate(WelcomeFragmentDirections.actionNavWelcomeToNavLogin())
+        }
         binding?.skipButton?.setOnClickListener {
             findNavController().navigate(
                 WelcomeFragmentDirections.actionNavWelcomeToNavHome()

@@ -2,10 +2,6 @@ package io.helpdesk.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.Source
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.model.data.User
@@ -16,10 +12,80 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
+class AuthViewModel @Inject constructor(
+    private val userDao: UserDao,
+    private val storage: BaseUserPersistentStorage,
+) : ViewModel() {
+    private val _authState = MutableStateFlow<AuthState>(AuthState.Initial)
+    private val _userTypeState = MutableStateFlow(UserType.Customer)
+    private var currentUser: User? = null
+
+    val authState: StateFlow<AuthState> get() = _authState
+    val userTypeState: StateFlow<UserType> get() = _userTypeState
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            storage.loginState.collectLatest { loggedIn ->
+                if (loggedIn) {
+                    val user = userDao.getUserByIdAndType(
+                        id = storage.userId!!,
+                        type = _userTypeState.value.ordinal,
+                    )
+                    _authState.emit(AuthState.Success(user))
+                }
+            }
+        }
+    }
+
+    // set user type
+    fun updateUserType(type: Int) = viewModelScope.launch {
+        _userTypeState.emit(UserType.values()[type])
+        if (currentUser == null) return@launch
+        storage.userType = type
+        userDao.update(currentUser!!.copy(type = UserType.values()[type]))
+    }
+
+    // login with email & password
+    fun login(email: String?, password: String?) = viewModelScope.launch {
+        if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
+            _authState.emit(AuthState.Error("cannot validate fields"))
+            return@launch
+        }
+        _authState.emit(AuthState.Loading)
+        // todo
+    }
+
+    // register with username, email & password
+    fun register(username: String?, email: String?, password: String?) = viewModelScope.launch {
+        _authState.emit(AuthState.Loading)
+        if (email.isNullOrEmpty() || password.isNullOrEmpty() || username.isNullOrEmpty()) {
+            _authState.emit(AuthState.Error("cannot validate fields"))
+            return@launch
+        }
+        _authState.emit(AuthState.Loading)
+        // todo
+    }
+
+    // sign out
+    fun logout() = viewModelScope.launch(Dispatchers.IO) {
+        storage.clear()
+        _authState.emit(AuthState.Initial)
+    }
+}
+
+sealed class AuthState {
+    data class Success(val user: User) : AuthState()
+    data class Error(val reason: String) : AuthState()
+    object Loading : AuthState()
+    object Initial : AuthState()
+}
+
+/*
+  // fixme -> this implementation uses firebase authentication which is currently not working
+* @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val auth: FirebaseAuth,
     private val userDao: UserDao,
@@ -176,10 +242,4 @@ class AuthViewModel @Inject constructor(
         _authState.emit(AuthState.Initial)
     }
 }
-
-sealed class AuthState {
-    data class Success(val user: User) : AuthState()
-    data class Error(val reason: String) : AuthState()
-    object Loading : AuthState()
-    object Initial : AuthState()
-}
+* */
