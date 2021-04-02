@@ -56,6 +56,7 @@
         android:id="@+id/bottom_section"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_none"
+        tools:visibility="gone"
         android:layout_weight="4"
         android:background="?android:colorBackground"
         android:paddingHorizontal="@dimen/spacing_24"
@@ -157,7 +158,6 @@
             android:id="@+id/login_button"
             android:layout_width="@dimen/spacing_none"
             android:layout_height="@dimen/spacing_56"
-            android:layout_marginStart="@dimen/spacing_120"
             android:layout_marginTop="@dimen/spacing_20"
             android:gravity="start|center_vertical"
             android:text="@string/sign_in"
@@ -168,23 +168,18 @@
             app:layout_constraintTop_toBottomOf="@id/password_field_container"
             tools:enabled="false" />
 
-        <!-- progress -->
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/progress_indicator"
-            android:layout_width="@dimen/spacing_120"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:indicatorColor="?colorSecondary"
-            app:indicatorDirectionLinear="endToStart"
-            app:layout_anchorGravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- progress -->
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress_indicator"
+        android:layout_width="@dimen/spacing_120"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_marginTop="@dimen/spacing_120"
+        android:layout_gravity="center"
+        app:indicatorColor="?colorSecondary"
+        app:indicatorDirectionLinear="endToStart"
+        tools:visibility="visible" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

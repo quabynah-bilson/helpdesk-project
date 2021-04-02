@@ -30,9 +30,6 @@
             app:popUpTo="@id/nav_welcome"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_nav_login_to_nav_user_type"
-            app:destination="@id/nav_user_type" />
-        <action
             android:id="@+id/action_nav_login_to_nav_register"
             app:destination="@id/nav_register" />
     </fragment>
@@ -83,5 +80,9 @@
         android:id="@id/nav_register"
         android:name="io.helpdesk.view.auth.RegisterUserFragment"
         android:label="@string/fragment_register_user"
-        tools:layout="@layout/fragment_register_user" />
+        tools:layout="@layout/fragment_register_user" >
+        <action
+            android:id="@+id/action_nav_register_to_nav_user_type"
+            app:destination="@id/nav_user_type" />
+    </fragment>
 </navigation>

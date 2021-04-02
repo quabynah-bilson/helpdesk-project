@@ -24,4 +24,7 @@
     <string name="no_account_yet">No account yet?</string>
     <string name="create_one">Create one…</string>
     <string name="register_prompt">Join now to query FAQs and get support from professional helpdesk technicians with ease.</string>
+    <string name="has_account">Already having an account?</string>
+    <string name="full_name">Full Name</string>
+    <string name="join">Proceed</string>
 </resources>

@@ -5,9 +5,11 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -24,7 +26,7 @@ class LoginFragment : Fragment() {
     private var binding: FragmentLoginBinding? = null
 
 
-    private val authViewModel by activityViewModels<AuthViewModel>()
+    private val authViewModel by viewModels<AuthViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,10 +76,28 @@ class LoginFragment : Fragment() {
                             Snackbar.LENGTH_LONG
                         ).show()
 
+                        is AuthState.Success -> {
+                            val dir = LoginFragmentDirections.actionNavLoginToNavHome()
+                            navController.navigate(dir)
+                        }
+
                         else -> {
                             /*do nothing*/
                         }
                     }
+
+                    // toggle views
+                    bottomSection.isVisible = state !is AuthState.Loading
+                    progressIndicator.isVisible = state is AuthState.Loading
+
+                    // disable back press
+                    requireActivity().onBackPressedDispatcher.addCallback(
+                        viewLifecycleOwner,
+                        object : OnBackPressedCallback(true) {
+                            override fun handleOnBackPressed() {
+                                if (state !is AuthState.Loading) navController.popBackStack()
+                            }
+                        })
                 }
             }
         }

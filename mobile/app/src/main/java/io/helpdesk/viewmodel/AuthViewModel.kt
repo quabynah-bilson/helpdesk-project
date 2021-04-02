@@ -25,7 +25,7 @@ class AuthViewModel @Inject constructor(
     private val storage: BaseUserPersistentStorage,
     private val firestore: FirebaseFirestore,
 ) : ViewModel() {
-    private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
+    private val _authState = MutableStateFlow<AuthState>(AuthState.Initial)
     private val _userTypeState = MutableStateFlow(UserType.Customer)
 
     val authState: StateFlow<AuthState> get() = _authState
@@ -154,4 +154,5 @@ sealed class AuthState {
     data class Success(val user: User) : AuthState()
     data class Error(val reason: String) : AuthState()
     object Loading : AuthState()
+    object Initial : AuthState()
 }
