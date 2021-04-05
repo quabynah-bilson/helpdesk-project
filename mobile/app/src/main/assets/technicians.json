@@ -3,7 +3,7 @@
     "_id": "1a6d2e58-bca0-4954-830f-e9414db45fe8",
     "username": "shirley.doe@mail.com",
     "name": "Shirley Doe",
-    "phone_number": "+233554856987",
+    "phoneNumber": "+233554856987",
     "avatar": "https://images.unsplash.com/photo-1597393922738-085ea04b5a07?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Nnx8YmVhdXRpZnVsJTIwYmxhY2slMjB3b21hbnxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=60",
     "user_type": 0
   },
@@ -11,7 +11,7 @@
     "_id": "82f14ec5-75e6-4a0b-bb1d-7ad95ffc7b7a",
     "username": "john.Smith@mail.com",
     "name": "John Smith Jr.",
-    "phone_number": "+233554856987",
+    "phoneNumber": "+233554856987",
     "avatar": "https://images.unsplash.com/photo-1578758837674-93ed0ab5fbab?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Mnx8YmxhY2slMjBidXNpbmVzcyUyMG1hbnxlbnwwfHwwfA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=60",
     "user_type": 0
   },
@@ -19,7 +19,7 @@
     "_id": "46fee094-88c1-49d4-9c13-868bd67eba77",
     "username": "eric.bullocks@mail.com",
     "name": "Eric Bullocks",
-    "phone_number": "+233554856987",
+    "phoneNumber": "+233554856987",
     "avatar": "https://images.unsplash.com/photo-1595482189276-c6b8e0cc5e54?ixid=MXwxMjA3fDB8MHxzZWFyY2h8Nnx8YnVzaW5lc3MlMjBtYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=60",
     "user_type": 0
   },
@@ -27,7 +27,7 @@
     "_id": "9ce538c6-4004-4eb5-9d20-d654fd527070",
     "username": "wisdom.nutsugah@mail.com",
     "name": "Wisdom Nutsugah",
-    "phone_number": "+233554856987",
+    "phoneNumber": "+233554856987",
     "avatar": "https://images.unsplash.com/flagged/photo-1553642618-de0381320ff3?ixid=MXwxMjA3fDB8MHxzZWFyY2h8NXx8YnVzaW5lc3MlMjBtYW58ZW58MHx8MHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=60",
     "user_type": 0
   }

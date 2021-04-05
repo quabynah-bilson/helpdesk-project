@@ -5,6 +5,8 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -12,8 +14,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.paging.PagingData
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import io.helpdesk.R
 import io.helpdesk.databinding.FragmentPostTicketBinding
 import io.helpdesk.view.recyclerview.TechnicianAvatarListAdapter
 import io.helpdesk.viewmodel.PostTicketUIState
@@ -21,6 +25,7 @@ import io.helpdesk.viewmodel.TicketsViewModel
 import io.helpdesk.viewmodel.UserUIState
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 class PostTicketFragment : Fragment() {
     private val args by navArgs<PostTicketFragmentArgs>()
@@ -28,6 +33,15 @@ class PostTicketFragment : Fragment() {
 
     private val ticketsViewModel by activityViewModels<TicketsViewModel>()
     private val usersViewModel by activityViewModels<UsersViewModel>()
+
+
+    // reset system bar color
+    override fun onDestroyView() {
+        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        requireActivity().window?.navigationBarColor =
+            ContextCompat.getColor(requireActivity(), R.color.white)
+        super.onDestroyView()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,8 +52,11 @@ class PostTicketFragment : Fragment() {
         return binding?.root
     }
 
-
+    // show colored system bar
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        requireActivity().window?.navigationBarColor =
+            ContextCompat.getColor(requireActivity(), R.color.blue_200)
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenCreated {
@@ -81,10 +98,6 @@ class PostTicketFragment : Fragment() {
                 // adapter setup
                 var hasUsers = false
                 var technician: String? = null
-                val usersAdapter = TechnicianAvatarListAdapter { user ->
-                    println("selected user -> ${user.name}")
-                    technician = user.id
-                }
 
                 // post ticket
                 postTicket.setOnClickListener {
@@ -105,7 +118,19 @@ class PostTicketFragment : Fragment() {
                 usersViewModel.uiState.collectLatest { state ->
                     when (state) {
                         is UserUIState.Success -> {
-                            usersAdapter.submitData(state.users)
+                            val usersAdapter = TechnicianAvatarListAdapter(state.users) { user ->
+                                technician = user.id
+                                Snackbar.make(
+                                    scrollContainer,
+                                    "${user.name} selected",
+                                    Snackbar.LENGTH_LONG
+                                )
+                                    .show()
+                            }
+                            with(usersAdapter) {
+                                submitData(PagingData.from(state.users))
+                                techniciansList.adapter = this
+                            }
                             hasUsers = usersAdapter.itemCount != 0
                         }
 
@@ -127,7 +152,6 @@ class PostTicketFragment : Fragment() {
                     techniciansList.run {
                         isVisible = state is UserUIState.Success && hasUsers
                         setHasFixedSize(true)
-                        adapter = usersAdapter
                     }
 
                     // show loading
@@ -135,6 +159,7 @@ class PostTicketFragment : Fragment() {
                 }
 
                 ticketsViewModel.postTicketUIState.collectLatest { state ->
+                    Timber.tag("post ticket").d("state -> $state")
                     when (state) {
                         is PostTicketUIState.Loading -> {
                             /*do nothing*/
@@ -153,7 +178,6 @@ class PostTicketFragment : Fragment() {
                                 "ticket created successfully",
                                 Snackbar.LENGTH_LONG
                             ).show()
-                            navController.popBackStack()
                         }
 
                         is PostTicketUIState.Initial -> {

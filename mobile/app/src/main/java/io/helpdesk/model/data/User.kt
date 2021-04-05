@@ -23,7 +23,6 @@ data class User(
     val email: String,
     val name: String,
     var avatar: String? = "",
-    @SerializedName("phone_number")
     @ColumnInfo(name = "phoneNumber")
     var phone: String? = "",
     @SerializedName("user_type")
@@ -38,7 +37,7 @@ data class User(
             name = map["name"].toString(),
             email = map["username"].toString(),
             phone = map["phoneNumber"].toString(),
-            type = UserType.values()[(map["user_type"] as Double).toInt()]
+            type = UserType.values()[(map["user_type"] as Double).toInt()],
         )
     }
 }

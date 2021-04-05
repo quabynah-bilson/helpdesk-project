@@ -75,32 +75,18 @@
         app:layout_constraintTop_toBottomOf="@id/welcome_title" />
 
     <!-- get started -->
-    <com.google.android.material.button.MaterialButton
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/skip_button"
-        android:layout_width="@dimen/spacing_none"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_64"
-        android:layout_marginStart="@dimen/spacing_36"
-        android:layout_marginEnd="@dimen/spacing_36"
-        android:layout_marginBottom="@dimen/spacing_8"
+        android:background="@drawable/button_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center"
         android:text="@string/get_started"
-        app:backgroundTint="?colorSecondary"
-        app:layout_constraintBottom_toTopOf="@id/auth_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- authentication button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/auth_button"
-        style="?materialButtonOutlinedStyle"
-        android:layout_width="@dimen/spacing_none"
-        android:layout_height="@dimen/spacing_64"
-        android:layout_marginStart="@dimen/spacing_36"
-        android:layout_marginEnd="@dimen/spacing_36"
-        android:layout_marginBottom="@dimen/spacing_16"
-        android:text="@string/sign_in"
-        android:textColor="?colorSecondary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textAppearance="?textAppearanceButton"
+        android:textColor="?colorOnSecondary"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

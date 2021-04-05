@@ -34,7 +34,7 @@
             app:layout_constraintBottom_toTopOf="@id/top_header_title"
             app:layout_constraintStart_toStartOf="parent"
             app:lottie_autoPlay="true"
-            app:lottie_loop="true"
+            app:lottie_loop="false"
             app:lottie_rawRes="@raw/login"
             tools:src="@drawable/ic_logo" />
 
@@ -67,10 +67,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_none"
         android:layout_weight="6"
-        tools:visibility="gone"
         android:background="?android:colorBackground"
         android:paddingHorizontal="@dimen/spacing_24"
-        android:paddingVertical="@dimen/spacing_20">
+        android:paddingVertical="@dimen/spacing_20"
+        tools:visibility="visible">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/full_name_header"
@@ -109,9 +109,9 @@
             android:id="@+id/username_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_24"
             android:alpha="?emphasis_medium"
             android:text="@string/username"
-            android:layout_marginTop="@dimen/spacing_24"
             android:textAlignment="textStart"
             android:textAppearance="?textAppearanceSubtitle1"
             app:layout_constraintStart_toStartOf="parent"
@@ -198,15 +198,17 @@
             app:layout_constraintStart_toEndOf="@id/no_account_leading"
             app:layout_constraintTop_toBottomOf="@id/register_button" />
 
-        <com.google.android.material.button.MaterialButton
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/register_button"
             android:layout_width="@dimen/spacing_none"
             android:layout_height="@dimen/spacing_56"
             android:layout_marginTop="@dimen/spacing_20"
-            android:gravity="start|center_vertical"
+            android:background="@drawable/button_background"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/spacing_20"
             android:text="@string/join"
-            app:icon="@drawable/arrow_right"
-            app:iconGravity="end"
+            android:textAppearance="?textAppearanceButton"
+            android:textColor="?colorOnSecondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/password_field_container"
@@ -219,9 +221,9 @@
         android:id="@+id/progress_indicator"
         android:layout_width="@dimen/spacing_120"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:layout_marginTop="@dimen/spacing_120"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/spacing_120"
+        android:indeterminate="true"
         app:indicatorColor="?colorSecondary"
         app:indicatorDirectionLinear="endToStart"
         tools:visibility="visible" />

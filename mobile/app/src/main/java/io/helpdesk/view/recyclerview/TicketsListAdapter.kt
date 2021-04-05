@@ -2,11 +2,13 @@ package io.helpdesk.view.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.helpdesk.databinding.ItemTicketBinding
 import io.helpdesk.model.data.UserAndTicket
+import io.helpdesk.view.home.HomeFragmentDirections
 
 /**
  * recyclerview adapter implementation for [PagingDataAdapter]
@@ -20,6 +22,10 @@ class TicketsListAdapter :
 
         fun bind(item: UserAndTicket) = with(binding) {
             data = item
+            root.setOnClickListener {
+                root.findNavController()
+                    .navigate(HomeFragmentDirections.actionNavHomeToNavTicketInfo(ticket = item.ticket))
+            }
             executePendingBindings()
         }
 

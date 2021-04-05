@@ -16,9 +16,8 @@ interface UserDao : BaseDao<User> {
     fun getTechnicians(): Flow<List<User>>
 
     @Query("select * from users where userType = :type and _id = :id")
-    suspend fun getUserByIdAndType(id: String, type: Int) : User
+    suspend fun getUserByIdAndType(id: String, type: Int) : User?
 
-    @Transaction
-    @Query("select * from users")
-    fun getUsersAndTickets(): Flow<List<UserAndTicket>>
+    @Query("select * from users where username = :username")
+    suspend fun getUserByUsername(username: String) : User?
 }

@@ -2,12 +2,13 @@ package io.helpdesk.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.model.data.User
 import io.helpdesk.model.db.UserDao
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,24 +26,22 @@ class UsersViewModel @Inject constructor(
             _uiState.emit(UserUIState.Loading)
             dao.getTechnicians().collectLatest { users ->
                 if (users.isEmpty()) _uiState.emit(UserUIState.Error("no technicians found"))
-                else _uiState.emit(UserUIState.Success(PagingData.from(users)))
+                else _uiState.emit(UserUIState.Success(users))
             }
         }
     }
 
-    fun currentUser(): Flow<User?> = flow {
+    @ExperimentalCoroutinesApi
+    fun currentUser(): Flow<User?> = channelFlow {
         if (storage.loginState.value) {
-            viewModelScope.launch(Dispatchers.IO) {
-                val user =
-                    dao.getUserByIdAndType(id = storage.userId!!, type = storage.userType)
-                emit(user)
-            }
+            val user = dao.getUserByIdAndType(id = storage.userId!!, type = storage.userType)
+            launch(Dispatchers.Main) { offer(user) }
         }
     }
 }
 
 sealed class UserUIState {
-    data class Success(val users: PagingData<User>) : UserUIState()
+    data class Success(val users: List<User>) : UserUIState()
     data class Error(val reason: String) : UserUIState()
     object Loading : UserUIState()
 }

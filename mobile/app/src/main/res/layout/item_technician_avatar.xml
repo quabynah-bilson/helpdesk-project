@@ -14,10 +14,13 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="@dimen/spacing_avatar"
-        android:layout_height="@dimen/spacing_avatar"
-        android:layout_marginEnd="@dimen/spacing_12"
-        android:checked="true">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_12"
+        android:background="@drawable/toggleable_card_background"
+        android:checked="true"
+        android:paddingHorizontal="@dimen/spacing_8"
+        android:paddingVertical="@dimen/spacing_12">
 
         <ImageView
             android:id="@+id/user_avatar"
@@ -28,11 +31,46 @@
             app:error="@{@drawable/avatar_circular_clip}"
             app:imageUrl="@{user.avatar}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:placeholder="@{@drawable/avatar_circular_clip}"
             tools:src="@tools:sample/avatars" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/user_name"
+            android:layout_width="@dimen/spacing_none"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_12"
+            android:text="@{user.name}"
+            android:textAppearance="?textAppearanceBody1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/user_avatar"
+            app:layout_constraintTop_toTopOf="@id/user_avatar"
+            tools:text="@sample/samples_tickets.json/data/technician/name" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/user_phone"
+            android:layout_width="@dimen/spacing_none"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_12"
+            android:layout_marginTop="@dimen/spacing_4"
+            android:alpha="?emphasis_medium"
+            android:text="@{user.phone}"
+            android:textAppearance="?textAppearanceSubtitle2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/user_avatar"
+            app:layout_constraintTop_toBottomOf="@id/user_name"
+            tools:text="@sample/samples_tickets.json/data/technician/phone" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/checked_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_check"
+            app:tint="?colorOnSecondary"
+            app:layout_constraintBottom_toBottomOf="@id/user_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/user_avatar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

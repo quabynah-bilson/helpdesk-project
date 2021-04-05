@@ -16,6 +16,7 @@ import io.helpdesk.view.recyclerview.TicketsListAdapter
 import io.helpdesk.viewmodel.LatestTicketUIState
 import io.helpdesk.viewmodel.TicketsViewModel
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @AndroidEntryPoint
 class TicketsFragment : Fragment() {
@@ -48,17 +49,18 @@ class TicketsFragment : Fragment() {
                     // update UI based on current state
                     if (state is LatestTicketUIState.Success) {
                         ticketsAdapter.submitData(state.tickets)
+                        Timber.tag("tickets").d("# of tickets -> ${ticketsAdapter.itemCount}")
                         ticketsList.isVisible = ticketsAdapter.itemCount > 0
                         container.isVisible = ticketsAdapter.itemCount == 0
                     } else if (state is LatestTicketUIState.Error) {
                         Snackbar.make(container, state.reason, Snackbar.LENGTH_LONG).show()
+                        // show empty view
+                        container.isVisible = true
                     }
 
                     // show loading view
                     progressBinding?.root?.isVisible = state is LatestTicketUIState.Loading
 
-                    // show empty view
-                    container.isVisible = state is LatestTicketUIState.Error
 
                 }
 

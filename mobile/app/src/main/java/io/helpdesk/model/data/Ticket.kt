@@ -30,9 +30,9 @@ data class Ticket(
     val id: String,
     val user: String,
     val name: String,
+    var technician: String,
     val comment: String = "no comments",
     var status: TicketCompletionState = TicketCompletionState.Pending,
-    var technician: String,
     var type: TicketType = TicketType.Question,
     val linkedTickets: List<String> = emptyList(),
     var priority: TicketPriority = TicketPriority.Medium,
@@ -42,7 +42,6 @@ data class Ticket(
     val dueDate: String = Date(System.currentTimeMillis() + 720000000).toString(),
 ) : Parcelable {
 
-
     companion object {
         const val TABLE_NAME = "tickets"
     }
@@ -50,12 +49,15 @@ data class Ticket(
 
 /**
  * one-to-one relationship between ticket and user
+ *
+ * https://developer.android.com/training/data-storage/room/relationships#kotlin
  */
 data class UserAndTicket(
-    @Embedded val user: User,
     @Relation(
-        parentColumn = "_id",
-        entityColumn = "technician",
+        parentColumn = "technician",
+        entityColumn = "_id",
     )
+    val user: User,
+    @Embedded
     val ticket: Ticket
 )

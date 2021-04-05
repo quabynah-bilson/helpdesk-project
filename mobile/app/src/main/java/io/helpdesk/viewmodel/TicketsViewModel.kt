@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.paging.PagingData
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.R
 import io.helpdesk.core.storage.BaseUserPersistentStorage
@@ -17,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 import kotlin.random.Random
@@ -25,6 +28,7 @@ import kotlin.random.Random
 class TicketsViewModel @Inject constructor(
     db: LocalDatabase,
     private val storage: BaseUserPersistentStorage,
+    private val firestore: FirebaseFirestore,
 ) : ViewModel() {
     private val dao = db.ticketDao()
     private val userDao = db.userDao()
@@ -47,10 +51,7 @@ class TicketsViewModel @Inject constructor(
                 return@launch
             }
 
-            userDao.getUsersAndTickets().collectLatest { tickets ->
-                // filter list
-//                val filteredList = tickets.filter { item -> item.ticket.user == storage.userId }
-
+            dao.allTickets(storage.userId!!).collectLatest { tickets ->
                 // Update View with the latest tickets
                 // Writes to the value property of MutableStateFlow,
                 // adding a new element to the flow and updating all
@@ -93,12 +94,16 @@ class TicketsViewModel @Inject constructor(
                             name = title,
                             comment = comment,
                             priority = ticketPriority,
-                            technician = technician ?: technicians.first().id,
+                            technician = technician ?: technicians.last().id,
                         )
                         dao.insert(ticket)
-                        _postTicketUIState.emit(PostTicketUIState.Success)
-
-                        // todo: send to remote source
+                        firestore.collection(Ticket.TABLE_NAME)
+                            .document(ticket.id)
+                            .set(ticket, SetOptions.merge())
+                        withContext(Dispatchers.Main) {
+                            _postTicketUIState.emit(PostTicketUIState.Success)
+                            navController.popBackStack()
+                        }
                     }
                 }
             } else {

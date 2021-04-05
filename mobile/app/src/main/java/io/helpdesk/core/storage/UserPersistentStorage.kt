@@ -22,6 +22,11 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
     private val prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE)
     private val _loginState = MutableStateFlow(false)
 
+    init {
+        val id = prefs.getString(USER_ID_KEY, null)
+        _loginState.value = !id.isNullOrEmpty()
+    }
+
     override var userType: Int = UserType.Customer.ordinal
         get() = prefs.getInt(USER_TYPE_KEY, UserType.Customer.ordinal)
         set(value) {

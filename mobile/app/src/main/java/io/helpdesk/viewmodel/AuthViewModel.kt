@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,17 +26,27 @@ class AuthViewModel @Inject constructor(
     private var currentUser: User? = null
 
     val authState: StateFlow<AuthState> get() = _authState
+    val loginState = MutableStateFlow(false)
     val userTypeState: StateFlow<UserType> get() = _userTypeState
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             storage.loginState.collectLatest { loggedIn ->
+                loginState.emit(loggedIn)
                 if (loggedIn) {
-                    val user = userDao.getUserByIdAndType(
+                    currentUser = userDao.getUserByIdAndType(
                         id = storage.userId!!,
                         type = _userTypeState.value.ordinal,
                     )
-                    _authState.emit(AuthState.Success(user))
+
+                    viewModelScope.launch(Dispatchers.Main) {
+                        if (currentUser == null) {
+                            _authState.emit(AuthState.Error("user not logged in"))
+                        } else {
+                            storage.userId = currentUser?.id
+                            _authState.emit(AuthState.Success(currentUser!!))
+                        }
+                    }
                 }
             }
         }
@@ -55,7 +67,18 @@ class AuthViewModel @Inject constructor(
             return@launch
         }
         _authState.emit(AuthState.Loading)
-        // todo
+
+        // get user by username
+        currentUser = userDao.getUserByUsername(email.trim())
+
+        viewModelScope.launch(Dispatchers.Main) {
+            if (currentUser == null) {
+                _authState.emit(AuthState.Error("user not found"))
+            } else {
+                storage.userId = currentUser?.id
+                _authState.emit(AuthState.Success(currentUser!!))
+            }
+        }
     }
 
     // register with username, email & password
@@ -66,7 +89,25 @@ class AuthViewModel @Inject constructor(
             return@launch
         }
         _authState.emit(AuthState.Loading)
-        // todo
+
+
+        withContext(Dispatchers.IO) {
+            // get user by username
+            currentUser = userDao.getUserByUsername(email)
+            if (currentUser == null) {
+                currentUser =
+                    User(id = UUID.randomUUID().toString(), email = email, name = username)
+                storage.userId = currentUser?.id
+                userDao.insert(currentUser!!)
+                withContext(Dispatchers.Main) {
+                    _authState.emit(AuthState.Success(currentUser!!))
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    _authState.emit(AuthState.Error("user not found"))
+                }
+            }
+        }
     }
 
     // sign out

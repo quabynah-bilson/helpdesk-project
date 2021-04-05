@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -14,10 +16,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
+import io.helpdesk.core.util.loadImage
 import io.helpdesk.core.util.visible
 import io.helpdesk.databinding.FragmentHomeBinding
+import io.helpdesk.viewmodel.AuthViewModel
+import io.helpdesk.viewmodel.UsersViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.abs
-import kotlin.math.max
 
 /**
  * home page
@@ -27,6 +33,8 @@ import kotlin.math.max
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var binding: FragmentHomeBinding? = null
+    private val userViewModel by activityViewModels<UsersViewModel>()
+    private val authViewModel by activityViewModels<AuthViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,60 +45,97 @@ class HomeFragment : Fragment() {
         return binding?.root
     }
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // setup view pager
-        val pagerAdapter = HomePagerAdapter(this)
-        binding?.pager?.adapter = pagerAdapter
-        binding?.pager?.setPageTransformer(DepthPageTransformer())
-        binding?.pager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                // hide FAB for chat screen
-                binding?.fabPostTicket?.visible(position != 2)
-                super.onPageSelected(position)
-            }
-        })
+        lifecycleScope.launchWhenCreated {
+            binding?.run {
+                userAvatar.run {
+                    userViewModel.currentUser().collectLatest { user ->
+                        if (user != null) {
+                            // load user's avatar here
+                            userAvatar.loadImage(user.avatar)
 
-        // link tab layout to pager
-        TabLayoutMediator(binding!!.tabLayout, binding!!.pager) { tab, position ->
-            when (position) {
-                0 -> tab.text = getString(R.string.fragment_faqs)
-                1 -> tab.text = getString(R.string.fragment_tickets)
-                else -> tab.text = getString(R.string.fragment_live_chat)
-            }
-        }.attach()
-
-        // setup FAB
-        binding?.fabPostTicket?.setOnClickListener { findNavController().navigate(R.id.nav_post_ticket) }
-
-        // handle back press action
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    val currentItem = binding?.pager?.currentItem
-                    if (currentItem != null && currentItem == 0) {
-                        MaterialAlertDialogBuilder(requireContext()).apply {
-                            setTitle(getString(R.string.leave_app_prompt_title))
-                            setMessage(getString(R.string.leave_app_prompt_content))
-                            setPositiveButton("yes") { dialog, _ ->
-                                run {
-                                    // leave app
-                                    dialog.dismiss()
-                                    requireActivity().onBackPressed()
-                                }
+                            setOnClickListener {
+                                MaterialAlertDialogBuilder(requireContext()).apply {
+                                    setTitle(getString(R.string.logout_prompt_title))
+                                    setMessage(getString(R.string.logout_prompt_desc))
+                                    setPositiveButton("yes") { dialog, _ ->
+                                        run {
+                                            // logout
+                                            dialog.dismiss()
+                                            authViewModel.logout()
+                                            findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavWelcome())
+                                        }
+                                    }
+                                    setNegativeButton("no") { dialog, _ -> dialog.cancel() }
+                                    create()
+                                }.show()
                             }
-                            setNegativeButton("no") { dialog, _ -> dialog.cancel() }
-                            create()
-                        }.show()
-                    } else {
-                        // otherwise, select the initial page
-                        binding?.pager?.currentItem = 0
+                        }
                     }
-                }
-            })
 
+
+                }
+
+
+                // setup view pager
+                val pagerAdapter = HomePagerAdapter(this@HomeFragment)
+                with(pager) {
+                    adapter = pagerAdapter
+                    setPageTransformer(DepthPageTransformer())
+                    registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                        override fun onPageSelected(position: Int) {
+                            // hide FAB for chat screen
+                            binding?.fabPostTicket?.visible(position != 2)
+                            super.onPageSelected(position)
+                        }
+                    })
+                }
+
+                // link tab layout to pager
+                TabLayoutMediator(tabLayout, pager) { tab, position ->
+                    when (position) {
+                        0 -> tab.text = getString(R.string.fragment_faqs)
+                        1 -> tab.text = getString(R.string.fragment_tickets)
+                        else -> tab.text = getString(R.string.fragment_live_chat)
+                    }
+                }.attach()
+
+                // setup FAB
+                fabPostTicket.setOnClickListener {
+                    findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavPostTicket())
+                }
+
+                // handle back press action
+                requireActivity().onBackPressedDispatcher.addCallback(
+                    viewLifecycleOwner,
+                    object : OnBackPressedCallback(true) {
+                        override fun handleOnBackPressed() {
+                            val currentItem = pager.currentItem
+                            if (currentItem == 0) {
+                                MaterialAlertDialogBuilder(requireContext()).apply {
+                                    setTitle(getString(R.string.leave_app_prompt_title))
+                                    setMessage(getString(R.string.leave_app_prompt_content))
+                                    setPositiveButton("yes") { dialog, _ ->
+                                        run {
+                                            // leave app
+                                            dialog.dismiss()
+                                            requireActivity().finish()
+                                        }
+                                    }
+                                    setNegativeButton("no") { dialog, _ -> dialog.cancel() }
+                                    create()
+                                }.show()
+                            } else {
+                                // otherwise, select the initial page
+                                binding?.pager?.currentItem = 0
+                            }
+                        }
+                    })
+            }
+        }
     }
 
 }
@@ -99,67 +144,17 @@ class HomeFragment : Fragment() {
  * Pager adapter implementation
  */
 class HomePagerAdapter constructor(fragment: Fragment) : FragmentStateAdapter(fragment) {
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> FaqsFragment()
-            1 -> TicketsFragment()
-            else -> LiveChatFragment()
+            else -> TicketsFragment()
         }
     }
 }
 
 // region page transformers
-/**
- * Zoom-out page transformer
- *
- * https://developer.android.com/training/animation/screen-slide-2
- */
-class ZoomOutPageTransformer : ViewPager2.PageTransformer {
-
-    companion object {
-        private const val MIN_SCALE = 0.85f
-        private const val MIN_ALPHA = 0.5f
-    }
-
-    override fun transformPage(view: View, position: Float) {
-        view.apply {
-            val pageWidth = width
-            val pageHeight = height
-            when {
-                position < -1 -> { // [-Infinity,-1)
-                    // This page is way off-screen to the left.
-                    alpha = 0f
-                }
-                position <= 1 -> { // [-1,1]
-                    // Modify the default slide transition to shrink the page as well
-                    val scaleFactor = max(MIN_SCALE, 1 - abs(position))
-                    val vertMargin = pageHeight * (1 - scaleFactor) / 2
-                    val horzMargin = pageWidth * (1 - scaleFactor) / 2
-                    translationX = if (position < 0) {
-                        horzMargin - vertMargin / 2
-                    } else {
-                        horzMargin + vertMargin / 2
-                    }
-
-                    // Scale the page down (between MIN_SCALE and 1)
-                    scaleX = scaleFactor
-                    scaleY = scaleFactor
-
-                    // Fade the page relative to its size.
-                    alpha = (MIN_ALPHA +
-                            (((scaleFactor - MIN_SCALE) / (1 - MIN_SCALE)) * (1 - MIN_ALPHA)))
-                }
-                else -> { // (1,+Infinity]
-                    // This page is way off-screen to the right.
-                    alpha = 0f
-                }
-            }
-        }
-    }
-}
-
 
 @RequiresApi(21)
 class DepthPageTransformer : ViewPager2.PageTransformer {

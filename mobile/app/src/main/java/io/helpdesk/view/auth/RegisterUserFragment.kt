@@ -18,6 +18,7 @@ import io.helpdesk.databinding.FragmentRegisterUserBinding
 import io.helpdesk.viewmodel.AuthState
 import io.helpdesk.viewmodel.AuthViewModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RegisterUserFragment : Fragment() {
@@ -73,13 +74,18 @@ class RegisterUserFragment : Fragment() {
                         password = passwordField.text.toString(),
                     )
                 }
+                
                 authViewModel.authState.collectLatest { state ->
                     when (state) {
-                        is AuthState.Error -> Snackbar.make(
-                            root,
-                            state.reason,
-                            Snackbar.LENGTH_LONG
-                        ).show()
+                        is AuthState.Error -> {
+                            lifecycleScope.launch {
+                                Snackbar.make(
+                                    root,
+                                    state.reason,
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                        }
 
                         is AuthState.Success -> {
                             val dir =

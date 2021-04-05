@@ -2,6 +2,7 @@ package io.helpdesk.view.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,10 @@ import io.helpdesk.model.data.User
 /**
  * recyclerview implementation for list of available technicians
  */
-class TechnicianAvatarListAdapter constructor(private val onUserSelect: (User) -> Unit) :
+class TechnicianAvatarListAdapter constructor(
+    private val users: List<User>,
+    private val onUserSelect: (User) -> Unit
+) :
     PagingDataAdapter<User, TechnicianAvatarListAdapter.TechnicianAvatarListViewHolder>(
         USER_DIFF_UTIL
     ) {
@@ -32,15 +36,29 @@ class TechnicianAvatarListAdapter constructor(private val onUserSelect: (User) -
     inner class TechnicianAvatarListViewHolder(private val binding: ItemTechnicianAvatarBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(user: User, onUserSelect: (User) -> Unit) = binding.run {
+        fun bind(user: User, users: List<User>, onUserSelect: (User) -> Unit) = binding.run {
             this.user = user
-            userAvatar.loadImage(
-                user.avatar,
-                R.drawable.avatar_circular_clip,
-                R.drawable.avatar_circular_clip
-            )
-            root.setOnClickListener {
-                onUserSelect(user)
+            userAvatar.loadImage(user.avatar)
+
+            root.run {
+                setOnClickListener {
+                    isSelected = !isSelected
+                    checkedUser.isVisible = isSelected
+                    val ctx = context
+                    if (isSelected) {
+                        userName.setTextColor(ctx.getColor(R.color.white))
+                        userPhone.setTextColor(ctx.getColor(R.color.white))
+                        onUserSelect(user)
+                    } else {
+                        userName.setTextColor(ctx.getColor(R.color.black))
+                        userPhone.setTextColor(ctx.getColor(R.color.black))
+                    }
+                }
+
+                // deselect any other selected user in the list aside current one
+                users.forEach { currentIndexedUser ->
+                    if (currentIndexedUser != user) isSelected = false
+                }
             }
             executePendingBindings()
         }
@@ -57,6 +75,6 @@ class TechnicianAvatarListAdapter constructor(private val onUserSelect: (User) -
 
     override fun onBindViewHolder(holder: TechnicianAvatarListViewHolder, position: Int) {
         val user = getItem(position)
-        user?.let { holder.bind(it, onUserSelect) }
+        user?.let { holder.bind(it, users, onUserSelect) }
     }
 }

@@ -18,12 +18,6 @@
 
         <import type="io.helpdesk.viewmodel.PostTicketUIState" />
 
-        <import type="androidx.databinding.ObservableMap" />
-
-        <variable
-            name="ticket"
-            type="ObservableMap&lt;String, Object>" />
-
         <variable
             name="viewModel"
             type="TicketsViewModel" />
@@ -182,7 +176,7 @@
                     android:layout_width="@dimen/spacing_none"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_12"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:visibility="gone"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -192,7 +186,7 @@
                     tools:listitem="@layout/item_technician_avatar"
                     tools:visibility="visible" />
 
-                <com.google.android.material.progressindicator.LinearProgressIndicator xmlns:android="http://schemas.android.com/apk/res/android"
+                <com.google.android.material.progressindicator.LinearProgressIndicator
                     android:id="@+id/loading_users"
                     android:layout_width="@dimen/spacing_none"
                     android:layout_height="wrap_content"
@@ -277,17 +271,19 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <com.google.android.material.button.MaterialButton
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/post_ticket"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing_56"
+            android:layout_height="@dimen/spacing_64"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginHorizontal="@dimen/spacing_24"
-            android:enabled="false"
-            android:padding="@dimen/spacing_none"
+            android:background="@drawable/button_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
             android:text="@string/submit"
-            app:icon="@drawable/ic_send"
-            app:iconGravity="textEnd" />
+            android:textAppearance="?textAppearanceButton"
+            android:textColor="?colorOnSecondary" />
 
         <!-- progress -->
         <include
