@@ -25,14 +25,13 @@ import io.helpdesk.model.data.User
 )
 @Database(
     entities = [User::class, Ticket::class, Question::class],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun ticketDao(): TicketDao
     abstract fun faqDao(): QuestionDao
-
 
     companion object {
         @Volatile
@@ -41,7 +40,7 @@ abstract class LocalDatabase : RoomDatabase() {
         @JvmStatic
         fun get(context: Context): LocalDatabase = instance ?: synchronized(this) {
             instance ?: Room.databaseBuilder(context, LocalDatabase::class.java, "helpdesk.db")
-                .fallbackToDestructiveMigrationOnDowngrade()
+                .fallbackToDestructiveMigration()
                 .addCallback(object : Callback() {
                     override fun onOpen(db: SupportSQLiteDatabase) {
                         super.onCreate(db)

@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@sample/samples_tickets.json/data/name" />
 
-        <!-- comment -->
+        <!-- description -->
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/ticket_comment"
             android:layout_width="wrap_content"
@@ -51,7 +51,7 @@
             android:alpha="?emphasis_medium"
             android:ellipsize="end"
             android:maxLines="3"
-            android:text="@{data.ticket.comment}"
+            android:text="@{data.ticket.description}"
             android:textAppearance="?textAppearanceSubtitle2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ticket_name"

@@ -41,4 +41,10 @@
     <string name="customer">Customer</string>
     <string name="logout_prompt_desc">By signing out, you will not be able to receive feedback on tickets created. Do you wish to continue?</string>
     <string name="logout_prompt_title">Confirm logout</string>
+    <string name="update_status">Update status</string>
+    <string name="send_feedback">Send feedback</string>
+    <string name="update_priority">Update priority</string>
+    <string name="reassign">Reassign</string>
+    <string name="feedback">Feedback...</string>
+    <string name="feedback_title_hint">Create a feedback for this ticket. Your words should not be more than 100.</string>
 </resources>

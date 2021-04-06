@@ -157,52 +157,6 @@
                     tools:text="@string/app_desc" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/technicians_header"
-                    android:layout_width="@dimen/spacing_none"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_24"
-                    android:alpha="?emphasis_high"
-                    android:text="@string/available_technicians"
-                    android:textAlignment="textStart"
-                    android:textAppearance="?textAppearanceSubtitle1"
-                    android:textColor="?colorPrimaryVariant"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/desc_field" />
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/technicians_list"
-                    android:layout_width="@dimen/spacing_none"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_12"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/technicians_header"
-                    tools:itemCount="5"
-                    tools:listitem="@layout/item_technician_avatar"
-                    tools:visibility="visible" />
-
-                <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/loading_users"
-                    android:layout_width="@dimen/spacing_none"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/spacing_36"
-                    android:layout_marginTop="@dimen/spacing_24"
-                    android:indeterminate="true"
-                    android:visibility="visible"
-                    app:indicatorColor="?colorSecondary"
-                    app:indicatorDirectionLinear="endToStart"
-                    app:layout_anchorGravity="center"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/technicians_header"
-                    tools:visibility="gone" />
-
-                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/no_technicians_text"
                     android:layout_width="@dimen/spacing_none"
                     android:layout_height="wrap_content"
@@ -215,7 +169,7 @@
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/technicians_header"
+                    app:layout_constraintTop_toBottomOf="@id/desc_field"
                     tools:visibility="invisible" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -230,7 +184,7 @@
                     android:textColor="?colorPrimaryVariant"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/technicians_list" />
+                    app:layout_constraintTop_toBottomOf="@id/desc_field" />
 
                 <com.google.android.material.button.MaterialButtonToggleGroup
                     android:id="@+id/ticket_type_toggler"

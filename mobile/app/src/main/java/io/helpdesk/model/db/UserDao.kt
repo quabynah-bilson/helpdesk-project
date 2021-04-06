@@ -18,6 +18,6 @@ interface UserDao : BaseDao<User> {
     @Query("select * from users where userType = :type and _id = :id")
     suspend fun getUserByIdAndType(id: String, type: Int) : User?
 
-    @Query("select * from users where username = :username")
+    @Query("select * from users where username like :username")
     suspend fun getUserByUsername(username: String) : User?
 }

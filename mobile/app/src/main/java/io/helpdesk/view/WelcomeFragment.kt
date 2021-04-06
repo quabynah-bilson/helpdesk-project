@@ -24,7 +24,6 @@ class WelcomeFragment : Fragment() {
     private var binding: FragmentWelcomeBinding? = null
     private val authViewModel by activityViewModels<AuthViewModel>()
 
-
     // reset system bar color
     override fun onDestroyView() {
         requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)

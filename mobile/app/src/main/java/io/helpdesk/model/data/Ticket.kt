@@ -31,6 +31,7 @@ data class Ticket(
     val user: String,
     val name: String,
     var technician: String,
+    val description: String = "no descriptions",
     val comment: String = "no comments",
     var status: TicketCompletionState = TicketCompletionState.Pending,
     var type: TicketType = TicketType.Question,
@@ -52,6 +53,7 @@ data class Ticket(
  *
  * https://developer.android.com/training/data-storage/room/relationships#kotlin
  */
+@Parcelize
 data class UserAndTicket(
     @Relation(
         parentColumn = "technician",
@@ -60,4 +62,4 @@ data class UserAndTicket(
     val user: User,
     @Embedded
     val ticket: Ticket
-)
+) : Parcelable

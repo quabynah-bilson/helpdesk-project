@@ -14,7 +14,6 @@ import io.helpdesk.model.data.TicketPriority
 import io.helpdesk.model.data.UserAndTicket
 import io.helpdesk.model.db.LocalDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -43,9 +42,6 @@ class TicketsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            // simulate 1.5s delay
-            delay(1500L)
-
             if (!storage.loginState.value) {
                 _ticketsUIState.emit(LatestTicketUIState.Error("please login to see your tickets"))
                 return@launch
@@ -64,55 +60,57 @@ class TicketsViewModel @Inject constructor(
 
     fun postNewTicket(
         title: String,
-        comment: String = "",
+        description: String = "",
         navController: NavController,
-        technician: String? = null,
-    ) =
-        viewModelScope.launch(Dispatchers.IO) {
-            // loading
-            _postTicketUIState.emit(PostTicketUIState.Loading)
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        // loading
+        _postTicketUIState.emit(PostTicketUIState.Loading)
 
-            // evaluate user auth state
-            if (storage.loginState.value) {
-                viewModelScope.launch(Dispatchers.IO) {
+        // evaluate user auth state
+        if (storage.loginState.value) {
+            viewModelScope.launch(Dispatchers.IO) {
 
-                    // get technicians
-                    userDao.getTechnicians().collectLatest { technicians ->
-                        if (technicians.isEmpty()) {
-                            _postTicketUIState.emit(PostTicketUIState.Error("not technicians found"))
-                            return@collectLatest
-                        }
+                // get technicians
+                userDao.getTechnicians().collectLatest { technicians ->
+                    if (technicians.isEmpty()) {
+                        _postTicketUIState.emit(PostTicketUIState.Error("not technicians found"))
+                        return@collectLatest
+                    }
 
-                        // set priority at random
-                        val seed = Random.nextInt(2)
-                        val ticketPriority = TicketPriority.values()[seed]
+                    // set priority at random
+                    val seed = Random.nextInt(2)
+                    val ticketPriority = TicketPriority.values()[seed]
 
-                        // create a new ticket
-                        val ticket = Ticket(
-                            id = UUID.randomUUID().toString(),
-                            user = storage.userId!!,
-                            name = title,
-                            comment = comment,
-                            priority = ticketPriority,
-                            technician = technician ?: technicians.last().id,
-                        )
-                        dao.insert(ticket)
-                        firestore.collection(Ticket.TABLE_NAME)
-                            .document(ticket.id)
-                            .set(ticket, SetOptions.merge())
-                        withContext(Dispatchers.Main) {
-                            _postTicketUIState.emit(PostTicketUIState.Success)
-                            navController.popBackStack()
-                        }
+                    // create a new ticket
+                    val ticket = Ticket(
+                        id = UUID.randomUUID().toString(),
+                        user = storage.userId!!,
+                        name = title,
+                        description = description,
+                        priority = ticketPriority,
+                        technician = technicians[Random.nextInt(technicians.size)].id,
+                    )
+                    dao.insert(ticket)
+                    firestore.collection(Ticket.TABLE_NAME)
+                        .document(ticket.id)
+                        .set(ticket, SetOptions.merge())
+                    withContext(Dispatchers.Main) {
+                        _postTicketUIState.emit(PostTicketUIState.Success)
+                        navController.popBackStack()
                     }
                 }
-            } else {
-                _postTicketUIState.emit(PostTicketUIState.Error("you are not logged in yet"))
-                launch(Dispatchers.Main) {
-                    navController.navigate(R.id.nav_login)
-                }
+            }
+        } else {
+            _postTicketUIState.emit(PostTicketUIState.Error("you are not logged in yet"))
+            launch(Dispatchers.Main) {
+                navController.navigate(R.id.nav_login)
             }
         }
+    }
+
+    fun updateTicket(ticket: Ticket) = viewModelScope.launch(Dispatchers.IO) { dao.update(ticket) }
+
+    fun deleteTicket(ticket: Ticket) = viewModelScope.launch(Dispatchers.IO) { dao.delete(ticket) }
 }
 
 sealed class LatestTicketUIState {

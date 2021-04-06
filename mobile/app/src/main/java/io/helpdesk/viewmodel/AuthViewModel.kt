@@ -76,6 +76,7 @@ class AuthViewModel @Inject constructor(
                 _authState.emit(AuthState.Error("user not found"))
             } else {
                 storage.userId = currentUser?.id
+                storage.userType = currentUser?.type?.ordinal ?: 0
                 _authState.emit(AuthState.Success(currentUser!!))
             }
         }

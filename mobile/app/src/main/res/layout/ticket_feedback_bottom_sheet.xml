@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|center_horizontal"
+    android:orientation="vertical"
+    tools:context=".view.bottomsheet.TicketFeedbackBottomSheet">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/spacing_24"
+        android:paddingTop="@dimen/spacing_20">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/feedback_field_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/feedback_title_hint"
+            android:textAppearance="?textAppearanceBody1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_72"
+            android:layout_marginTop="@dimen/spacing_12"
+            android:hint="@string/feedback"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/feedback_field_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/feedback_field"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textCapSentences|textAutoComplete|textAutoCorrect|textMultiLine" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_64"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@drawable/button_background"
+        android:clickable="true"
+        android:layout_marginTop="@dimen/spacing_24"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:gravity="center"
+        android:text="@string/submit"
+        android:textAppearance="?textAppearanceButton"
+        android:textColor="?colorOnSecondary"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

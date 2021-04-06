@@ -17,8 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_12"
-        android:background="@drawable/toggleable_card_background"
-        android:checked="true"
         android:paddingHorizontal="@dimen/spacing_8"
         android:paddingVertical="@dimen/spacing_12">
 

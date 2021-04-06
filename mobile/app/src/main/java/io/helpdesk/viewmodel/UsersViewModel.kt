@@ -5,12 +5,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.model.data.User
+import io.helpdesk.model.data.UserType
 import io.helpdesk.model.db.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +37,14 @@ class UsersViewModel @Inject constructor(
         if (storage.loginState.value) {
             val user = dao.getUserByIdAndType(id = storage.userId!!, type = storage.userType)
             launch(Dispatchers.Main) { offer(user) }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    fun getTechnician(id: String): Flow<User?> = channelFlow {
+        val userByIdAndType = dao.getUserByIdAndType(id, UserType.Technician.ordinal)
+        withContext(Dispatchers.Main) {
+            offer(userByIdAndType)
         }
     }
 }

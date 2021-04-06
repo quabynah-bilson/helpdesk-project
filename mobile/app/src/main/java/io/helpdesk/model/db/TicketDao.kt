@@ -16,4 +16,8 @@ interface TicketDao : BaseDao<Ticket> {
     @Transaction
     @Query("select * from tickets order by priority desc")
     fun getUsersAndTickets(): Flow<List<UserAndTicket>>
+
+    @Transaction
+    @Query("select * from tickets where _id = :id")
+    fun getUserAndTicketById(id: String): Flow<UserAndTicket?>
 }
