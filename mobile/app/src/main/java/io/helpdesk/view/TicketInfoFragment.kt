@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,11 +19,13 @@ import io.helpdesk.databinding.FragmentTicketInfoBinding
 import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.TicketPriority
 import io.helpdesk.model.data.User
+import io.helpdesk.model.data.UserType
 import io.helpdesk.view.bottomsheet.*
 import io.helpdesk.viewmodel.TicketsViewModel
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 
 class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicianSelectListener,
@@ -55,7 +58,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                     setTitle("Confirm deletion")
                     setMessage("Do you wish to delete this ticket?\nThis action cannot be undone")
                     setPositiveButton("Cancel") { dialog, _ -> dialog.cancel() }
-                    setPositiveButton("Yes, delete") { dialog, _ ->
+                    setNegativeButton("Yes, delete") { dialog, _ ->
                         ticketsViewModel.deleteTicket(argTicket)
                         dialog.dismiss()
                     }
@@ -76,12 +79,17 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
 
                     // get current user
                     currentUser().collectLatest { currentUser ->
-                        if (currentUser?.id == argTicket.technician) {
+                        Timber.tag("user details").d("current user -> $currentUser")
+
+                        if (currentUser?.type == UserType.Technician) {
                             requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                             requireActivity().window?.navigationBarColor =
                                 ContextCompat.getColor(requireActivity(), R.color.blue_200)
-                            updateTicketStatus.isVisible = currentUser.id == argTicket.technician
+                            updateTicketStatus.isVisible = true
                         }
+
+                        deleteTicket.isInvisible = currentUser?.id != argTicket.user
+                        executePendingBindings()
                     }
                 }
 

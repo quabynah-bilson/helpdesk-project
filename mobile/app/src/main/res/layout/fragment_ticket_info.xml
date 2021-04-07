@@ -76,14 +76,14 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="@dimen/spacing_72"
             android:layout_marginTop="@dimen/spacing_56">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/spacing_24"
-                android:paddingVertical="@dimen/spacing_36">
+                android:paddingBottom="@dimen/spacing_72"
+                android:paddingTop="@dimen/spacing_36">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/ticket_name"
@@ -125,7 +125,7 @@
             android:text="@string/update_status"
             android:textAppearance="?textAppearanceButton"
             android:textColor="?colorOnSecondary"
-            android:visibility="visible"
+            android:visibility="gone"
             tools:visibility="visible" />
 
     </FrameLayout>

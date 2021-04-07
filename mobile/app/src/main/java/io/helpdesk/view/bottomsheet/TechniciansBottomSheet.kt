@@ -55,7 +55,8 @@ class TechniciansBottomSheet private constructor(private val listener: OnTechnic
 
             lifecycleScope.launchWhenCreated {
                 // adapter
-                val technicianAdapter = TechnicianAvatarListAdapter(emptyList()) { user ->
+                val technicianAdapter = TechnicianAvatarListAdapter { user ->
+                    dismissAllowingStateLoss()
                     listener.onItemSelected(user)
                 }
 
@@ -77,6 +78,7 @@ class TechniciansBottomSheet private constructor(private val listener: OnTechnic
 
     companion object {
         const val TAG = "TechniciansBottomSheet"
+
         @JvmStatic
         fun newInstance(
             listener: OnTechnicianSelectListener

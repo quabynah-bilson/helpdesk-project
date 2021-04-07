@@ -6,8 +6,10 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.HiltAndroidApp
 import io.helpdesk.BuildConfig.DEBUG
+import io.helpdesk.core.util.NotificationUtil
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -19,6 +21,9 @@ class HelpDeskApp : Application(), Configuration.Provider {
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
 
+    @Inject
+    lateinit var messaging: FirebaseMessaging
+
     override fun onCreate() {
         super.onCreate()
         if (DEBUG) Timber.plant(Timber.DebugTree())
@@ -26,7 +31,21 @@ class HelpDeskApp : Application(), Configuration.Provider {
         // initialize firebase
         Firebase.initialize(this).apply {
             Timber.tag("HelpDesk Firebase").d("Firebase SDKs added -> ${this?.name}")
+
+            // subscribe to topic
+            messaging.subscribeToTopic(getString(R.string.app_name))
         }
+
+        // create notification channels
+        NotificationUtil.createChannels(applicationContext)
+
+        // fixme -> remove this line
+        NotificationUtil.push(this, title = "Hello world", message = "This is so cool")
+    }
+
+    override fun onTerminate() {
+        messaging.unsubscribeFromTopic(getString(R.string.app_name))
+        super.onTerminate()
     }
 
     override fun getWorkManagerConfiguration(): Configuration = Configuration.Builder()

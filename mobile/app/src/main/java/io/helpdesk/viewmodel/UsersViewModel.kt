@@ -12,6 +12,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +37,7 @@ class UsersViewModel @Inject constructor(
     fun currentUser(): Flow<User?> = channelFlow {
         if (storage.loginState.value) {
             val user = dao.getUserByIdAndType(id = storage.userId!!, type = storage.userType)
+            Timber.tag("vm user").i("logged in as -> $user")
             launch(Dispatchers.Main) { offer(user) }
         }
     }

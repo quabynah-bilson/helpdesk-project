@@ -2,36 +2,59 @@ package io.helpdesk.core.util
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
-import android.os.Parcelable
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import io.helpdesk.MainActivity
 import io.helpdesk.R
+import kotlin.random.Random
+
 
 object NotificationUtil {
-    private const val FEEDBACK_CHANNEL = "channel.feedback"
-    private const val TICKET_CHANNEL = "channel.ticket"
+    const val FEEDBACK_CHANNEL = "channel.feedback"
+    const val TICKET_CHANNEL = "channel.ticket"
 
+
+    /**
+     * push notification
+     */
     fun push(
         context: Context,
-        channelId: String,
         title: String,
         message: String,
-        payload: Parcelable?,
+        channelId: String = FEEDBACK_CHANNEL,
+//        payload: Parcelable?,
 //        target: KClass<Fragment>,
         type: NotificationType = NotificationType.Feedback,
     ) {
         val icon =
             if (type == NotificationType.Feedback) R.drawable.ic_send else R.drawable.ic_account
 
+        //create an intent to open the main activity
+        val intent = Intent(
+            context,
+            MainActivity::class.java
+        )
+
+        //put together the PendingIntent
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            1,
+            intent,
+            FLAG_UPDATE_CURRENT
+        )
+
         // build the notification
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(icon)
             .setContentTitle(title)
             .setContentText(message)
-//            .setContentIntent(pendingIntent)
+            .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
@@ -40,10 +63,13 @@ object NotificationUtil {
 
         //we give each notification the ID of the event it's describing,
         //to ensure they all show up and there are no duplicates
-        manager.notify(0, notificationBuilder.build())
+        manager.notify(Random.nextInt(10), notificationBuilder.build())
     }
 
-    fun createChannel(context: Context) {
+    /**
+     * create a notification channel
+     */
+    fun createChannels(context: Context) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
