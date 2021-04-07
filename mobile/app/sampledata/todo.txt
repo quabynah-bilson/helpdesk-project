@@ -1,0 +1,3 @@
+*Admin interface to oversee tickets sent to technicians (should be inside the application)
+*Notification service for tickets and feedback
+*Technician should be able to send a message to the admin to request for resources to complete a task
