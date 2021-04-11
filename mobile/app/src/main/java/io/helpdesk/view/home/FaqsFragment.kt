@@ -63,7 +63,6 @@ class FaqsFragment : Fragment() {
                             progressBinding?.root?.isVisible = false
                         }
                     }
-
                 }
             }
         }

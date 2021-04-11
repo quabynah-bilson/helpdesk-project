@@ -53,7 +53,6 @@ class UserTypeFragment : Fragment() {
         val unselectedCardContentColor = resources.getColor(R.color.black, requireActivity().theme)
 
         lifecycleScope.launchWhenCreated {
-
             binding?.run {
 
                 val navController = findNavController()
