@@ -7,4 +7,10 @@
     <item name="nav_post_ticket" type="id" />
     <item name="nav_ticket_info" type="id" />
     <item name="nav_home" type="id" />
+    <item name="nav_dashboard" type="id" />
+
+    <!-- bottom navigation -->
+    <item name="nav_users" type="id" />
+    <item name="nav_tickets" type="id" />
+    <item name="nav_faqs" type="id" />
 </resources>

@@ -13,8 +13,10 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
 import io.helpdesk.databinding.FragmentWelcomeBinding
+import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.AuthViewModel
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 /**
  * welcome page
@@ -52,11 +54,23 @@ class WelcomeFragment : Fragment() {
         binding?.run {
             lifecycleScope.launchWhenCreated {
                 authViewModel.loginState.collectLatest { loggedIn ->
-                    skipButton.setOnClickListener {
-                        findNavController().navigate(
-                            if (loggedIn) WelcomeFragmentDirections.actionNavWelcomeToNavHome()
-                            else WelcomeFragmentDirections.actionNavWelcomeToNavLogin()
-                        )
+                    if (loggedIn) {
+                        authViewModel.userTypeState.collectLatest { type ->
+                            Timber.tag("user-type").d("type -> $type")
+                            skipButton.setOnClickListener {
+                                // destination
+                                val dir = if (type == UserType.SuperAdmin) {
+                                    WelcomeFragmentDirections.actionNavWelcomeToNavDashboard()
+                                } else {
+                                    WelcomeFragmentDirections.actionNavWelcomeToNavHome()
+                                }
+                                findNavController().navigate(dir)
+                            }
+                        }
+                    } else {
+                        skipButton.setOnClickListener {
+                            findNavController().navigate(WelcomeFragmentDirections.actionNavWelcomeToNavLogin())
+                        }
                     }
                 }
             }

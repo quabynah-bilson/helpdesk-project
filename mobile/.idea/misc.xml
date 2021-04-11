@@ -22,12 +22,14 @@
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/drawable/user.xml" value="0.38055555555555554" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/activity_main.xml" value="0.3671152228763667" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/faqs_fragment.xml" value="0.34814814814814815" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_dashboard.xml" value="0.3598290598290598" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_home.xml" value="0.34814814814814815" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_login.xml" value="0.34814814814814815" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_post_ticket.xml" value="0.34814814814814815" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_register_user.xml" value="0.3490740740740741" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_ticket_info.xml" value="0.3490740740740741" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_user_type.xml" value="0.3490740740740741" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_users.xml" value="0.3598290598290598" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/fragment_welcome.xml" value="0.34814814814814815" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/item_faq.xml" value="0.3581196581196581" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/item_technician_avatar.xml" value="0.3490740740740741" />
@@ -38,6 +40,7 @@
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/ticket_feedback_bottom_sheet.xml" value="0.35786375105130364" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/ticket_options_bottom_sheet.xml" value="0.35786375105130364" />
         <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/layout/tickets_fragment.xml" value="0.34814814814814815" />
+        <entry key="..\:/Users/quaby/Documents/GitHub/repos/helpdesk-project/mobile/app/src/main/res/menu/menu_bottom_nav.xml" value="0.3598290598290598" />
       </map>
     </option>
   </component>

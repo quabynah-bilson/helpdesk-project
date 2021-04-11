@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.databinding.FragmentLoginBinding
+import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.AuthState
 import io.helpdesk.viewmodel.AuthViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -77,7 +78,12 @@ class LoginFragment : Fragment() {
                         ).show()
 
                         is AuthState.Success -> {
-                            val dir = LoginFragmentDirections.actionNavLoginToNavHome()
+                            // destination
+                            val dir = if (state.user.type == UserType.SuperAdmin) {
+                                LoginFragmentDirections.actionNavLoginToNavDashboard()
+                            } else {
+                                LoginFragmentDirections.actionNavLoginToNavHome()
+                            }
                             navController.navigate(dir)
                         }
 

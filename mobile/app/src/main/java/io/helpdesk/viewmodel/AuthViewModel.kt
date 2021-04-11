@@ -36,7 +36,7 @@ class AuthViewModel @Inject constructor(
                 if (loggedIn) {
                     currentUser = userDao.getUserByIdAndType(
                         id = storage.userId!!,
-                        type = _userTypeState.value.ordinal,
+                        type = storage.userType
                     )
 
                     viewModelScope.launch(Dispatchers.Main) {
@@ -44,6 +44,8 @@ class AuthViewModel @Inject constructor(
                             _authState.emit(AuthState.Error("user not logged in"))
                         } else {
                             storage.userId = currentUser?.id
+                            storage.userType = currentUser?.type?.ordinal ?: 0
+                            _userTypeState.emit(UserType.values()[storage.userType])
                             _authState.emit(AuthState.Success(currentUser!!))
                         }
                     }

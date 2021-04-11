@@ -43,7 +43,7 @@ abstract class LocalDatabase : RoomDatabase() {
                 .fallbackToDestructiveMigration()
                 .addCallback(object : Callback() {
                     override fun onOpen(db: SupportSQLiteDatabase) {
-                        super.onCreate(db)
+                        super.onOpen(db)
                         with(WorkManager.getInstance(context)) {
                             enqueue(OneTimeWorkRequestBuilder<LocalDatabaseWorker>().build())
                         }

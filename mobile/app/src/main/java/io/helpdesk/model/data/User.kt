@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 import com.google.gson.internal.LinkedTreeMap
 import kotlinx.parcelize.Parcelize
 
-enum class UserType { Technician, Customer }
+enum class UserType { Technician, Customer, SuperAdmin }
 
 /**
  * user data model

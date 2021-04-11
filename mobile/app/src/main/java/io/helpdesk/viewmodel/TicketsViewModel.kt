@@ -12,6 +12,7 @@ import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.TicketPriority
 import io.helpdesk.model.data.UserAndTicket
+import io.helpdesk.model.data.UserType
 import io.helpdesk.model.db.LocalDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +48,11 @@ class TicketsViewModel @Inject constructor(
                 return@launch
             }
 
-            dao.allTickets(storage.userId!!).collectLatest { tickets ->
+            val ticketsQuery =
+                if (storage.userType == UserType.SuperAdmin.ordinal) dao.getUsersAndTickets()
+                else dao.allTickets(storage.userId!!)
+
+            ticketsQuery.collectLatest { tickets ->
                 // Update View with the latest tickets
                 // Writes to the value property of MutableStateFlow,
                 // adding a new element to the flow and updating all
