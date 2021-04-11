@@ -25,7 +25,7 @@ data class User(
     var avatar: String? = "",
     @ColumnInfo(name = "phoneNumber")
     var phone: String? = "",
-    @SerializedName("user_type")
+    @SerializedName("type")
     @ColumnInfo(name = "userType")
     var type: UserType = UserType.Customer,
 ) : Parcelable {
@@ -37,6 +37,7 @@ data class User(
             name = map["name"].toString(),
             email = map["username"].toString(),
             phone = map["phoneNumber"].toString(),
+            avatar = map["avatar"].toString(),
             type = UserType.values()[(map["user_type"] as Double).toInt()],
         )
     }

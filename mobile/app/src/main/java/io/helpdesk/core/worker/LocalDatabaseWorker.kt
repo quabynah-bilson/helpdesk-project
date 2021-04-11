@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import io.helpdesk.core.util.deserializeJson
@@ -21,6 +23,7 @@ class LocalDatabaseWorker @AssistedInject constructor(
     private val db = LocalDatabase.get(applicationContext)
     private val faqsDao = db.faqDao()
     private val userDao = db.userDao()
+    private val firestore = FirebaseFirestore.getInstance()
 
     override suspend fun doWork(): Result {
         withContext(Dispatchers.IO) {
@@ -37,6 +40,18 @@ class LocalDatabaseWorker @AssistedInject constructor(
                     User.parser(it)
                 }
             userDao.insertAll(technicians)
+
+            // upload faqs to firestore
+            faqs.forEach { faq ->
+                firestore.collection("faqs").document(faq.id)
+                    .set(faq, SetOptions.merge())
+            }
+
+            // upload user to firestore
+            technicians.forEach { user ->
+                firestore.collection("users").document(user.id)
+                    .set(user, SetOptions.merge())
+            }
         }
 
         return Result.success()

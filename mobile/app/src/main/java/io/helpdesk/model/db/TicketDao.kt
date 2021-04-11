@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TicketDao : BaseDao<Ticket> {
 
+    @Transaction
     @Query("select * from tickets where user = :user order by priority desc")
     fun allTickets(user: String): Flow<List<UserAndTicket>>
 

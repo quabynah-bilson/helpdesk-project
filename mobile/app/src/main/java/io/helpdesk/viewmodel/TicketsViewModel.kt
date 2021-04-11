@@ -4,34 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.paging.PagingData
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.helpdesk.R
-import io.helpdesk.core.storage.BaseUserPersistentStorage
+import io.helpdesk.core.util.Result
 import io.helpdesk.model.data.Ticket
-import io.helpdesk.model.data.TicketPriority
 import io.helpdesk.model.data.UserAndTicket
-import io.helpdesk.model.data.UserType
-import io.helpdesk.model.db.LocalDatabase
+import io.helpdesk.repository.BaseTicketRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
-class TicketsViewModel @Inject constructor(
-    db: LocalDatabase,
-    private val storage: BaseUserPersistentStorage,
-    private val firestore: FirebaseFirestore,
-) : ViewModel() {
-    private val dao = db.ticketDao()
-    private val userDao = db.userDao()
+class TicketsViewModel @Inject constructor(private val repository: BaseTicketRepository) :
+    ViewModel() {
 
     // Backing property to avoid state updates from other classes
     private val _ticketsUIState = MutableStateFlow<LatestTicketUIState>(LatestTicketUIState.Loading)
@@ -42,23 +29,20 @@ class TicketsViewModel @Inject constructor(
     val postTicketUIState: StateFlow<PostTicketUIState> = _postTicketUIState
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (!storage.loginState.value) {
-                _ticketsUIState.emit(LatestTicketUIState.Error("please login to see your tickets"))
-                return@launch
-            }
+        viewModelScope.launch {
+            repository.allTickets().collectLatest { result ->
+                when (result) {
+                    is Result.Error -> _ticketsUIState.emit(LatestTicketUIState.Error(result.toString()))
 
-            val ticketsQuery =
-                if (storage.userType == UserType.SuperAdmin.ordinal) dao.getUsersAndTickets()
-                else dao.allTickets(storage.userId!!)
-
-            ticketsQuery.collectLatest { tickets ->
-                // Update View with the latest tickets
-                // Writes to the value property of MutableStateFlow,
-                // adding a new element to the flow and updating all
-                // of its collectors
-                val pagingData = PagingData.from(tickets)
-                _ticketsUIState.emit(LatestTicketUIState.Success(pagingData))
+                    is Result.Success -> _ticketsUIState.emit(
+                        LatestTicketUIState.Success(
+                            PagingData.from(
+                                result.data
+                            )
+                        )
+                    )
+                    is Result.Loading -> _ticketsUIState.emit(LatestTicketUIState.Loading)
+                }
             }
         }
     }
@@ -68,54 +52,23 @@ class TicketsViewModel @Inject constructor(
         description: String = "",
         navController: NavController,
     ) = viewModelScope.launch(Dispatchers.IO) {
-        // loading
-        _postTicketUIState.emit(PostTicketUIState.Loading)
-
-        // evaluate user auth state
-        if (storage.loginState.value) {
-            viewModelScope.launch(Dispatchers.IO) {
-
-                // get technicians
-                userDao.getTechnicians().collectLatest { technicians ->
-                    if (technicians.isEmpty()) {
-                        _postTicketUIState.emit(PostTicketUIState.Error("not technicians found"))
-                        return@collectLatest
-                    }
-
-                    // set priority at random
-                    val seed = Random.nextInt(2)
-                    val ticketPriority = TicketPriority.values()[seed]
-
-                    // create a new ticket
-                    val ticket = Ticket(
-                        id = UUID.randomUUID().toString(),
-                        user = storage.userId!!,
-                        name = title,
-                        description = description,
-                        priority = ticketPriority,
-                        technician = technicians[Random.nextInt(technicians.size)].id,
-                    )
-                    dao.insert(ticket)
-                    firestore.collection(Ticket.TABLE_NAME)
-                        .document(ticket.id)
-                        .set(ticket, SetOptions.merge())
-                    withContext(Dispatchers.Main) {
-                        _postTicketUIState.emit(PostTicketUIState.Success)
-                        navController.popBackStack()
-                    }
+        repository.postNewTicket(title, description).collectLatest { result ->
+            when (result) {
+                is Result.Loading -> _postTicketUIState.emit(PostTicketUIState.Loading)
+                is Result.Error -> _postTicketUIState.emit(PostTicketUIState.Error(result.toString()))
+                is Result.Success -> {
+                    _postTicketUIState.emit(PostTicketUIState.Success)
+                    navController.popBackStack()
                 }
-            }
-        } else {
-            _postTicketUIState.emit(PostTicketUIState.Error("you are not logged in yet"))
-            launch(Dispatchers.Main) {
-                navController.navigate(R.id.nav_login)
             }
         }
     }
 
-    fun updateTicket(ticket: Ticket) = viewModelScope.launch(Dispatchers.IO) { dao.update(ticket) }
+    fun updateTicket(ticket: Ticket) =
+        viewModelScope.launch(Dispatchers.IO) { repository.updateTicket(ticket) }
 
-    fun deleteTicket(ticket: Ticket) = viewModelScope.launch(Dispatchers.IO) { dao.delete(ticket) }
+    fun deleteTicket(ticket: Ticket) =
+        viewModelScope.launch(Dispatchers.IO) { repository.deleteTicket(ticket) }
 }
 
 sealed class LatestTicketUIState {

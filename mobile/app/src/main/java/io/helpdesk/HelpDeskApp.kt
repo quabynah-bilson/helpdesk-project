@@ -40,7 +40,12 @@ class HelpDeskApp : Application(), Configuration.Provider {
         NotificationUtil.createChannels(applicationContext)
 
         // fixme -> remove this line
-        NotificationUtil.push(this, title = "Hello world", message = "This is so cool")
+        NotificationUtil.push(
+            this,
+            title = "Hello world",
+            message = "This is so cool",
+            payload = "helpdesk payload",
+        )
     }
 
     override fun onTerminate() {

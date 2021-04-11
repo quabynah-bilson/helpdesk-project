@@ -1,5 +1,6 @@
 package io.helpdesk.core.util
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -23,13 +24,13 @@ object NotificationUtil {
     /**
      * push notification
      */
+    @SuppressLint("UnspecifiedImmutableFlag")
     fun push(
         context: Context,
         title: String,
         message: String,
         channelId: String = FEEDBACK_CHANNEL,
-//        payload: Parcelable?,
-//        target: KClass<Fragment>,
+        payload: String?,
         type: NotificationType = NotificationType.Feedback,
     ) {
         val icon =
@@ -56,6 +57,8 @@ object NotificationUtil {
             .setContentText(message)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
+            .setColorized(true)
+            .setColor(context.resources.getColor(R.color.blue_200, null))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         // trigger the notification

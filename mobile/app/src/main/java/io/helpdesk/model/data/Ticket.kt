@@ -41,6 +41,7 @@ data class Ticket(
     @ColumnInfo(name = "createdAt")
     val timestamp: String = Date(System.currentTimeMillis()).toString(),
     val dueDate: String = Date(System.currentTimeMillis() + 720000000).toString(),
+    var deleted: Boolean = false,
 ) : Parcelable {
 
     companion object {

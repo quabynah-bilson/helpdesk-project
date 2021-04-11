@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "7db21b36c8507aea053fa91ef652beb3",
+    "identityHash": "4ba670b7c195c3e69d66cc4a1fce33ed",
     "entities": [
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `username` TEXT NOT NULL, `avatar` TEXT, `phoneNumber` TEXT, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `username` TEXT NOT NULL, `name` TEXT NOT NULL, `avatar` TEXT, `phoneNumber` TEXT, `userType` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -21,6 +21,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "avatar",
             "columnName": "avatar",
             "affinity": "TEXT",
@@ -31,6 +37,12 @@
             "columnName": "phoneNumber",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "userType",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -44,7 +56,7 @@
       },
       {
         "tableName": "tickets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `user` TEXT NOT NULL, `name` TEXT NOT NULL, `comment` TEXT NOT NULL, `status` TEXT NOT NULL, `type` TEXT NOT NULL, `priority` TEXT NOT NULL, `createdAt` TEXT NOT NULL, `dueDate` TEXT NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `user` TEXT NOT NULL, `name` TEXT NOT NULL, `technician` TEXT NOT NULL, `description` TEXT NOT NULL, `comment` TEXT NOT NULL, `status` INTEGER NOT NULL, `type` INTEGER NOT NULL, `linkedTickets` TEXT NOT NULL, `priority` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `dueDate` TEXT NOT NULL, `deleted` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -65,6 +77,18 @@
             "notNull": true
           },
           {
+            "fieldPath": "technician",
+            "columnName": "technician",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "comment",
             "columnName": "comment",
             "affinity": "TEXT",
@@ -73,19 +97,25 @@
           {
             "fieldPath": "status",
             "columnName": "status",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "type",
             "columnName": "type",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "linkedTickets",
+            "columnName": "linkedTickets",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "priority",
             "columnName": "priority",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -98,6 +128,50 @@
             "fieldPath": "dueDate",
             "columnName": "dueDate",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deleted",
+            "columnName": "deleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "faqs",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `question` TEXT NOT NULL, `answer` TEXT NOT NULL, `priority` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "question",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "answer",
+            "columnName": "answer",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "priority",
+            "columnName": "priority",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -114,7 +188,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7db21b36c8507aea053fa91ef652beb3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4ba670b7c195c3e69d66cc4a1fce33ed')"
     ]
   }
 }
