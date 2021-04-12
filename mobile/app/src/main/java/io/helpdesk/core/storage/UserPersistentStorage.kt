@@ -62,8 +62,8 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
         prefs.edit {
             clear()
             apply()
-            _loginState.emit(false)
         }
+        _loginState.emit(false)
     }
 
     companion object {

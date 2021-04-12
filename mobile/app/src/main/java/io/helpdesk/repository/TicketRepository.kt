@@ -50,6 +50,7 @@ class TicketRepository @Inject constructor(
         title: String,
         description: String,
     ): Flow<Result<Boolean>> = channelFlow {
+        offer(Result.Loading)
         // evaluate user auth state
         if (storage.loginState.value) {
             // get technicians
@@ -84,6 +85,7 @@ class TicketRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun updateTicket(ticket: Ticket): Flow<Result<Boolean>> = channelFlow {
+        offer(Result.Loading)
         try {
             launch(Dispatchers.IO) { dao.update(ticket) }
             ticketCollection.document(ticket.id).set(ticket, SetOptions.merge())
@@ -95,6 +97,7 @@ class TicketRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun deleteTicket(ticket: Ticket): Flow<Result<Boolean>> = channelFlow {
+        offer(Result.Loading)
         try {
             val updatedTicket = ticket.copy(deleted = true)
             launch(Dispatchers.IO) { dao.update(updatedTicket) }
@@ -107,6 +110,7 @@ class TicketRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun allTickets(): Flow<Result<List<UserAndTicket>>> = channelFlow {
+        offer(Result.Loading)
         if (!storage.loginState.value) {
             offer(Result.Error(Exception("only logged in users can access this data")))
         } else {

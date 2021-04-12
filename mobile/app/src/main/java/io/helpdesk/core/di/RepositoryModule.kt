@@ -7,11 +7,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.model.db.LocalDatabase
-import io.helpdesk.model.repos.AuthenticationRepository
-import io.helpdesk.model.repos.BaseAuthenticationRepository
-import io.helpdesk.model.services.AuthWebService
-import io.helpdesk.repository.BaseTicketRepository
-import io.helpdesk.repository.TicketRepository
+import io.helpdesk.model.db.UserDao
+import io.helpdesk.repository.*
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -21,10 +18,20 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideAuthRepository(
-        service: AuthWebService,
+        userDao: UserDao,
         storage: BaseUserPersistentStorage,
+        firestore: FirebaseFirestore,
     ): BaseAuthenticationRepository =
-        AuthenticationRepository(service, storage)
+        AuthenticationRepository(userDao, storage, firestore)
+
+    @Singleton
+    @Provides
+    fun provideUserRepository(
+        userDao: UserDao,
+        storage: BaseUserPersistentStorage,
+        firestore: FirebaseFirestore,
+    ): BaseUserRepository =
+        UserRepository(userDao, storage, firestore)
 
     @Singleton
     @Provides

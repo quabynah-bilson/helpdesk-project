@@ -1,19 +1,18 @@
 package io.helpdesk.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.core.util.Result
+import io.helpdesk.core.util.ioScope
+import io.helpdesk.core.util.uiScope
 import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.UserAndTicket
 import io.helpdesk.repository.BaseTicketRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,7 +28,7 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
     val postTicketUIState: StateFlow<PostTicketUIState> = _postTicketUIState
 
     init {
-        viewModelScope.launch {
+        ioScope {
             repository.allTickets().collectLatest { result ->
                 when (result) {
                     is Result.Error -> _ticketsUIState.emit(LatestTicketUIState.Error(result.toString()))
@@ -51,24 +50,24 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
         title: String,
         description: String = "",
         navController: NavController,
-    ) = viewModelScope.launch(Dispatchers.IO) {
+    ) = ioScope {
         repository.postNewTicket(title, description).collectLatest { result ->
             when (result) {
                 is Result.Loading -> _postTicketUIState.emit(PostTicketUIState.Loading)
                 is Result.Error -> _postTicketUIState.emit(PostTicketUIState.Error(result.toString()))
                 is Result.Success -> {
                     _postTicketUIState.emit(PostTicketUIState.Success)
-                    navController.popBackStack()
+                    uiScope { navController.popBackStack() }
                 }
             }
         }
     }
 
     fun updateTicket(ticket: Ticket) =
-        viewModelScope.launch(Dispatchers.IO) { repository.updateTicket(ticket) }
+        ioScope { repository.updateTicket(ticket) }
 
     fun deleteTicket(ticket: Ticket) =
-        viewModelScope.launch(Dispatchers.IO) { repository.deleteTicket(ticket) }
+        ioScope { repository.deleteTicket(ticket) }
 }
 
 sealed class LatestTicketUIState {
