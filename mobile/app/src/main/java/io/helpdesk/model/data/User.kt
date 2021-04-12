@@ -30,6 +30,9 @@ data class User(
     var type: UserType = UserType.Customer,
 ) : Parcelable {
 
+    // no-arg constructor for deserialization
+    constructor() : this("", "", "")
+
     companion object {
         const val TABLE_NAME = "users"
         fun parser(map: LinkedTreeMap<String, Any?>) = User(

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.core.util.Result
 import io.helpdesk.core.util.ioScope
-import io.helpdesk.core.util.uiScope
 import io.helpdesk.model.data.User
 import io.helpdesk.model.data.UserType
 import io.helpdesk.repository.BaseAuthenticationRepository
@@ -67,10 +66,7 @@ class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenti
     }
 
     // sign out
-    fun logout() = ioScope {
-        authRepository.logout()
-        _authState.emit(AuthState.Initial)
-    }
+    fun logout() = authRepository.logout()
 }
 
 sealed class AuthState {

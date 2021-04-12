@@ -21,5 +21,6 @@ fun ImageView.loadImage(
         .placeholder(placeholder)
         .error(error)
         .transition(withCrossFade())
+        .circleCrop()
         .into(this)
 }

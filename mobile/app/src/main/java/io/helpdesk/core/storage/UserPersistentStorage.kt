@@ -63,6 +63,7 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
             clear()
             apply()
         }
+        println("logging out from prefs")
         _loginState.emit(false)
     }
 

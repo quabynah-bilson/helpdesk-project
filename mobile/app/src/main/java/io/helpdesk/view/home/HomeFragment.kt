@@ -66,7 +66,10 @@ class HomeFragment : Fragment() {
                                             // logout
                                             dialog.dismiss()
                                             authViewModel.logout()
-                                            findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavWelcome())
+                                            findNavController().navigate(
+                                                HomeFragmentDirections
+                                                    .actionNavHomeToNavWelcome()
+                                            )
                                         }
                                     }
                                     setNegativeButton("no") { dialog, _ -> dialog.cancel() }

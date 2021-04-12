@@ -54,6 +54,7 @@ class WelcomeFragment : Fragment() {
         binding?.run {
             lifecycleScope.launchWhenCreated {
                 authViewModel.loginState.collectLatest { loggedIn ->
+                    Timber.tag("user-login-state").d("state -> $loggedIn")
                     if (loggedIn) {
                         authViewModel.userTypeState.collectLatest { type ->
                             Timber.tag("user-type").d("type -> $type")

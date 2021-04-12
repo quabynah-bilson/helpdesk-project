@@ -22,6 +22,9 @@ data class Question(
     val priority: TicketPriority = TicketPriority.Low,
 ) : Parcelable {
 
+    // no-arg constructor for deserialization
+    constructor() : this("", "", "")
+
     companion object {
         const val TABLE_NAME = "faqs"
         fun parser(map: LinkedTreeMap<String, Any?>) = Question(

@@ -44,6 +44,9 @@ data class Ticket(
     var deleted: Boolean = false,
 ) : Parcelable {
 
+    // no-arg constructor for deserialization
+    constructor() : this("", "", "", "")
+
     companion object {
         const val TABLE_NAME = "tickets"
     }

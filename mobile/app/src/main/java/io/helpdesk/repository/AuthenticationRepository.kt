@@ -6,14 +6,17 @@ import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.core.util.Result
 import io.helpdesk.core.util.await
 import io.helpdesk.core.util.fold
+import io.helpdesk.core.util.globalScope
 import io.helpdesk.model.data.User
 import io.helpdesk.model.db.UserDao
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -52,26 +55,44 @@ class AuthenticationRepository @Inject constructor(
             else -> {
                 offer(Result.Loading)
 
-                // get user from database
-                userCollection.whereEqualTo("email", email).get().fold<User>(
-                    { users ->
-                        // get user by email
-                        val userByUsername = users.firstOrNull { user -> user.email == email }
+                globalScope {
+                    // get user from database
+                    userCollection.whereEqualTo("email", email).get().fold<User>(
+                        { users ->
+                            Timber.tag("login-result").i("users -> $users")
+                            // get user by email
+                            val userByUsername = users.firstOrNull { user -> user.email == email }
 
-                        if (userByUsername == null) offer(Result.Error(Exception("no user found")))
-                        else {
-                            storage.userId = userByUsername.id
-                            storage.userType = userByUsername.type.ordinal
+                            if (userByUsername == null) {
+                                launch {
+                                    awaitClose {
+                                        offer(Result.Error(Exception("no user found")))
+                                    }
+                                }
+                            } else {
+                                storage.userId = userByUsername.id
+                                storage.userType = userByUsername.type.ordinal
 
-                            launch(Dispatchers.IO) { userDao.insert(userByUsername) }
+                                userDao.insert(userByUsername)
 
-                            offer(Result.Success(userByUsername))
+                                launch {
+                                    awaitClose {
+                                        offer(Result.Success(userByUsername))
+                                    }
+                                }
+                            }
+                        },
+                        { err ->
+                            launch {
+                                awaitClose {
+                                    offer(Result.Error(err))
+                                }
+                            }
                         }
-                    },
-                    { err ->
-                        offer(Result.Error(err))
-                    }
-                )
+                    )
+                }
+
+
             }
         }
     }
@@ -93,22 +114,25 @@ class AuthenticationRepository @Inject constructor(
                     userCollection.document(user.id).set(user).await()
                     storage.userType = user.type.ordinal
                     storage.userId = user.id
-                    launch(Dispatchers.IO) { userDao.insert(user) }
-                    offer(Result.Success(user))
+                    userDao.insert(user)
+                    launch {
+                        awaitClose { offer(Result.Success(user)) }
+                    }
+
                 }
             }
         }
 
-    @ExperimentalCoroutinesApi
-    override fun logout(): Flow<Result<Unit>> = channelFlow {
+    override fun logout(): Flow<Result<Unit>> = flow {
+        println("logging out")
         storage.clear()
-        offer(Result.Initial)
+        emit(Result.Initial)
     }
 
     @ExperimentalCoroutinesApi
-    override fun updateUserType(type: Int): Flow<Result<Unit>> = channelFlow {
+    override fun updateUserType(type: Int): Flow<Result<Unit>> = flow {
         storage.userType = type
-        offer(Result.Initial)
+        emit(Result.Initial)
     }
 
     override val loginState: StateFlow<Boolean>

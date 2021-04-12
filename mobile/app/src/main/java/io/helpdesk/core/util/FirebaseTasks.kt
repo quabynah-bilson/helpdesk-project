@@ -5,9 +5,12 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+
+fun globalScope(block: suspend () -> Unit) = GlobalScope.launch { block() }
 
 /**
  * Query snapshots
@@ -15,20 +18,22 @@ import timber.log.Timber
 suspend inline fun <reified T> Task<QuerySnapshot>.fold(
     crossinline successBlock: suspend (MutableList<T>) -> Unit,
     crossinline errorBlock: suspend (Exception?) -> Unit
-) = withContext(Dispatchers.IO) {
+) {
 
     addOnCompleteListener { snapshot ->
         if (snapshot.isSuccessful) {
             Timber.tag("task-completion").i("successful -> ${snapshot.result?.documents}")
-            launch { successBlock(snapshot.result?.toObjects(T::class.java) ?: mutableListOf()) }
+            globalScope {
+                successBlock(snapshot.result?.toObjects(T::class.java) ?: mutableListOf())
+            }
         } else {
             Timber.tag("task-completion").i("failed")
-            launch { errorBlock(snapshot.exception) }
+            globalScope { errorBlock(snapshot.exception) }
         }
     }
 
     // error branch
-    addOnFailureListener { launch { errorBlock(it) } }
+    addOnFailureListener { globalScope { errorBlock(it) } }
 }
 
 suspend inline fun Task<Void>.await() = withContext(Dispatchers.IO) {
@@ -54,31 +59,31 @@ suspend inline fun Task<Void>.await() = withContext(Dispatchers.IO) {
 suspend inline fun <reified T> Task<DocumentSnapshot>.foldDoc(
     crossinline successBlock: suspend (T?) -> Unit,
     crossinline errorBlock: suspend (Exception?) -> Unit
-) = withContext(Dispatchers.IO) {
+) {
 
     addOnCompleteListener { snapshot ->
         if (snapshot.isSuccessful) {
-            launch { successBlock(snapshot.result?.toObject(T::class.java)) }
+            globalScope { successBlock(snapshot.result?.toObject(T::class.java)) }
         } else {
-            launch { errorBlock(snapshot.exception) }
+            globalScope { errorBlock(snapshot.exception) }
         }
     }
 
     // error branch
-    addOnFailureListener { launch { errorBlock(it) } }
+    addOnFailureListener { globalScope { errorBlock(it) } }
 }
 
 suspend inline fun <reified T> DocumentReference.observe(
     crossinline block: suspend (T?, Exception?) -> Unit
-) = withContext(Dispatchers.IO) {
+) {
     addSnapshotListener { value, error ->
         if (error != null) {
-            launch { block(null, error) }
+            globalScope { block(null, error) }
             return@addSnapshotListener
         }
 
         if (value != null) {
-            launch {
+            globalScope {
                 if (value.exists()) {
                     val data = value.toObject(T::class.java)
                     block(data, null)
