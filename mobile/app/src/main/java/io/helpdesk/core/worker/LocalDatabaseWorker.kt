@@ -43,13 +43,13 @@ class LocalDatabaseWorker @AssistedInject constructor(
 
             // upload faqs to firestore
             faqs.forEach { faq ->
-                firestore.collection("faqs").document(faq.id)
+                firestore.collection(Question.TABLE_NAME).document(faq.id)
                     .set(faq, SetOptions.merge())
             }
 
             // upload user to firestore
             technicians.forEach { user ->
-                firestore.collection("users").document(user.id)
+                firestore.collection(User.TABLE_NAME).document(user.id)
                     .set(user, SetOptions.merge())
             }
         }

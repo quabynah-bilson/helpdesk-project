@@ -65,8 +65,8 @@ class LoginFragment : Fragment() {
 
                 loginButton.setOnClickListener {
                     authViewModel.login(
-                        email = usernameField.text.toString(),
-                        password = passwordField.text.toString()
+                        email = usernameField.text.toString().trim(),
+                        password = passwordField.text.toString().trim(),
                     )
                 }
                 authViewModel.authState.collectLatest { state ->

@@ -56,7 +56,7 @@ class AuthenticationRepository @Inject constructor(
                 userCollection.whereEqualTo("email", email).get().fold<User>(
                     { users ->
                         // get user by email
-                        val userByUsername = users?.first { user -> user.email == email }
+                        val userByUsername = users.firstOrNull { user -> user.email == email }
 
                         if (userByUsername == null) offer(Result.Error(Exception("no user found")))
                         else {
@@ -93,7 +93,7 @@ class AuthenticationRepository @Inject constructor(
                     userCollection.document(user.id).set(user).await()
                     storage.userType = user.type.ordinal
                     storage.userId = user.id
-                    launch { userDao.insert(user) }
+                    launch(Dispatchers.IO) { userDao.insert(user) }
                     offer(Result.Success(user))
                 }
             }
