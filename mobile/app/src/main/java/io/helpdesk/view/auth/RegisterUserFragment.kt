@@ -62,11 +62,6 @@ class RegisterUserFragment : Fragment() {
                         !text.isNullOrEmpty() && text.length >= 6
                 }
 
-                noAccountClickable.setOnClickListener {
-                    val directions = LoginFragmentDirections.actionNavLoginToNavRegister()
-                    navController.navigate(directions)
-                }
-
                 registerButton.setOnClickListener {
                     authViewModel.register(
                         username = nameField.text.toString(),
@@ -74,7 +69,7 @@ class RegisterUserFragment : Fragment() {
                         password = passwordField.text.toString(),
                     )
                 }
-                
+
                 authViewModel.authState.collectLatest { state ->
                     when (state) {
                         is AuthState.Error -> {

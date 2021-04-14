@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Works with the [BaseAuthenticationRepository] to handle user authentication
+ */
 @HiltViewModel
 class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenticationRepository) :
     ViewModel() {

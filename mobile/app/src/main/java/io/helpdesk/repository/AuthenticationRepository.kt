@@ -70,8 +70,12 @@ class AuthenticationRepository @Inject constructor(
                                     }
                                 }
                             } else {
-                                storage.userId = userByUsername.id
-                                storage.userType = userByUsername.type.ordinal
+                                Timber.tag("login-result")
+                                    .i("user logged in successfully with data -> $userByUsername")
+
+                                // todo -> store locally
+//                                storage.userId = userByUsername.id
+//                                storage.userType = userByUsername.type.ordinal
 
                                 userDao.insert(userByUsername)
 

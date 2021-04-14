@@ -60,7 +60,7 @@ class UserTypeFragment : Fragment() {
                 // navigate to home screen
                 saveButton.setOnClickListener {
                     Snackbar.make(root, "Account type saved", Snackbar.LENGTH_LONG).show()
-                    navController.navigate(UserTypeFragmentDirections.actionNavUserTypeToNavHome())
+                    navController.popBackStack()
                 }
 
                 authViewModel.userTypeState.collectLatest { state ->

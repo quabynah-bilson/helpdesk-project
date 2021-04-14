@@ -58,11 +58,6 @@ class LoginFragment : Fragment() {
                         !text.isNullOrEmpty() && text.length >= 6
                 }
 
-                noAccountClickable.setOnClickListener {
-                    val directions = LoginFragmentDirections.actionNavLoginToNavRegister()
-                    navController.navigate(directions)
-                }
-
                 loginButton.setOnClickListener {
                     authViewModel.login(
                         email = usernameField.text.toString().trim(),

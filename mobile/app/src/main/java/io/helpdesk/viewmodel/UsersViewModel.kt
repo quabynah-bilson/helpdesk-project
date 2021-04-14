@@ -9,6 +9,7 @@ import io.helpdesk.model.data.UserType
 import io.helpdesk.repository.BaseUserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,6 +38,23 @@ class UsersViewModel @Inject constructor(
                     )
 
                     else -> _uiState.emit(UserUIState.Loading)
+                }
+            }
+        }
+    }
+
+    fun saveUser(user: User) = ioScope {
+        repository.addUser(user).collectLatest { result ->
+            when (result) {
+                is Result.Initial, Result.Loading -> {
+                    Timber.tag("save-user").i("saving user")
+                }
+                is Result.Error -> {
+                    Timber.tag("save-user")
+                        .i("failed to saved user: ${result.exception?.localizedMessage}")
+                }
+                is Result.Success -> {
+                    Timber.tag("save-user").i("successfully saved user")
                 }
             }
         }
