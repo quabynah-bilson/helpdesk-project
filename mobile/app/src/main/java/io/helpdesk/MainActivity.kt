@@ -15,8 +15,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.AuthViewModel
-import io.helpdesk.viewmodel.UserUIState
-import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -24,27 +22,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private val authViewModel by viewModels<AuthViewModel>()
-    private val userViewModel by viewModels<UsersViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        lifecycleScope.launchWhenCreated {
-            with(userViewModel) {
-                uiState.collectLatest { state ->
-                    when (state) {
-                        UserUIState.Loading -> {
-                        }
-                        is UserUIState.Error -> {
-                        }
-                        is UserUIState.Success -> {
-                            state.users.forEach { user -> saveUser(user) }
-                        }
-                    }
-                }
-            }
-        }
 
         // initialize navigation controller for fragments
         val navHost = supportFragmentManager.findFragmentById(R.id.nav_fragment) as NavHostFragment
