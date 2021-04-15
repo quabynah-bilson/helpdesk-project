@@ -33,7 +33,7 @@ interface BaseAuthenticationRepository {
 
     fun logout(): Flow<Result<Unit>>
 
-    val loginState: StateFlow<Boolean>
+    val loginState: Flow<Boolean>
 }
 
 class AuthenticationRepository @Inject constructor(
@@ -133,7 +133,7 @@ class AuthenticationRepository @Inject constructor(
         emit(Result.Initial)
     }
 
-    override val loginState: StateFlow<Boolean>
+    override val loginState: Flow<Boolean>
         get() = storage.loginState
 
     private fun validateCredentials(email: String? = null, password: String? = null): Boolean =

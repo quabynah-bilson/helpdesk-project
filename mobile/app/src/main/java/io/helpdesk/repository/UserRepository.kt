@@ -46,7 +46,7 @@ class UserRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun currentUser(): Flow<Result<User?>> = channelFlow {
-        if (storage.loginState.value) {
+        if (storage.userId != null) {
             dao.getUserByIdAndType(id = storage.userId!!, type = storage.userType)
                 .collectLatest { currentUser ->
                     offer(Result.Success(currentUser))

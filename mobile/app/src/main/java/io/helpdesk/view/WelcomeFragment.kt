@@ -17,9 +17,11 @@ import io.helpdesk.core.util.logger
 import io.helpdesk.databinding.FragmentWelcomeBinding
 import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.AuthViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -59,10 +61,11 @@ class WelcomeFragment : Fragment() {
 
         // handle button click
         lifecycleScope.launch {
-            storage.clear()
             storage.loginState.collectLatest { state ->
                 logger.i("login state -> $state")
             }
+            delay(2000)
+            storage.clear()
 
             authViewModel.loginState.collectLatest { loggedIn ->
                 Timber.tag("user-login-state").d("state -> $loggedIn")

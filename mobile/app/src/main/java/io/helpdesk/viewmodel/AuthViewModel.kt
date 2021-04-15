@@ -8,6 +8,7 @@ import io.helpdesk.core.util.ioScope
 import io.helpdesk.model.data.User
 import io.helpdesk.model.data.UserType
 import io.helpdesk.repository.BaseAuthenticationRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -23,8 +24,8 @@ class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenti
     private val _authState = MutableStateFlow<AuthState>(AuthState.Initial)
     private val _userTypeState = MutableStateFlow(UserType.Customer)
 
-    val authState: StateFlow<AuthState> get() = _authState
-    val loginState: StateFlow<Boolean> get() = authRepository.loginState
+    val authState: Flow<AuthState> get() = _authState
+    val loginState: Flow<Boolean> get() = authRepository.loginState
     val userTypeState: StateFlow<UserType> get() = _userTypeState
 
     // set user type
@@ -49,22 +50,24 @@ class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenti
     }
 
     // register with username, email & password
-    fun register(username: String?, email: String?, password: String?, userType: UserType) = ioScope {
-        _authState.emit(AuthState.Loading)
-        if (email.isNullOrEmpty() || password.isNullOrEmpty() || username.isNullOrEmpty()) {
-            _authState.emit(AuthState.Error("cannot validate fields"))
-        } else {
+    fun register(username: String?, email: String?, password: String?, userType: UserType) =
+        ioScope {
             _authState.emit(AuthState.Loading)
+            if (email.isNullOrEmpty() || password.isNullOrEmpty() || username.isNullOrEmpty()) {
+                _authState.emit(AuthState.Error("cannot validate fields"))
+            } else {
+                _authState.emit(AuthState.Loading)
 
-            authRepository.register(username, email, password, userType).collectLatest { result ->
-                when (result) {
-                    is Result.Loading, Result.Initial -> _authState.emit(AuthState.Loading)
-                    is Result.Error -> _authState.emit(AuthState.Error(result.toString()))
-                    is Result.Success -> _authState.emit(AuthState.Success(result.data))
-                }
+                authRepository.register(username, email, password, userType)
+                    .collectLatest { result ->
+                        when (result) {
+                            is Result.Loading, Result.Initial -> _authState.emit(AuthState.Loading)
+                            is Result.Error -> _authState.emit(AuthState.Error(result.toString()))
+                            is Result.Success -> _authState.emit(AuthState.Success(result.data))
+                        }
+                    }
             }
         }
-    }
 
     // sign out
     fun logout() = authRepository.logout()

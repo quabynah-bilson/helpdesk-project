@@ -52,7 +52,7 @@ class TicketRepository @Inject constructor(
     ): Flow<Result<Boolean>> = channelFlow {
         offer(Result.Loading)
         // evaluate user auth state
-        if (storage.loginState.value) {
+        if (storage.userId != null) {
             // get technicians
             userDao.getTechnicians().collectLatest { technicians ->
                 if (technicians.isEmpty()) {
@@ -111,7 +111,7 @@ class TicketRepository @Inject constructor(
     @ExperimentalCoroutinesApi
     override fun allTickets(): Flow<Result<List<UserAndTicket>>> = channelFlow {
         offer(Result.Loading)
-        if (!storage.loginState.value) {
+        if (storage.userId == null) {
             offer(Result.Error(Exception("only logged in users can access this data")))
         } else {
             val ticketsQuery =
