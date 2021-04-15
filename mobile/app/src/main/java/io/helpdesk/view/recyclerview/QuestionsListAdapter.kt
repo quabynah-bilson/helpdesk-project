@@ -2,10 +2,12 @@ package io.helpdesk.view.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import io.helpdesk.R
 import io.helpdesk.databinding.ItemFaqBinding
 import io.helpdesk.model.data.Question
 import io.helpdesk.view.home.HomeFragmentDirections
@@ -24,8 +26,10 @@ class QuestionsListAdapter :
             faqAnswer.text = item.answer
             faqTitle.text = item.title
 
-            val direction = HomeFragmentDirections.actionNavHomeToNavPostTicket(item)
-            faqContainer.setOnClickListener { binding.root.findNavController().navigate(direction) }
+            faqContainer.setOnClickListener {
+                binding.root.findNavController()
+                    .navigate(R.id.nav_post_ticket, bundleOf("question" to item))
+            }
         }
 
     }

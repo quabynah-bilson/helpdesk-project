@@ -1,26 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.HelpDesk" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/blue_200</item>
-        <item name="colorSecondaryVariant">@color/blue_200</item>
-        <item name="colorOnSecondary">@color/white</item>
-        <item name="backgroundColor">@color/white</item>
-        <item name="colorControlNormal">@color/blue_200</item>
-        <item name="divider">@color/divider</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/backgroundColor</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">?attr/backgroundColor</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+<resources>
+
+    <!--Base theme, all common styling here-->
+    <style name="Base.HelpDesk" parent="@style/Theme.MaterialComponents.DayNight.NoActionBar">
+
         <!-- Emphasis -->
         <item name="emphasis_low">0.37</item>
         <item name="emphasis_medium">0.65</item>
         <item name="emphasis_high">0.86</item>
+
         <!-- Type -->
         <item name="textAppearanceHeadline1">@style/TextAppearance.MdcTypographyStyles.Headline1
         </item>
@@ -44,6 +31,7 @@
         <item name="textAppearanceButton">@style/TextAppearance.MdcTypographyStyles.Button</item>
         <item name="textAppearanceOverline">@style/TextAppearance.MdcTypographyStyles.Overline
         </item>
+
         <!-- dialogs -->
         <item name="materialAlertDialogTitleTextStyle">
             @style/TextAppearance.MdcTypographyStyles.Headline6
@@ -54,5 +42,59 @@
         <item name="materialAlertDialogTitlePanelStyle">
             @style/MaterialAlertDialog.MaterialComponents.Title.Panel.CenterStacked
         </item>
+
+        <!--Platform attributes-->
+        <item name="android:navigationBarColor">@color/nav_bar</item>
+        <item name="android:statusBarColor">@color/immersive_sys_ui</item>
+
+        <!--Default styles-->
+        <item name="bottomNavigationStyle">@style/Widget.HelpDesk.BottomNavigationView</item>
+
     </style>
+
+    <style name="HelpDesk" parent="@style/Base.HelpDesk" />
+
+    <style name="HelpDesk.Yellow">
+        <item name="colorPrimary">@color/helpdesk_yellow_500</item>
+        <item name="colorPrimaryVariant">@color/helpdesk_yellow_400</item>
+        <item name="colorSecondary">@color/helpdesk_blue_700</item>
+        <item name="colorSecondaryVariant">@color/helpdesk_blue_800</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnSecondary">@color/white</item>
+    </style>
+
+    <style name="HelpDesk.Blue">
+        <item name="colorPrimary">@color/helpdesk_blue_700</item>
+        <item name="colorPrimaryVariant">@color/helpdesk_blue_800</item>
+        <item name="colorSecondary">@color/helpdesk_yellow_500</item>
+        <item name="colorSecondaryVariant">@color/helpdesk_yellow_400</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnSecondary">@color/black</item>
+    </style>
+
+    <style name="ThemeOverlay.HelpDesk.Blue" parent="@style/ThemeOverlay.MaterialComponents.Light">
+        <item name="colorPrimary">@color/helpdesk_blue_700</item>
+        <item name="colorPrimaryVariant">@color/helpdesk_blue_800</item>
+        <item name="colorSecondary">@color/helpdesk_yellow_500</item>
+        <item name="colorSecondaryVariant">@color/helpdesk_yellow_400</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="ThemeOverlay.HelpDesk.Blue.Dark" parent="@style/ThemeOverlay.MaterialComponents.Dark">
+        <item name="colorPrimary">@color/helpdesk_blue_700</item>
+        <item name="colorPrimaryVariant">@color/helpdesk_blue_800</item>
+        <item name="colorSecondary">@color/helpdesk_yellow_500</item>
+        <item name="colorSecondaryVariant">@color/helpdesk_yellow_400</item>
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="HelpDesk.Pink">
+        <item name="colorPrimary">@color/helpdesk_pink_500</item>
+        <item name="colorPrimaryVariant">@color/helpdesk_pink_600</item>
+        <item name="colorSecondary">@color/helpdesk_pink_500</item>
+        <item name="colorSecondaryVariant">@color/helpdesk_pink_500</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="android:navigationBarColor">?colorSecondaryVariant</item>
+    </style>
+
 </resources>

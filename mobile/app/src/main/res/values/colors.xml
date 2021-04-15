@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF413250</color>
-    <color name="purple_700">#FF413250</color>
-    <color name="blue_200">#FF0052CC</color>
+    <!--theme colors-->
+    <color name="helpdesk_yellow_200">#ffeb46</color>
+    <color name="helpdesk_yellow_400">#ffc000</color>
+    <color name="helpdesk_yellow_500">#ffde03</color>
+    <color name="helpdesk_yellow_dark_primary">#242316</color>
+
+    <color name="helpdesk_blue_200">#91a4fc</color>
+    <color name="helpdesk_blue_700">#0336ff</color>
+    <color name="helpdesk_blue_800">#0035c9</color>
+    <color name="helpdesk_blue_dark_primary">#1c1d24</color>
+
+    <color name="helpdesk_pink_200">#ff7597</color>
+    <color name="helpdesk_pink_500">#ff0266</color>
+    <color name="helpdesk_pink_600">#d8004d</color>
+    <color name="helpdesk_pink_dark_primary">#24191c</color>
+
+    <!--background protection for nav-bar, varied on Q+-->
+    <color name="immersive_sys_ui">#33000000</color>
+    <color name="nav_bar">@color/immersive_sys_ui</color>
+
+    <!-- others -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="divider">#FFA7A8B3</color>
+    <!--<color name="divider">#FFA7A8B3</color>-->
 </resources>

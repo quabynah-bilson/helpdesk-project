@@ -2,6 +2,7 @@ package io.helpdesk.view
 
 import android.os.Bundle
 import android.text.Editable
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,7 +54,9 @@ class PostTicketFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), R.color.blue_200)
+            ContextCompat.getColor(requireActivity(), TypedValue().apply {
+                requireContext().theme.resolveAttribute(R.attr.colorPrimary, this, true)
+            }.data)
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenCreated {

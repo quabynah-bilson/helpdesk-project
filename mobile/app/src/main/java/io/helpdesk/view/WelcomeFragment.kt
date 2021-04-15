@@ -15,7 +15,6 @@ import io.helpdesk.R
 import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.databinding.FragmentWelcomeBinding
 import io.helpdesk.model.data.UserType
-import io.helpdesk.viewmodel.AuthViewModel
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -29,7 +28,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class WelcomeFragment : Fragment() {
     private var binding: FragmentWelcomeBinding? = null
-    private val authViewModel by activityViewModels<AuthViewModel>()
     private val userViewModel by activityViewModels<UsersViewModel>()
 
     @Inject
@@ -56,7 +54,7 @@ class WelcomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), R.color.blue_200)
+            ContextCompat.getColor(requireActivity(), R.color.helpdesk_blue_800)
         super.onViewCreated(view, savedInstanceState)
 
         // handle button click

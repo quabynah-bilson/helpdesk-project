@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
+import android.util.TypedValue
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import io.helpdesk.MainActivity
@@ -58,7 +59,9 @@ object NotificationUtil {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
             .setColorized(true)
-            .setColor(context.resources.getColor(R.color.blue_200, null))
+            .setColor(TypedValue().apply {
+                context.theme.resolveAttribute(R.attr.colorPrimary, this, true)
+            }.data)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         // trigger the notification

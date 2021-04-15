@@ -1,7 +1,7 @@
 package io.helpdesk.view.bottomsheet
 
-import android.content.Context
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +13,6 @@ import com.google.android.material.snackbar.Snackbar
 import io.helpdesk.R
 import io.helpdesk.databinding.TicketOptionsBottomSheetBinding
 import io.helpdesk.model.data.Ticket
-import io.helpdesk.model.data.UserAndTicket
 
 /**
  * [Ticket] bottom sheet for showing actions to be performed on that item
@@ -35,7 +34,9 @@ class TicketOptionsBottomSheet private constructor(private val ticketOptionSelec
     override fun onDestroyView() {
         requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), R.color.blue_200)
+            ContextCompat.getColor(requireActivity(), TypedValue().apply {
+                requireContext().theme.resolveAttribute(R.attr.colorPrimary, this, true)
+            }.data)
         super.onDestroyView()
     }
 
@@ -78,7 +79,10 @@ class TicketOptionsBottomSheet private constructor(private val ticketOptionSelec
         const val ARG_USER_AND_TICKET = "user.ticket.args"
 
         @JvmStatic
-        fun newInstance(ticket: Ticket, listener: OnTicketOptionSelectListener): TicketOptionsBottomSheet {
+        fun newInstance(
+            ticket: Ticket,
+            listener: OnTicketOptionSelectListener
+        ): TicketOptionsBottomSheet {
             val fragment = TicketOptionsBottomSheet(listener)
             with(fragment) {
                 arguments = bundleOf(ARG_USER_AND_TICKET to ticket)
