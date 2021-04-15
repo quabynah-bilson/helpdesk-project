@@ -7,6 +7,7 @@ import io.helpdesk.core.util.*
 import io.helpdesk.model.data.User
 import io.helpdesk.model.data.UserType
 import io.helpdesk.model.db.UserDao
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
@@ -28,10 +29,13 @@ interface BaseUserRepository {
     fun allUsers(): Flow<Result<List<User>>>
 
     fun usersByType(type: Int): Flow<Result<List<User>>>
+
+    suspend fun deleteUser(user: User)
 }
 
 
 class UserRepository @Inject constructor(
+    private val scope: CoroutineScope,
     private val dao: UserDao,
     private val storage: BaseUserPersistentStorage,
     firestore: FirebaseFirestore,
@@ -130,5 +134,12 @@ class UserRepository @Inject constructor(
             }, { exception -> offer(Result.Error(exception)) })
 
         awaitClose()
+    }
+
+    override suspend fun deleteUser(user: User) {
+        scope.launch {
+            dao.delete(user)
+            userCollection.document(user.id).delete().await()
+        }
     }
 }

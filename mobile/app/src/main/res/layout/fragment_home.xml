@@ -1,92 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.home.HomeFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- toolbar -->
+    <data>
+
+        <import type="io.helpdesk.model.data.User" />
+
+        <variable
+            name="currentUser"
+            type="User" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_56"
-        android:background="?colorPrimary"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        tools:context=".view.home.HomeFragment">
 
-        <!-- logo -->
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/app_logo"
-            android:layout_width="@dimen/spacing_24"
-            android:layout_height="@dimen/spacing_24"
-            android:layout_marginStart="@dimen/spacing_20"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_logo"
-            android:tint="?colorOnPrimarySurface"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!-- toolbar -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_56"
+            android:background="?colorPrimary"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!-- title -->
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="@dimen/spacing_none"
+            <!-- logo -->
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/app_logo"
+                android:layout_width="@dimen/spacing_24"
+                android:layout_height="@dimen/spacing_24"
+                android:layout_marginStart="@dimen/spacing_20"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_logo"
+                android:tint="?colorOnPrimarySurface"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- title -->
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="@dimen/spacing_none"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_24"
+                android:layout_marginEnd="@dimen/spacing_24"
+                android:text="@string/app_name"
+                android:textAlignment="center"
+                android:textAppearance="?textAppearanceHeadline6"
+                android:textColor="?colorOnPrimarySurface"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/user_avatar"
+                app:layout_constraintStart_toEndOf="@id/app_logo"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/user_avatar"
+                android:layout_width="@dimen/spacing_24"
+                android:layout_height="@dimen/spacing_24"
+                android:layout_marginEnd="@dimen/spacing_20"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="?colorOnPrimarySurface"
+                app:circleCrop="@{true}"
+                app:error="@{@drawable/ic_account}"
+                app:imageUrl="@{currentUser.avatar}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:placeholder="@{@drawable/ic_account}"
+                tools:src="@drawable/ic_account" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- tabs container -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_24"
-            android:layout_marginEnd="@dimen/spacing_24"
-            android:text="@string/app_name"
-            android:textAlignment="center"
-            android:textAppearance="?textAppearanceHeadline6"
-            android:textColor="?colorOnPrimarySurface"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:tabIndicatorAnimationMode="elastic"
+            app:tabIndicatorColor="?colorSecondary"
+            app:tabIndicatorFullWidth="false"
+            app:tabSelectedTextColor="?colorSecondary" />
+
+        <!-- pager -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_none"
+            android:paddingTop="@dimen/spacing_120"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/user_avatar"
-            app:layout_constraintStart_toEndOf="@id/app_logo"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- avatar -->
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/user_avatar"
-            android:layout_width="@dimen/spacing_24"
-            android:layout_height="@dimen/spacing_24"
-            android:layout_marginEnd="@dimen/spacing_20"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_account"
-            android:tint="?colorOnPrimarySurface"
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab_post_ticket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_24"
+            android:contentDescription="@string/fragment_post_ticket"
+            android:text="@string/fragment_post_ticket"
+            app:icon="@drawable/ic_send"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- tabs container -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:tabIndicatorAnimationMode="elastic"
-        app:tabIndicatorColor="?colorSecondary"
-        app:tabIndicatorFullWidth="false"
-        app:tabSelectedTextColor="?colorSecondary" />
-
-    <!-- pager -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/pager"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_none"
-        android:paddingTop="@dimen/spacing_120"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fab_post_ticket"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_24"
-        android:contentDescription="@string/fragment_post_ticket"
-        android:text="@string/fragment_post_ticket"
-        app:icon="@drawable/ic_send"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

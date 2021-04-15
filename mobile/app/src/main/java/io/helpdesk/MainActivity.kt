@@ -1,7 +1,6 @@
 package io.helpdesk
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -67,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
 
-                                if (destination.id != R.id.nav_welcome && destination.id != R.id.nav_user_type) {
+                                if (destination.id != R.id.nav_welcome && destination.id != R.id.nav_user_type && destination.id != R.id.nav_user_type) {
                                     // add bottom padding to escape bottom navigation view
                                     navHost.view?.setPadding(
                                         0,

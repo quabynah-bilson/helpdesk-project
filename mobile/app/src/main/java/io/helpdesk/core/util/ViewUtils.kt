@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions.withCrossFade
+import com.bumptech.glide.request.target.Target
 import io.helpdesk.R
 
 fun View.visible(isVisible: Boolean) {
@@ -19,6 +20,7 @@ fun ImageView.loadImage(
         .asBitmap()
         .load(url)
         .placeholder(placeholder)
+        .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
         .error(error)
         .transition(withCrossFade())
         .circleCrop()

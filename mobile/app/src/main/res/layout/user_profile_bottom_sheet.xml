@@ -7,8 +7,14 @@
 
         <import type="io.helpdesk.model.data.User" />
 
+        <import type="io.helpdesk.viewmodel.UsersViewModel" />
+
         <variable
-            name="user"
+            name="currentUserViewModel"
+            type="UsersViewModel" />
+
+        <variable
+            name="currentUser"
             type="User" />
     </data>
 
@@ -21,7 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/spacing_36"
-        android:paddingVertical="@dimen/spacing_24">
+        android:paddingVertical="@dimen/spacing_24"
+        tools:context=".view.bottomsheet.UserProfileBottomSheet">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/user_avatar"
@@ -29,7 +36,7 @@
             android:layout_height="@dimen/spacing_120"
             app:circleCrop="@{true}"
             app:error="@{@drawable/avatar_circular_clip}"
-            app:imageUrl="@{user.avatar}"
+            app:imageUrl="@{currentUser.avatar}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_16"
             android:gravity="center"
-            android:text="@{user.name}"
+            android:text="@{currentUser.name}"
             android:textAppearance="?textAppearanceHeadline5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +63,7 @@
             android:layout_marginTop="@dimen/spacing_4"
             android:alpha="?emphasis_medium"
             android:gravity="center"
-            android:text="@{user.email}"
+            android:text="@{currentUser.email}"
             android:textAppearance="?textAppearanceBody2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -96,6 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_36"
+            android:onClick="@{(view) -> currentUserViewModel.deleteUser(view, currentUser)}"
             android:src="@drawable/ic_delete"
             app:backgroundTint="?colorError"
             app:fabSize="mini"

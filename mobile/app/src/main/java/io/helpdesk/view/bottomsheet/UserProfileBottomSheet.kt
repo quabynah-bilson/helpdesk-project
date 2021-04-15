@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -32,13 +33,30 @@ class UserProfileBottomSheet private constructor(private val user: User) :
         super.onViewCreated(view, savedInstanceState)
 
         binding?.run {
-            user = this@UserProfileBottomSheet.user
+            currentUserViewModel = usersViewModel
+            currentUser = user
             lifecycleScope.launchWhenCreated {
-                usersViewModel.getUserById(user!!.id).collectLatest { updatedUser ->
-                    user = updatedUser
+                usersViewModel.getUserById(user.id).collectLatest { updatedUser ->
+                    currentUser = updatedUser
                     launch(Dispatchers.Main) { executePendingBindings() }
                 }
             }
+            fabCall.setOnClickListener {
+                Toast.makeText(
+                    requireContext(),
+                    "Feature not available",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            fabReassign.setOnClickListener {
+                Toast.makeText(
+                    requireContext(),
+                    "Feature not available",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
             executePendingBindings()
         }
     }

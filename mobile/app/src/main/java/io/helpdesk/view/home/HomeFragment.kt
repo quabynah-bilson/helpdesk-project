@@ -18,7 +18,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
-import io.helpdesk.core.util.loadImage
 import io.helpdesk.core.util.visible
 import io.helpdesk.databinding.FragmentHomeBinding
 import io.helpdesk.viewmodel.AuthViewModel
@@ -67,10 +66,8 @@ class HomeFragment : Fragment() {
             binding?.run {
                 userViewModel.currentUser().collectLatest { user ->
                     if (user != null) {
+                        currentUser = user
                         userAvatar.run {
-                            // load user's avatar here
-                            loadImage(user.avatar)
-
                             setOnClickListener {
                                 MaterialAlertDialogBuilder(requireContext()).apply {
                                     setTitle(getString(R.string.logout_prompt_title))
@@ -149,6 +146,8 @@ class HomeFragment : Fragment() {
                             }
                         }
                     })
+
+                executePendingBindings()
             }
         }
     }

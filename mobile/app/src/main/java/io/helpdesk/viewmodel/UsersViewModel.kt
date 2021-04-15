@@ -1,10 +1,13 @@
 package io.helpdesk.viewmodel
 
+import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.core.util.Result
 import io.helpdesk.core.util.ioScope
+import io.helpdesk.core.util.uiScope
 import io.helpdesk.model.data.User
 import io.helpdesk.model.data.UserType
 import io.helpdesk.repository.BaseUserRepository
@@ -91,6 +94,17 @@ class UsersViewModel @Inject constructor(
                 }
                 else -> {
                 }
+            }
+        }
+    }
+
+    fun deleteUser(view: View?, user: User) = uiScope {
+        if (view != null) {
+            Snackbar.make(view, "Do you wish to delete this user?", Snackbar.LENGTH_LONG).apply {
+                setAction("Proceed") {
+                    ioScope { repository.deleteUser(user) }
+                }
+                show()
             }
         }
     }

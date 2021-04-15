@@ -35,11 +35,12 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideUserRepository(
+        scope: CoroutineScope,
         userDao: UserDao,
         storage: BaseUserPersistentStorage,
         firestore: FirebaseFirestore,
     ): BaseUserRepository =
-        UserRepository(userDao, storage, firestore)
+        UserRepository(scope,userDao, storage, firestore)
 
     @Singleton
     @Provides

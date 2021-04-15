@@ -5,6 +5,7 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +17,7 @@ import io.helpdesk.R
 import io.helpdesk.databinding.FragmentUserTypeBinding
 import io.helpdesk.databinding.ProgressIndicatorBinding
 import io.helpdesk.model.data.UserType
+import io.helpdesk.view.admin.UsersFragmentDirections
 import io.helpdesk.viewmodel.AuthState
 import io.helpdesk.viewmodel.AuthViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -81,12 +83,17 @@ class UserTypeFragment : Fragment() {
 
                         is AuthState.Success -> {
                             Snackbar.make(root, "Account type saved", Snackbar.LENGTH_LONG).show()
-                            navController.popBackStack(R.id.nav_dashboard, true)
+                            navController.navigate(UsersFragmentDirections.actionNavUsersToNavRegister())
                         }
 
                         else -> {
                             /*do nothing*/
                         }
+                    }
+
+                    progressBinding?.run {
+                        this.root.isVisible = state is AuthState.Loading
+                        saveButton.isVisible = state !is AuthState.Loading
                     }
                 }
 

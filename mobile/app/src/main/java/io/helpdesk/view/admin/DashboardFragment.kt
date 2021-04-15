@@ -40,7 +40,12 @@ class DashboardFragment : Fragment() {
 
     override fun onDestroyView() {
         requireActivity().window?.run {
-            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                decorView.windowInsetsController?.setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                )
+            }
             statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 this.isStatusBarContrastEnforced = true
@@ -52,6 +57,12 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         requireActivity().window?.run {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                decorView.windowInsetsController?.setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                )
+            }
             statusBarColor = ContextCompat.getColor(requireContext(), R.color.helpdesk_blue_800)
         }
         super.onViewCreated(view, savedInstanceState)
@@ -60,10 +71,8 @@ class DashboardFragment : Fragment() {
             binding?.run {
                 userViewModel.currentUser().collectLatest { user ->
                     if (user != null) {
+                        currentUser = user
                         userAvatar.run {
-                            // load user's avatar here
-                            loadImage(user.avatar)
-
                             setOnClickListener {
                                 MaterialAlertDialogBuilder(requireContext()).apply {
                                     setTitle(getString(R.string.logout_prompt_title))
@@ -99,6 +108,8 @@ class DashboardFragment : Fragment() {
                         else -> tab.text = getString(R.string.fragment_live_chat)
                     }
                 }.attach()
+
+                executePendingBindings()
             }
 
         }
