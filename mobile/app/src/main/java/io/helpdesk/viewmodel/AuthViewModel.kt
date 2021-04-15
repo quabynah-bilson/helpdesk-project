@@ -29,9 +29,7 @@ class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenti
 
     // set user type
     fun updateUserType(type: Int) = viewModelScope.launch {
-        authRepository.updateUserType(type).collectLatest {
-            _userTypeState.emit(UserType.values()[type])
-        }
+        _userTypeState.emit(UserType.values()[type])
     }
 
     // login with email & password
@@ -43,7 +41,7 @@ class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenti
             authRepository.login(email, password).collectLatest { result ->
                 when (result) {
                     is Result.Loading, Result.Initial -> _authState.emit(AuthState.Loading)
-                    is Result.Error -> _authState.emit(AuthState.Error(result.toString()))
+                    is Result.Error -> _authState.emit(AuthState.Error(result.exception?.localizedMessage.toString()))
                     is Result.Success -> _authState.emit(AuthState.Success(result.data))
                 }
             }
@@ -51,14 +49,14 @@ class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenti
     }
 
     // register with username, email & password
-    fun register(username: String?, email: String?, password: String?) = ioScope {
+    fun register(username: String?, email: String?, password: String?, userType: UserType) = ioScope {
         _authState.emit(AuthState.Loading)
         if (email.isNullOrEmpty() || password.isNullOrEmpty() || username.isNullOrEmpty()) {
             _authState.emit(AuthState.Error("cannot validate fields"))
         } else {
             _authState.emit(AuthState.Loading)
 
-            authRepository.register(username, email, password).collectLatest { result ->
+            authRepository.register(username, email, password, userType).collectLatest { result ->
                 when (result) {
                     is Result.Loading, Result.Initial -> _authState.emit(AuthState.Loading)
                     is Result.Error -> _authState.emit(AuthState.Error(result.toString()))

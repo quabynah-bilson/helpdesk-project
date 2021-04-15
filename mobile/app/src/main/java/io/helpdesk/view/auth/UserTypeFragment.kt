@@ -1,6 +1,7 @@
 package io.helpdesk.view.auth
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,15 +11,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
 import io.helpdesk.databinding.FragmentUserTypeBinding
 import io.helpdesk.databinding.ProgressIndicatorBinding
 import io.helpdesk.model.data.UserType
+import io.helpdesk.viewmodel.AuthState
 import io.helpdesk.viewmodel.AuthViewModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import timber.log.Timber
+
+@Parcelize
+data class NewUserAuthParams(val email: String, val password: String, val username: String) :
+    Parcelable
 
 @AndroidEntryPoint
 class UserTypeFragment : Fragment() {
@@ -26,6 +35,7 @@ class UserTypeFragment : Fragment() {
     private var progressBinding: ProgressIndicatorBinding? = null
 
     private val authViewModel by activityViewModels<AuthViewModel>()
+    private val args by navArgs<UserTypeFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,8 +69,35 @@ class UserTypeFragment : Fragment() {
 
                 // navigate to home screen
                 saveButton.setOnClickListener {
-                    Snackbar.make(root, "Account type saved", Snackbar.LENGTH_LONG).show()
-                    navController.popBackStack()
+                    authViewModel.register(
+                        username = args.authParams.username,
+                        email = args.authParams.email,
+                        password = args.authParams.password,
+                        userType = authViewModel.userTypeState.value,
+                    )
+                }
+
+                authViewModel.authState.collectLatest { state ->
+                    when (state) {
+                        is AuthState.Error -> {
+                            lifecycleScope.launch {
+                                Snackbar.make(
+                                    root,
+                                    state.reason,
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+
+                        is AuthState.Success -> {
+                            Snackbar.make(root, "Account type saved", Snackbar.LENGTH_LONG).show()
+                            navController.popBackStack(R.id.nav_dashboard, true)
+                        }
+
+                        else -> {
+                            /*do nothing*/
+                        }
+                    }
                 }
 
                 authViewModel.userTypeState.collectLatest { state ->

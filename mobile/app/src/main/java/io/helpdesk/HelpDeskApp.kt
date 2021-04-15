@@ -10,6 +10,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.HiltAndroidApp
 import io.helpdesk.BuildConfig.DEBUG
 import io.helpdesk.core.util.NotificationUtil
+import io.helpdesk.core.util.logger
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -30,7 +31,7 @@ class HelpDeskApp : Application(), Configuration.Provider {
 
         // initialize firebase
         Firebase.initialize(this).apply {
-            Timber.tag("HelpDesk Firebase").d("Firebase SDKs added -> ${this?.name}")
+            logger.d("Firebase SDKs added -> ${this?.name}")
 
             // subscribe to topic
             messaging.subscribeToTopic(getString(R.string.app_name))

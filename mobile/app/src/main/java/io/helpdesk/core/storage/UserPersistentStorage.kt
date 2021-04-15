@@ -2,6 +2,7 @@ package io.helpdesk.core.storage
 
 import android.content.Context
 import androidx.core.content.edit
+import io.helpdesk.core.util.logger
 import io.helpdesk.model.data.UserType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,33 +21,27 @@ interface BaseUserPersistentStorage {
 
 class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPersistentStorage {
     private val prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE)
-    private val _loginState = MutableStateFlow(false)
-
-    init {
-        val id = prefs.getString(USER_ID_KEY, null)
-        _loginState.value = !id.isNullOrEmpty()
-    }
+    private val _loginState = MutableStateFlow(!prefs.getString(USER_ID_KEY, null).isNullOrEmpty())
 
     override var userType: Int = UserType.Customer.ordinal
         get() = prefs.getInt(USER_TYPE_KEY, UserType.Customer.ordinal)
         set(value) {
             if (field == value) return
-            prefs.edit {
+            prefs.edit(false) {
                 putInt(USER_TYPE_KEY, value)
-                apply()
             }
         }
 
     /**
      * authenticated user id storage
      */
-    override var userId: String? = ""
+    override var userId: String? = null
         get() = prefs.getString(USER_ID_KEY, null)
         set(value) {
+            logger.d("storing $value")
             if (field == value) return
-            prefs.edit {
+            prefs.edit(false) {
                 putString(USER_ID_KEY, value)
-                apply()
             }
             // notify all observers
             _loginState.value = !value.isNullOrEmpty()
@@ -59,12 +54,7 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
         get() = _loginState
 
     override suspend fun clear() {
-        prefs.edit {
-            clear()
-            apply()
-        }
-        println("logging out from prefs")
-        _loginState.emit(false)
+        userId = null
     }
 
     companion object {

@@ -201,16 +201,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- progress -->
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progress_indicator"
-        android:layout_width="@dimen/spacing_120"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/spacing_120"
-        android:indeterminate="true"
-        app:indicatorColor="?colorSecondary"
-        app:indicatorDirectionLinear="endToStart"
-        tools:visibility="visible" />
-
 </androidx.appcompat.widget.LinearLayoutCompat>

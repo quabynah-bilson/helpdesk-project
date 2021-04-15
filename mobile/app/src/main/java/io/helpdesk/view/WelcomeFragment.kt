@@ -12,11 +12,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
+import io.helpdesk.core.storage.BaseUserPersistentStorage
+import io.helpdesk.core.util.logger
 import io.helpdesk.databinding.FragmentWelcomeBinding
 import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.AuthViewModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * welcome page
@@ -25,6 +29,9 @@ import timber.log.Timber
 class WelcomeFragment : Fragment() {
     private var binding: FragmentWelcomeBinding? = null
     private val authViewModel by activityViewModels<AuthViewModel>()
+
+    @Inject
+    lateinit var storage: BaseUserPersistentStorage
 
     // reset system bar color
     override fun onDestroyView() {
@@ -51,10 +58,15 @@ class WelcomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // handle button click
-        binding?.run {
-            lifecycleScope.launchWhenCreated {
-                authViewModel.loginState.collectLatest { loggedIn ->
-                    Timber.tag("user-login-state").d("state -> $loggedIn")
+        lifecycleScope.launch {
+            storage.clear()
+            storage.loginState.collectLatest { state ->
+                logger.i("login state -> $state")
+            }
+
+            authViewModel.loginState.collectLatest { loggedIn ->
+                Timber.tag("user-login-state").d("state -> $loggedIn")
+                binding?.run {
                     if (loggedIn) {
                         authViewModel.userTypeState.collectLatest { type ->
                             Timber.tag("user-type").d("type -> $type")
@@ -76,6 +88,7 @@ class WelcomeFragment : Fragment() {
                 }
             }
         }
+
     }
 
 

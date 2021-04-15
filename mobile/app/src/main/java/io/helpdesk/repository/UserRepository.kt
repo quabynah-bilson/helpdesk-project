@@ -52,7 +52,7 @@ class UserRepository @Inject constructor(
                     offer(Result.Success(currentUser))
                 }
 
-            userCollection.document(storage.userId!!).observe<User> { user, exception ->
+            userCollection.document(storage.userId!!).observe<User>(this) { user, exception ->
                 if (user != null) {
                     launch(Dispatchers.IO) { dao.insert(user) }
                 }
@@ -77,7 +77,7 @@ class UserRepository @Inject constructor(
         }
 
         userCollection.get()
-            .fold<User>({ users ->
+            .fold<User>(this, { users ->
                 launch(Dispatchers.IO) { users.forEach { dao.insert(it) } }
             }, { exception -> offer(Result.Error(exception)) })
     }
@@ -89,7 +89,7 @@ class UserRepository @Inject constructor(
         }
 
         userCollection.whereEqualTo("type", type).get()
-            .fold<User>({ users ->
+            .fold<User>(this, { users ->
                 launch(Dispatchers.IO) { users.forEach { dao.insert(it) } }
             }, { exception -> offer(Result.Error(exception)) })
     }
@@ -102,7 +102,7 @@ class UserRepository @Inject constructor(
         }
 
         userCollection.document(id).get()
-            .foldDoc<User>({ user ->
+            .foldDoc<User>(this, { user ->
                 if (user == null) {
                     offer(Result.Error(Exception("no user found")))
                 } else {

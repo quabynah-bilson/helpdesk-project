@@ -1,21 +1,21 @@
 package io.helpdesk.core.util
 
 import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import timber.log.Timber
 
-fun globalScope(block: suspend () -> Unit) = GlobalScope.launch { block() }
 
 /**
  * Query snapshots
  */
 suspend inline fun <reified T> Task<QuerySnapshot>.fold(
+    scope: CoroutineScope,
     crossinline successBlock: suspend (MutableList<T>) -> Unit,
     crossinline errorBlock: suspend (Exception?) -> Unit
 ) {
@@ -23,17 +23,17 @@ suspend inline fun <reified T> Task<QuerySnapshot>.fold(
     addOnCompleteListener { snapshot ->
         if (snapshot.isSuccessful) {
             Timber.tag("task-completion").i("successful -> ${snapshot.result?.documents}")
-            globalScope {
+            scope.launch {
                 successBlock(snapshot.result?.toObjects(T::class.java) ?: mutableListOf())
             }
         } else {
             Timber.tag("task-completion").i("failed")
-            globalScope { errorBlock(snapshot.exception) }
+            scope.launch { errorBlock(snapshot.exception) }
         }
     }
 
     // error branch
-    addOnFailureListener { globalScope { errorBlock(it) } }
+    addOnFailureListener { scope.launch { errorBlock(it) } }
 }
 
 suspend inline fun Task<Void>.await() = withContext(Dispatchers.IO) {
@@ -53,37 +53,55 @@ suspend inline fun Task<Void>.await() = withContext(Dispatchers.IO) {
     }
 }
 
+suspend inline fun Task<AuthResult>.awaitAuthResult(scope: CoroutineScope): FirebaseUser? {
+    val logger = Timber.tag("auth-result-task")
+    return try {
+        Tasks.await(this@awaitAuthResult).user
+    } catch (e: Exception) {
+        logger.d("failed to authenticate user: ${e.localizedMessage}")
+        null
+    }
+}
+
 /**
  * Document snapshots
  */
-suspend inline fun <reified T> Task<DocumentSnapshot>.foldDoc(
-    crossinline successBlock: suspend (T?) -> Unit,
+inline fun <reified T> Task<DocumentSnapshot>.foldDoc(
+    scope: CoroutineScope,
+    crossinline successBlock: (T?) -> Unit,
     crossinline errorBlock: suspend (Exception?) -> Unit
 ) {
 
     addOnCompleteListener { snapshot ->
         if (snapshot.isSuccessful) {
-            globalScope { successBlock(snapshot.result?.toObject(T::class.java)) }
+            Timber.tag("fold-doc").i("result -> ${snapshot.result?.data}")
+//            scope.launch {  }
+            successBlock(snapshot.result?.toObject(T::class.java))
         } else {
-            globalScope { errorBlock(snapshot.exception) }
+            Timber.tag("fold-doc").e("error -> ${snapshot.exception?.localizedMessage}")
+            scope.launch { errorBlock(snapshot.exception) }
         }
     }
 
     // error branch
-    addOnFailureListener { globalScope { errorBlock(it) } }
+    addOnFailureListener {
+        Timber.tag("fold-doc").i("failure error -> ${it.localizedMessage}")
+        scope.launch { errorBlock(it) }
+    }
 }
 
 suspend inline fun <reified T> DocumentReference.observe(
+    scope: CoroutineScope,
     crossinline block: suspend (T?, Exception?) -> Unit
 ) {
     addSnapshotListener { value, error ->
         if (error != null) {
-            globalScope { block(null, error) }
+            scope.launch { block(null, error) }
             return@addSnapshotListener
         }
 
         if (value != null) {
-            globalScope {
+            scope.launch {
                 if (value.exists()) {
                     val data = value.toObject(T::class.java)
                     block(data, null)
