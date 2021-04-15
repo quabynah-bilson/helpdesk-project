@@ -10,10 +10,10 @@ import io.helpdesk.databinding.ItemTechnicianAvatarBinding
 import io.helpdesk.model.data.User
 
 /**
- * recyclerview implementation for list of available technicians
+ * recyclerview implementation for list of [User]s
  */
-class TechnicianAvatarListAdapter constructor(private val onUserSelect: (User) -> Unit) :
-    PagingDataAdapter<User, TechnicianAvatarListAdapter.TechnicianAvatarListViewHolder>(
+class UsersListAdapter constructor(private val onUserSelect: (User) -> Unit) :
+    PagingDataAdapter<User, UsersListAdapter.UsersListViewHolder>(
         USER_DIFF_UTIL
     ) {
 
@@ -28,7 +28,7 @@ class TechnicianAvatarListAdapter constructor(private val onUserSelect: (User) -
             }
     }
 
-    inner class TechnicianAvatarListViewHolder(private val binding: ItemTechnicianAvatarBinding) :
+    inner class UsersListViewHolder(private val binding: ItemTechnicianAvatarBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(user: User, onUserSelect: (User) -> Unit) = binding.run {
@@ -47,13 +47,13 @@ class TechnicianAvatarListAdapter constructor(private val onUserSelect: (User) -
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): TechnicianAvatarListViewHolder = TechnicianAvatarListViewHolder(
+    ): UsersListViewHolder = UsersListViewHolder(
         ItemTechnicianAvatarBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
     )
 
-    override fun onBindViewHolder(holder: TechnicianAvatarListViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UsersListViewHolder, position: Int) {
         val user = getItem(position)
         user?.let { holder.bind(it, onUserSelect) }
     }

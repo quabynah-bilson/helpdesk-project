@@ -10,11 +10,13 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
 import io.helpdesk.R
 import io.helpdesk.databinding.FragmentUsersBinding
 import io.helpdesk.model.data.UserType
-import io.helpdesk.view.recyclerview.TechnicianAvatarListAdapter
+import io.helpdesk.view.bottomsheet.UserProfileBottomSheet
+import io.helpdesk.view.recyclerview.UsersListAdapter
 import io.helpdesk.viewmodel.UserUIState
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +31,7 @@ class UsersFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
 
     private val usersViewModel by activityViewModels<UsersViewModel>()
     private val queryUserType = MutableStateFlow(UserType.All)
-    
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,8 +55,9 @@ class UsersFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
                         loadTechniciansState.collectLatest { state ->
                             if (state is UserUIState.Success) {
                                 Timber.tag("users-db").i("users obtained -> ${state.users.size}")
-                                val usersAdapter = TechnicianAvatarListAdapter { user ->
-                                    // todo -> show user details
+                                val usersAdapter = UsersListAdapter { user ->
+                                    UserProfileBottomSheet.newInstance(user)
+                                        .show(childFragmentManager, UserProfileBottomSheet.TAG)
                                 }.apply { submitData(PagingData.from(state.users)) }
 
                                 // setup recyclerview
@@ -80,6 +83,8 @@ class UsersFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
                     show()
                 }
             }
+
+            fabAddUser.setOnClickListener { findNavController().navigate(UsersFragmentDirections.actionNavUsersToNavRegister()) }
 
             executePendingBindings()
         }

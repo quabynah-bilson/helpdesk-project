@@ -96,9 +96,6 @@
         android:label="@string/fragment_dashboard"
         tools:layout="@layout/fragment_dashboard" >
         <action
-            android:id="@+id/action_nav_dashboard_to_nav_register"
-            app:destination="@id/nav_register" />
-        <action
             android:id="@+id/action_nav_dashboard_to_nav_login"
             app:destination="@id/nav_login"
             app:popUpTo="@id/nav_login"
@@ -118,5 +115,9 @@
         android:id="@+id/nav_users"
         android:name="io.helpdesk.view.admin.UsersFragment"
         android:label="@string/fragment_users"
-        tools:layout="@layout/fragment_users" />
+        tools:layout="@layout/fragment_users" >
+        <action
+            android:id="@+id/action_nav_users_to_nav_register"
+            app:destination="@id/nav_register" />
+    </fragment>
 </navigation>

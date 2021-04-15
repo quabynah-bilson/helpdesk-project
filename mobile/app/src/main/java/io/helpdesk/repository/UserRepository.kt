@@ -10,7 +10,6 @@ import io.helpdesk.model.db.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -48,6 +47,7 @@ class UserRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun currentUser(): Flow<Result<User?>> = channelFlow {
+        offer(Result.Loading)
         if (storage.userId == null) {
             offer(Result.Error(Exception("no user found")))
         } else {
@@ -71,28 +71,31 @@ class UserRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun addUser(user: User): Flow<Result<Unit>> = channelFlow {
+        offer(Result.Loading)
         launch(Dispatchers.IO) { dao.insert(user) }
         userCollection.document(user.id).set(user, SetOptions.merge()).await()
+        offer(Result.Initial)
     }
 
     @ExperimentalCoroutinesApi
     override fun allUsers(): Flow<Result<List<User>>> = channelFlow {
+        offer(Result.Loading)
         dao.allUsers().collectLatest { users ->
             offer(Result.Success(users))
         }
 
         userCollection.get()
             .fold<User>(this, { users ->
-                launch(Dispatchers.IO) { users.forEach { dao.insert(it) } }
+                users.forEach { launch(Dispatchers.IO) { dao.insert(it) } }
             }, { exception -> offer(Result.Error(exception)) })
+
+        awaitClose()
     }
 
     @ExperimentalCoroutinesApi
     override fun usersByType(type: Int): Flow<Result<List<User>>> = channelFlow {
         offer(Result.Loading)
-        delay(500)
-        offer(Result.Success(emptyList()))
-        delay(2500)
+
         dao.allUsers().collectLatest { users ->
             val filteredList = when (type) {
                 UserType.All.ordinal, UserType.SuperAdmin.ordinal -> users
@@ -111,6 +114,7 @@ class UserRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun getUserById(id: String): Flow<Result<User>> = channelFlow {
+        offer(Result.Loading)
         dao.getUserById(id).collectLatest { user ->
             if (user == null) offer(Result.Error(Exception("no user found")))
             else offer(Result.Success(user))
@@ -124,5 +128,7 @@ class UserRepository @Inject constructor(
                     launch(Dispatchers.IO) { dao.insert(user) }
                 }
             }, { exception -> offer(Result.Error(exception)) })
+
+        awaitClose()
     }
 }

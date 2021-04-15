@@ -15,7 +15,7 @@ import io.helpdesk.R
 import io.helpdesk.databinding.TechniciansBottomSheetBinding
 import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.User
-import io.helpdesk.view.recyclerview.TechnicianAvatarListAdapter
+import io.helpdesk.view.recyclerview.UsersListAdapter
 import io.helpdesk.viewmodel.UserUIState
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.collectLatest
@@ -58,7 +58,7 @@ class TechniciansBottomSheet private constructor(private val listener: OnTechnic
 
             lifecycleScope.launchWhenCreated {
                 // adapter
-                val technicianAdapter = TechnicianAvatarListAdapter { user ->
+                val technicianAdapter = UsersListAdapter { user ->
                     dismissAllowingStateLoss()
                     listener.onItemSelected(user)
                 }

@@ -72,7 +72,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
             lifecycleScope.launchWhenCreated {
                 with(usersViewModel) {
                     // get technician
-                    getTechnician(argTicket.technician).collectLatest { technician ->
+                    getUserById(argTicket.technician).collectLatest { technician ->
                         ticket = argTicket
                         if (technician != null) user = technician
                         executePendingBindings()

@@ -80,7 +80,7 @@ class UsersViewModel @Inject constructor(
     }.stateIn(viewModelScope)
 
     @ExperimentalCoroutinesApi
-    fun getTechnician(id: String): Flow<User?> = channelFlow {
+    fun getUserById(id: String): Flow<User?> = channelFlow {
         repository.getUserById(id).collectLatest { result ->
             when (result) {
                 is Result.Success -> {
