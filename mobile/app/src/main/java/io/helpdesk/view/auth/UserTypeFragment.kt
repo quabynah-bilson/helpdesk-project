@@ -2,12 +2,9 @@ package io.helpdesk.view.auth
 
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -46,16 +43,6 @@ class UserTypeFragment : Fragment() {
         progressBinding = ProgressIndicatorBinding.bind(binding?.progressIndicator?.root!!)
         // Inflate the layout for this fragment
         return binding?.root
-    }
-
-    // show colored system bar
-    override fun onCreate(savedInstanceState: Bundle?) {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), TypedValue().apply {
-                requireContext().theme.resolveAttribute(R.attr.colorPrimary, this, true)
-            }.data)
-        super.onCreate(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -149,13 +136,5 @@ class UserTypeFragment : Fragment() {
                 }
             }
         }
-    }
-
-    // reset system bar color
-    override fun onDestroyView() {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), R.color.white)
-        super.onDestroyView()
     }
 }

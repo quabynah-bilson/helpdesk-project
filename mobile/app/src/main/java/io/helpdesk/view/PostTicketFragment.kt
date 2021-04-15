@@ -2,12 +2,9 @@ package io.helpdesk.view
 
 import android.os.Bundle
 import android.text.Editable
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -17,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import io.helpdesk.R
 import io.helpdesk.databinding.FragmentPostTicketBinding
 import io.helpdesk.viewmodel.PostTicketUIState
 import io.helpdesk.viewmodel.TicketsViewModel
@@ -32,15 +28,6 @@ class PostTicketFragment : Fragment() {
     private val ticketsViewModel by activityViewModels<TicketsViewModel>()
     private val usersViewModel by activityViewModels<UsersViewModel>()
 
-
-    // reset system bar color
-    override fun onDestroyView() {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), R.color.white)
-        super.onDestroyView()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,11 +39,6 @@ class PostTicketFragment : Fragment() {
 
     // show colored system bar
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), TypedValue().apply {
-                requireContext().theme.resolveAttribute(R.attr.colorPrimary, this, true)
-            }.data)
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenCreated {

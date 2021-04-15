@@ -46,9 +46,11 @@
         <!--Platform attributes-->
         <item name="android:navigationBarColor">@color/nav_bar</item>
         <item name="android:statusBarColor">@color/immersive_sys_ui</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
 
         <!--Default styles-->
         <item name="bottomNavigationStyle">@style/Widget.HelpDesk.BottomNavigationView</item>
+        <item name="tabStyle">@style/Widget.MaterialComponents.TabLayout.PrimarySurface</item>
 
     </style>
 

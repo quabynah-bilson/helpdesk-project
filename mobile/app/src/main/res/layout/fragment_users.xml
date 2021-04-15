@@ -1,14 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.admin.UsersFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+        <import type="io.helpdesk.model.data.UserType" />
+
+        <variable
+            name="userType"
+            type="UserType" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context=".view.admin.UsersFragment">
 
-</FrameLayout>
+        <FrameLayout
+            android:id="@+id/sort_icon_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_56"
+            android:paddingHorizontal="@dimen/spacing_24"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{userType.name()}"
+                android:textAppearance="?textAppearanceHeadline6"
+                tools:text="Customer" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/sort_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:background="?attr/selectableItemBackground"
+                android:src="@drawable/ic_filter" />
+
+        </FrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/users_list"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_none"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sort_icon_container"
+            tools:listitem="@layout/item_technician_avatar" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_16"
+            android:layout_marginBottom="@dimen/spacing_16"
+            android:contentDescription="@string/add_user"
+            android:src="@drawable/ic_add"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- progress -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_indicator"
+            android:layout_width="@dimen/spacing_120"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_120"
+            android:indeterminate="true"
+            app:indicatorColor="?colorSecondary"
+            app:indicatorDirectionLinear="endToStart"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <!-- empty view -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/empty_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <!-- animation -->
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/users_animation_view"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spacing_300"
+                android:layout_marginTop="@dimen/spacing_64"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="false"
+                app:lottie_rawRes="@raw/empty" />
+
+            <!-- intro -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/users_empty_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_20"
+                android:alpha="?emphasis_high"
+                android:text="@string/empty_users_state"
+                android:textAlignment="center"
+                android:textAppearance="?textAppearanceHeadline6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/users_animation_view" />
+
+            <!-- desc -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/users_empty_text_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_8"
+                android:alpha="?emphasis_medium"
+                android:paddingHorizontal="@dimen/spacing_20"
+                android:text="@string/empty_users_state_desc"
+                android:textAlignment="center"
+                android:textAppearance="?textAppearanceSubtitle2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/users_empty_text" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -63,15 +63,19 @@ class TechniciansBottomSheet private constructor(private val listener: OnTechnic
                     listener.onItemSelected(user)
                 }
 
-                // get technicians
-                usersViewModel.loadTechniciansState.collectLatest { state ->
-                    if (state is UserUIState.Success) {
-                        technicianAdapter.submitData(PagingData.from(state.users))
 
-                        // setup recyclerview
-                        techniciansList.run {
-                            setHasFixedSize(true)
-                            adapter = technicianAdapter
+                // get technicians
+                with(usersViewModel) {
+                    loadUsers()
+                    loadTechniciansState.collectLatest { state ->
+                        if (state is UserUIState.Success) {
+                            technicianAdapter.submitData(PagingData.from(state.users))
+
+                            // setup recyclerview
+                            techniciansList.run {
+                                setHasFixedSize(true)
+                                adapter = technicianAdapter
+                            }
                         }
                     }
                 }

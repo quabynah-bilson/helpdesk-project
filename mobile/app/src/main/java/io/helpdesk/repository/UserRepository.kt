@@ -10,6 +10,7 @@ import io.helpdesk.model.db.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -47,7 +48,9 @@ class UserRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun currentUser(): Flow<Result<User?>> = channelFlow {
-        if (storage.userId != null) {
+        if (storage.userId == null) {
+            offer(Result.Error(Exception("no user found")))
+        } else {
             dao.getUserByIdAndType(id = storage.userId!!, type = storage.userType)
                 .collectLatest { currentUser ->
                     offer(Result.Success(currentUser))
@@ -86,14 +89,24 @@ class UserRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun usersByType(type: Int): Flow<Result<List<User>>> = channelFlow {
+        offer(Result.Loading)
+        delay(500)
+        offer(Result.Success(emptyList()))
+        delay(2500)
         dao.allUsers().collectLatest { users ->
-            offer(Result.Success(users.filter { person -> person.type == UserType.values()[type] }))
+            val filteredList = when (type) {
+                UserType.All.ordinal, UserType.SuperAdmin.ordinal -> users
+                else -> users.filter { person -> person.type == UserType.values()[type] }
+            }
+            offer(Result.Success(filteredList))
         }
 
         userCollection.whereEqualTo("type", type).get()
             .fold<User>(this, { users ->
                 launch(Dispatchers.IO) { users.forEach { dao.insert(it) } }
             }, { exception -> offer(Result.Error(exception)) })
+
+        awaitClose()
     }
 
     @ExperimentalCoroutinesApi

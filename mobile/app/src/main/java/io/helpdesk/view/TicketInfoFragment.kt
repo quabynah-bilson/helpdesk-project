@@ -106,14 +106,6 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
         }
     }
 
-    // reset system bar color
-    override fun onDestroyView() {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), R.color.white)
-        super.onDestroyView()
-    }
-
     override fun onItemSelected(item: TicketOptionsItem) {
         with(childFragmentManager) {
             when (item) {

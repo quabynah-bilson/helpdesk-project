@@ -47,4 +47,10 @@
     <string name="reassign">Reassign</string>
     <string name="feedback">Feedback...</string>
     <string name="feedback_title_hint">Create a feedback for this ticket. Your words should not be more than 100.</string>
+    <string name="add_user">Add user</string>
+    <string name="empty_users_state">All users will appear here</string>
+    <string name="empty_users_state_desc">Technicians and customers registered will appear here. Currently there is none available</string>
+    <string name="all_users">All Users</string>
+    <string name="customers">Customers</string>
+    <string name="technicians">Technicians</string>
 </resources>

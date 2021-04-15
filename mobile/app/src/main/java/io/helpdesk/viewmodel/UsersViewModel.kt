@@ -9,6 +9,7 @@ import io.helpdesk.model.data.User
 import io.helpdesk.model.data.UserType
 import io.helpdesk.repository.BaseUserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -18,31 +19,7 @@ class UsersViewModel @Inject constructor(
     private val repository: BaseUserRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UserUIState>(UserUIState.Loading)
-    val loadTechniciansState: StateFlow<UserUIState> get() = _uiState
-
-    init {
-
-        ioScope {
-            repository.usersByType(UserType.Technician.ordinal).collectLatest { result ->
-                when (result) {
-                    is Result.Success -> {
-                        val users = result.data
-
-                        if (users.isEmpty()) _uiState.emit(UserUIState.Error("no technicians found"))
-                        else _uiState.emit(UserUIState.Success(users))
-                    }
-
-                    is Result.Error -> _uiState.emit(
-                        UserUIState.Error(
-                            result.exception?.localizedMessage ?: "no technicians found"
-                        )
-                    )
-
-                    else -> _uiState.emit(UserUIState.Loading)
-                }
-            }
-        }
-    }
+    val loadTechniciansState = _uiState.asStateFlow()
 
     fun saveUser(user: User) = ioScope {
         repository.addUser(user).collectLatest { result ->
@@ -57,6 +34,27 @@ class UsersViewModel @Inject constructor(
                 is Result.Success -> {
                     Timber.tag("save-user").i("successfully saved user")
                 }
+            }
+        }
+    }
+
+    fun loadUsers(userType: UserType = UserType.Technician) = ioScope {
+        repository.usersByType(userType.ordinal).collectLatest { result ->
+            when (result) {
+                is Result.Success -> {
+                    val users = result.data
+
+                    if (users.isEmpty()) _uiState.emit(UserUIState.Error("no technicians found"))
+                    else _uiState.emit(UserUIState.Success(users))
+                }
+
+                is Result.Error -> _uiState.emit(
+                    UserUIState.Error(
+                        result.exception?.localizedMessage ?: "no technicians found"
+                    )
+                )
+
+                else -> _uiState.emit(UserUIState.Loading)
             }
         }
     }
@@ -78,6 +76,7 @@ class UsersViewModel @Inject constructor(
                 }
             }
         }
+        awaitClose()
     }.stateIn(viewModelScope)
 
     @ExperimentalCoroutinesApi

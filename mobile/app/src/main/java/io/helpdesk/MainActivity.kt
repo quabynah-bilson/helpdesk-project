@@ -1,9 +1,11 @@
 package io.helpdesk
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -16,6 +18,7 @@ import io.helpdesk.databinding.ActivityMainBinding
 import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.collectLatest
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -37,25 +40,42 @@ class MainActivity : AppCompatActivity() {
             bottomNav.setupWithNavController(navController)
 
             // show bottom navigation only for admins and for selected destinations
-            navController.addOnDestinationChangedListener { _, destination, _ ->
-                lifecycleScope.launchWhenCreated {
-                    usersViewModel.currentUser().collectLatest { user ->
-                        if (user == null) return@collectLatest
+            lifecycleScope.launchWhenCreated {
+                usersViewModel.currentUser().collectLatest { user ->
+                    Timber.tag("current-user").i("user -> $user")
+                    navController.addOnDestinationChangedListener { _, destination, _ ->
+                        val supportedDestinations = arrayOf(
+                            R.id.nav_dashboard,
+                            R.id.nav_users,
+                            R.id.nav_faqs,
+                            R.id.nav_tickets
+                        )
+                        bottomNav.isVisible =
+                            supportedDestinations.contains(destination.id) && user?.type == UserType.SuperAdmin
 
                         when (destination.id) {
                             R.id.nav_dashboard,
                             R.id.nav_users,
                             R.id.nav_faqs,
+                            R.id.nav_welcome,
+                            R.id.nav_user_type,
                             R.id.nav_tickets -> {
-                                bottomNav.isVisible = user.type == UserType.SuperAdmin
+                                window?.run {
+                                    navigationBarColor = ContextCompat.getColor(
+                                        this@MainActivity,
+                                        R.color.helpdesk_blue_800
+                                    )
+                                }
 
-                                // add bottom padding to escape bottom navigation view
-                                navHost.view?.setPadding(
-                                    0,
-                                    0,
-                                    0,
-                                    resources.getDimensionPixelOffset(R.dimen.spacing_64)
-                                )
+                                if (destination.id != R.id.nav_welcome && destination.id != R.id.nav_user_type) {
+                                    // add bottom padding to escape bottom navigation view
+                                    navHost.view?.setPadding(
+                                        0,
+                                        0,
+                                        0,
+                                        resources.getDimensionPixelOffset(R.dimen.spacing_64)
+                                    )
+                                }
 
                                 onBackPressedDispatcher.addCallback(
                                     this@MainActivity,
@@ -83,7 +103,12 @@ class MainActivity : AppCompatActivity() {
                                     })
                             }
 
-                            else -> bottomNav.isVisible = false
+                            else -> {
+                                window?.run {
+                                    navigationBarColor =
+                                        ContextCompat.getColor(this@MainActivity, R.color.white)
+                                }
+                            }
                         }
                     }
                 }

@@ -15,7 +15,7 @@ fun ImageView.loadImage(
     @DrawableRes placeholder: Int = R.drawable.avatar_circular_clip,
     @DrawableRes error: Int = R.drawable.ic_account
 ) {
-    GlideApp.with(this)
+    GlideApp.with(this.context)
         .asBitmap()
         .load(url)
         .placeholder(placeholder)

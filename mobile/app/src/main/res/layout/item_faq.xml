@@ -17,7 +17,7 @@
         android:layout_width="@dimen/spacing_none"
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceBody1"
-        android:textColor="?colorSecondary"
+        android:textColor="?colorPrimaryVariant"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@sample/samples_faqs.json/data/question" />

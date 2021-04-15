@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -45,8 +47,20 @@ class HomeFragment : Fragment() {
         return binding?.root
     }
 
+    override fun onDestroyView() {
+        requireActivity().window?.run {
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
+        }
+        super.onDestroyView()
+    }
+
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        requireActivity().window?.run {
+            statusBarColor = ContextCompat.getColor(requireContext(), R.color.helpdesk_blue_800)
+        }
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenCreated {

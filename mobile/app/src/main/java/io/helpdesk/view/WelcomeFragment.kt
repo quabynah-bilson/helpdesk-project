@@ -4,14 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import io.helpdesk.R
 import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.databinding.FragmentWelcomeBinding
 import io.helpdesk.model.data.UserType
@@ -33,14 +30,6 @@ class WelcomeFragment : Fragment() {
     @Inject
     lateinit var storage: BaseUserPersistentStorage
 
-    // reset system bar color
-    override fun onDestroyView() {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), R.color.white)
-        super.onDestroyView()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,9 +41,6 @@ class WelcomeFragment : Fragment() {
 
     // show colored system bar
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), R.color.helpdesk_blue_800)
         super.onViewCreated(view, savedInstanceState)
 
         // handle button click

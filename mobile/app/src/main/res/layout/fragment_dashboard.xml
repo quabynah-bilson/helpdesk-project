@@ -11,6 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_56"
+        android:background="?colorPrimary"
         app:layout_constraintTop_toTopOf="parent">
 
         <!-- logo -->
@@ -21,6 +22,7 @@
             android:layout_marginStart="@dimen/spacing_20"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_logo"
+            android:tint="?colorOnPrimarySurface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,7 +36,7 @@
             android:text="@string/app_name"
             android:textAlignment="center"
             android:textAppearance="?textAppearanceHeadline6"
-            android:textColor="?attr/colorControlNormal"
+            android:textColor="?colorOnPrimarySurface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/user_avatar"
             app:layout_constraintStart_toEndOf="@id/app_logo"
@@ -48,6 +50,7 @@
             android:layout_marginEnd="@dimen/spacing_20"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_account"
+            android:tint="?colorOnPrimarySurface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
