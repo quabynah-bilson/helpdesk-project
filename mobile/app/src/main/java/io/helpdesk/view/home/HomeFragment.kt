@@ -51,11 +51,11 @@ class HomeFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             binding?.run {
-                userAvatar.run {
-                    userViewModel.currentUser().collectLatest { user ->
-                        if (user != null) {
+                userViewModel.currentUser().collectLatest { user ->
+                    if (user != null) {
+                        userAvatar.run {
                             // load user's avatar here
-                            userAvatar.loadImage(user.avatar)
+                            loadImage(user.avatar)
 
                             setOnClickListener {
                                 MaterialAlertDialogBuilder(requireContext()).apply {
@@ -78,8 +78,6 @@ class HomeFragment : Fragment() {
                             }
                         }
                     }
-
-
                 }
 
 

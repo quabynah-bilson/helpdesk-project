@@ -1,6 +1,7 @@
 package io.helpdesk.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.core.util.Result
 import io.helpdesk.core.util.ioScope
@@ -17,7 +18,7 @@ class UsersViewModel @Inject constructor(
     private val repository: BaseUserRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UserUIState>(UserUIState.Loading)
-    val uiState: StateFlow<UserUIState> get() = _uiState
+    val loadTechniciansState: StateFlow<UserUIState> get() = _uiState
 
     init {
 
@@ -60,11 +61,12 @@ class UsersViewModel @Inject constructor(
         }
     }
 
-    @ExperimentalCoroutinesApi
-    fun currentUser(): Flow<User?> = channelFlow {
+    // @ExperimentalCoroutinesApi
+    suspend fun currentUser(): Flow<User?> = channelFlow {
         repository.currentUser().collectLatest { result ->
             when (result) {
                 is Result.Success -> {
+                    Timber.tag("current-user").i("logged in as -> ${result.data}")
                     offer(result.data)
                 }
 
@@ -76,7 +78,7 @@ class UsersViewModel @Inject constructor(
                 }
             }
         }
-    }
+    }.stateIn(viewModelScope)
 
     @ExperimentalCoroutinesApi
     fun getTechnician(id: String): Flow<User?> = channelFlow {

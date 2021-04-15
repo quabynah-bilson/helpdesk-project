@@ -9,6 +9,7 @@ import io.helpdesk.model.data.UserType
 import io.helpdesk.model.db.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -62,6 +63,7 @@ class UserRepository @Inject constructor(
                 }
             }
         }
+        awaitClose()
     }
 
     @ExperimentalCoroutinesApi

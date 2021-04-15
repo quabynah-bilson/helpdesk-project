@@ -8,9 +8,8 @@ import io.helpdesk.core.util.ioScope
 import io.helpdesk.model.data.User
 import io.helpdesk.model.data.UserType
 import io.helpdesk.repository.BaseAuthenticationRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,9 +23,9 @@ class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenti
     private val _authState = MutableStateFlow<AuthState>(AuthState.Initial)
     private val _userTypeState = MutableStateFlow(UserType.Customer)
 
-    val authState: Flow<AuthState> get() = _authState
-    val loginState: Flow<Boolean> get() = authRepository.loginState
-    val userTypeState: StateFlow<UserType> get() = _userTypeState
+    val authState = _authState.asStateFlow()
+    val loginState = authRepository.loginState
+    val userTypeState = _userTypeState.asStateFlow()
 
     // set user type
     fun updateUserType(type: Int) = viewModelScope.launch {
@@ -70,7 +69,7 @@ class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenti
         }
 
     // sign out
-    fun logout() = authRepository.logout()
+    fun logout() = ioScope { authRepository.logout() }
 }
 
 sealed class AuthState {

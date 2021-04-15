@@ -54,7 +54,7 @@ suspend inline fun Task<Void>.await() = withContext(Dispatchers.IO) {
 }
 
 suspend inline fun Task<AuthResult>.awaitAuthResult(scope: CoroutineScope): FirebaseUser? {
-    val logger = Timber.tag("auth-result-task")
+    val logger = Timber.tag("auth-result-task-error")
     return try {
         Tasks.await(this@awaitAuthResult).user
     } catch (e: Exception) {

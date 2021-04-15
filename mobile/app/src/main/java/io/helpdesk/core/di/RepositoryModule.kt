@@ -10,21 +10,27 @@ import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.model.db.LocalDatabase
 import io.helpdesk.model.db.UserDao
 import io.helpdesk.repository.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
 object RepositoryModule {
 
+    @Provides
+    fun provideCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO)
+
     @Singleton
     @Provides
     fun provideAuthRepository(
+        scope: CoroutineScope,
         userDao: UserDao,
         storage: BaseUserPersistentStorage,
         firestore: FirebaseFirestore,
         auth: FirebaseAuth,
     ): BaseAuthenticationRepository =
-        AuthenticationRepository(userDao, storage, firestore, auth)
+        AuthenticationRepository(scope, userDao, storage, firestore, auth)
 
     @Singleton
     @Provides

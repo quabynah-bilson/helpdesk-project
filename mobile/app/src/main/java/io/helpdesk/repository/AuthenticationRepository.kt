@@ -8,12 +8,13 @@ import io.helpdesk.core.util.*
 import io.helpdesk.model.data.User
 import io.helpdesk.model.data.UserType
 import io.helpdesk.model.db.UserDao
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,21 +23,22 @@ import javax.inject.Inject
  */
 interface BaseAuthenticationRepository {
 
-    fun login(email: String, password: String): Flow<Result<User>>
+    suspend fun login(email: String, password: String): Flow<Result<User>>
 
-    fun register(
+    suspend fun register(
         username: String,
         email: String,
         password: String,
         userType: UserType
     ): Flow<Result<User>>
 
-    fun logout(): Flow<Result<Unit>>
+    suspend fun logout(): Flow<Result<Unit>>
 
     val loginState: Flow<Boolean>
 }
 
 class AuthenticationRepository @Inject constructor(
+    private val scope: CoroutineScope,
     private val userDao: UserDao,
     private val storage: BaseUserPersistentStorage,
     firestore: FirebaseFirestore,
@@ -46,51 +48,57 @@ class AuthenticationRepository @Inject constructor(
     private val userCollection = firestore.collection(User.TABLE_NAME)
 
     @ExperimentalCoroutinesApi
-    override fun login(email: String, password: String): Flow<Result<User>> = channelFlow {
-        when {
-            !validateCredentials(email = email) -> offer(Result.Error(Exception("invalid email address")))
+    override suspend fun login(email: String, password: String): Flow<Result<User>> =
+        channelFlow {
+            when {
+                !validateCredentials(email = email) -> offer(Result.Error(Exception("invalid email address")))
 
-            !validateCredentials(password = password) -> offer(Result.Error(Exception("invalid password")))
+                !validateCredentials(password = password) -> offer(Result.Error(Exception("invalid password")))
 
-            else -> {
-                offer(Result.Loading)
+                else -> {
+                    offer(Result.Loading)
 
-                val firebaseUser =
-                    auth.signInWithEmailAndPassword(email, password).awaitAuthResult(this)
-                if (firebaseUser == null) {
-                    logger.e("user credentials may be invalid")
-                    offer(Result.Error(Exception("no user found")))
-                } else {
-                    // get user from database
-                    userCollection.document(firebaseUser.uid).get().foldDoc<User>(this,
-                        { user ->
-                            logger
-                                .i("user logged in with data -> $user")
-                            if (user == null) {
-                                offer(Result.Error(Exception("no user found")))
-                            } else {
+                    val firebaseUser =
+                        auth.signInWithEmailAndPassword(email, password).awaitAuthResult(scope)
+                    if (firebaseUser == null) {
+                        logger.e("user credentials may be invalid")
+                        offer(Result.Error(Exception("no user found")))
+                    } else {
+                        // get user from database
+                        userCollection.document(firebaseUser.uid).get().foldDoc<User>(scope,
+                            { user ->
+                                scope.launch {
+                                    logger
+                                        .i("user logged in with data -> $user")
+                                    if (user == null) {
+                                        offer(Result.Error(Exception("no user found")))
+                                    } else {
 
-                                // todo -> store locally
-//                                storage.userId = userByUsername.id
-//                                storage.userType = userByUsername.type.ordinal
+                                        // store user type
+                                        storage.userId = user.id
+                                        storage.userType = user.type.ordinal
 
-                                launch(Dispatchers.IO) { userDao.insert(user) }
+                                        // save user data
+                                        userDao.insert(user)
 
-                                offer(Result.Success(user))
+                                        offer(Result.Success(user))
+                                    }
+                                }
+                            },
+                            { err ->
+                                scope.launch { offer(Result.Error(err)) }
                             }
-                        },
-                        { err ->
-                            offer(Result.Error(err))
-                        }
-                    )
+                        )
+                    }
                 }
             }
-        }
-    }
+
+            awaitClose()
+        }.stateIn(scope)
 
 
     @ExperimentalCoroutinesApi
-    override fun register(
+    override suspend fun register(
         username: String,
         email: String,
         password: String,
@@ -106,7 +114,7 @@ class AuthenticationRepository @Inject constructor(
                     offer(Result.Loading)
 
                     val firebaseUser =
-                        auth.createUserWithEmailAndPassword(email, password).awaitAuthResult(this)
+                        auth.createUserWithEmailAndPassword(email, password).awaitAuthResult(scope)
 
                     if (firebaseUser == null) {
                         offer(Result.Error(Exception("user already exists or there is an internet connection issue")))
@@ -125,13 +133,14 @@ class AuthenticationRepository @Inject constructor(
                 }
 
             }
-        }
+            awaitClose()
+        }.stateIn(scope)
 
-    override fun logout(): Flow<Result<Unit>> = flow {
+    override suspend fun logout(): Flow<Result<Unit>> = flow {
         logger.i("logging out")
         storage.clear()
         emit(Result.Initial)
-    }
+    }.stateIn(scope)
 
     override val loginState: Flow<Boolean>
         get() = storage.loginState

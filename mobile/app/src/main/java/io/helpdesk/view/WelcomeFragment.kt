@@ -13,24 +13,24 @@ import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
 import io.helpdesk.core.storage.BaseUserPersistentStorage
-import io.helpdesk.core.util.logger
 import io.helpdesk.databinding.FragmentWelcomeBinding
 import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.AuthViewModel
-import kotlinx.coroutines.delay
+import io.helpdesk.viewmodel.UsersViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 /**
  * welcome page
  */
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class WelcomeFragment : Fragment() {
     private var binding: FragmentWelcomeBinding? = null
     private val authViewModel by activityViewModels<AuthViewModel>()
+    private val userViewModel by activityViewModels<UsersViewModel>()
 
     @Inject
     lateinit var storage: BaseUserPersistentStorage
@@ -60,38 +60,28 @@ class WelcomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // handle button click
-        lifecycleScope.launch {
-            storage.loginState.collectLatest { state ->
-                logger.i("login state -> $state")
-            }
-            delay(2000)
-            storage.clear()
+        lifecycleScope.launchWhenCreated { observeCurrentUser() }
 
-            authViewModel.loginState.collectLatest { loggedIn ->
-                Timber.tag("user-login-state").d("state -> $loggedIn")
-                binding?.run {
-                    if (loggedIn) {
-                        authViewModel.userTypeState.collectLatest { type ->
-                            Timber.tag("user-type").d("type -> $type")
-                            skipButton.setOnClickListener {
-                                // destination
-                                val dir = if (type == UserType.SuperAdmin) {
-                                    WelcomeFragmentDirections.actionNavWelcomeToNavDashboard()
-                                } else {
-                                    WelcomeFragmentDirections.actionNavWelcomeToNavHome()
-                                }
-                                findNavController().navigate(dir)
-                            }
-                        }
+    }
+
+    private suspend fun observeCurrentUser() {
+        val navController = findNavController()
+        userViewModel.currentUser().collectLatest { user ->
+            Timber.tag("user-type").d("type -> ${user?.type}")
+            binding?.skipButton?.setOnClickListener {
+                if (user == null) {
+                    navController.navigate(WelcomeFragmentDirections.actionNavWelcomeToNavLogin())
+                } else {
+                    // destination
+                    val dir = if (user.type == UserType.SuperAdmin) {
+                        WelcomeFragmentDirections.actionNavWelcomeToNavDashboard()
                     } else {
-                        skipButton.setOnClickListener {
-                            findNavController().navigate(WelcomeFragmentDirections.actionNavWelcomeToNavLogin())
-                        }
+                        WelcomeFragmentDirections.actionNavWelcomeToNavHome()
                     }
+                    navController.navigate(dir)
                 }
             }
         }
-
     }
 
 

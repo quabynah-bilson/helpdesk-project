@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.core.content.edit
 import io.helpdesk.core.util.logger
 import io.helpdesk.model.data.UserType
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 /**
@@ -20,19 +22,19 @@ interface BaseUserPersistentStorage {
 
 class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPersistentStorage {
     private val prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE)
-    private val _loginState = MutableSharedFlow<Boolean>()
+    private val _loginState = MutableStateFlow<Boolean>(false)
 
     init {
-        println("starting prefs")
+        _loginState.value = !prefs.getString(USER_ID_KEY, null).isNullOrEmpty()
         prefs.registerOnSharedPreferenceChangeListener { _, key ->
             when (key) {
                 USER_TYPE_KEY -> {
                     logger.d("changed user type")
-                    _loginState.tryEmit(!prefs.getString(key, null).isNullOrEmpty())
                 }
 
                 USER_ID_KEY -> {
                     logger.d("changed user id")
+                    _loginState.value = !prefs.getString(key, null).isNullOrEmpty()
                 }
             }
         }
@@ -57,14 +59,14 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
                 putString(USER_ID_KEY, value)
             }
             // notify all observers
-            _loginState.tryEmit(!value.isNullOrEmpty())
+            _loginState.value = !value.isNullOrEmpty()
         }
 
     /**
      * observer for login state
      */
     override val loginState: Flow<Boolean>
-        get() = _loginState
+        get() = _loginState.asStateFlow()
 
     override suspend fun clear() {
         userId = null

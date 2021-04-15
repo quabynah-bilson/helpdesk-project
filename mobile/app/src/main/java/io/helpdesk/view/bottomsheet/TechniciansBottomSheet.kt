@@ -61,7 +61,7 @@ class TechniciansBottomSheet private constructor(private val listener: OnTechnic
                 }
 
                 // get technicians
-                usersViewModel.uiState.collectLatest { state ->
+                usersViewModel.loadTechniciansState.collectLatest { state ->
                     if (state is UserUIState.Success) {
                         technicianAdapter.submitData(PagingData.from(state.users))
 
