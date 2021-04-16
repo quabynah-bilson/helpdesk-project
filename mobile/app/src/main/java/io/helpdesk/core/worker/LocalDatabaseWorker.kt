@@ -10,6 +10,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import io.helpdesk.core.util.deserializeJson
 import io.helpdesk.model.data.Question
+import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.User
 import io.helpdesk.model.db.LocalDatabase
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +30,7 @@ class LocalDatabaseWorker @AssistedInject constructor(
     // data access objects
     private val faqsDao = db.faqDao()
     private val userDao = db.userDao()
+    private val ticketDao = db.ticketDao()
 
     // remote database
     private val firestore = FirebaseFirestore.getInstance()
@@ -49,6 +51,13 @@ class LocalDatabaseWorker @AssistedInject constructor(
                 }
             userDao.insertAll(technicians)
 
+            // tickets
+            val tickets =
+                applicationContext.deserializeJson("tickets.json") {
+                    Ticket.parser(it)
+                }
+            ticketDao.insertAll(tickets)
+
             // upload faqs to firestore
             faqs.forEach { faq ->
                 firestore.collection(Question.TABLE_NAME).document(faq.id)
@@ -59,6 +68,11 @@ class LocalDatabaseWorker @AssistedInject constructor(
             technicians.forEach { user ->
                 firestore.collection(User.TABLE_NAME).document(user.id)
                     .set(user, SetOptions.merge())
+            }
+
+            tickets.forEach { ticket ->
+                firestore.collection(Ticket.TABLE_NAME).document(ticket.id)
+                    .set(ticket, SetOptions.merge())
             }
         }
 

@@ -2,6 +2,7 @@ package io.helpdesk.view.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorRes
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.paging.PagingDataAdapter
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.helpdesk.R
 import io.helpdesk.databinding.ItemTicketBinding
+import io.helpdesk.model.data.TicketPriority
 import io.helpdesk.model.data.UserAndTicket
 
 /**
@@ -23,6 +25,11 @@ class TicketsListAdapter :
 
         fun bind(item: UserAndTicket) = with(binding) {
             data = item
+            priorityColor = when (item.ticket.priority) {
+                TicketPriority.High -> getColor(R.color.priority_high)
+                TicketPriority.Medium -> getColor(R.color.priority_mid)
+                TicketPriority.Low -> getColor(R.color.priority_low)
+            }
             root.setOnClickListener {
                 root.findNavController()
                     .navigate(R.id.nav_ticket_info, bundleOf("ticket" to item.ticket))
@@ -30,6 +37,10 @@ class TicketsListAdapter :
             executePendingBindings()
         }
 
+        private fun getColor(@ColorRes color: Int): Int = binding.root.context.resources.getColor(
+            color,
+            binding.root.context.theme
+        )
     }
 
     override fun onBindViewHolder(holder: TicketsListViewHolder, position: Int) {

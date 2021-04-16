@@ -31,20 +31,8 @@ class TicketFeedbackBottomSheet private constructor(private val listener: OnFeed
         return binding?.root
     }
 
-    override fun onDestroyView() {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), TypedValue().apply {
-                requireContext().theme.resolveAttribute(R.attr.colorPrimary, this, true)
-            }.data)
-        super.onDestroyView()
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), R.color.white)
         super.onViewCreated(view, savedInstanceState)
 
         binding?.run {

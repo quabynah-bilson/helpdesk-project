@@ -49,4 +49,18 @@
         android:textAppearance="?textAppearanceBody1"
         app:drawableStartCompat="@drawable/ic_send" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/update_state"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_56"
+        android:layout_marginTop="@dimen/spacing_8"
+        android:alpha="?emphasis_high"
+        android:background="?attr/selectableItemBackground"
+        android:drawablePadding="@dimen/spacing_12"
+        android:drawableTint="?colorOnBackground"
+        android:gravity="center_vertical"
+        android:text="@string/update_state"
+        android:textAppearance="?textAppearanceBody1"
+        app:drawableStartCompat="@drawable/ic_send" />
+
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -4,13 +4,17 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.core.util.Result
+import io.helpdesk.core.util.await
+import io.helpdesk.core.util.fold
 import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.TicketPriority
 import io.helpdesk.model.data.UserAndTicket
 import io.helpdesk.model.data.UserType
 import io.helpdesk.model.db.LocalDatabase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -36,6 +40,7 @@ interface BaseTicketRepository {
  * Ticket repository implementation
  */
 class TicketRepository @Inject constructor(
+    private val scope: CoroutineScope,
     private val storage: BaseUserPersistentStorage,
     db: LocalDatabase,
     firestore: FirebaseFirestore,
@@ -81,18 +86,20 @@ class TicketRepository @Inject constructor(
         } else {
             offer(Result.Error(Exception("user not logged in")))
         }
+        awaitClose()
     }
 
     @ExperimentalCoroutinesApi
     override fun updateTicket(ticket: Ticket): Flow<Result<Boolean>> = channelFlow {
         offer(Result.Loading)
         try {
-            launch(Dispatchers.IO) { dao.update(ticket) }
-            ticketCollection.document(ticket.id).set(ticket, SetOptions.merge())
+            dao.update(ticket)
+            ticketCollection.document(ticket.id).set(ticket, SetOptions.merge()).await(scope)
             offer(Result.Success(true))
         } catch (e: Exception) {
             offer(Result.Error(e))
         }
+        awaitClose()
     }
 
     @ExperimentalCoroutinesApi
@@ -100,12 +107,13 @@ class TicketRepository @Inject constructor(
         offer(Result.Loading)
         try {
             val updatedTicket = ticket.copy(deleted = true)
-            launch(Dispatchers.IO) { dao.update(updatedTicket) }
+            dao.update(updatedTicket)
             ticketCollection.document(ticket.id).set(updatedTicket, SetOptions.merge())
             offer(Result.Success(true))
         } catch (e: Exception) {
             offer(Result.Error(e))
         }
+        awaitClose()
     }
 
     @ExperimentalCoroutinesApi
@@ -127,15 +135,18 @@ class TicketRepository @Inject constructor(
             }
 
             // fetch from server and update locally
-            ticketCollection.addSnapshotListener { value, error ->
-                if (error != null) {
-                    offer(Result.Error(error))
-                } else value?.documents?.forEach { doc ->
-                    if (doc.exists() && doc.data != null) {
-                        launch(Dispatchers.IO) { dao.insert(doc.toObject(Ticket::class.java)!!) }
+            ticketCollection.get().fold<Ticket>(
+                scope,
+                { tickets ->
+                    tickets.forEach { item ->
+                        dao.insert(item)
                     }
-                }
-            }
+                },
+                { exception ->
+                    offer(Result.Error(exception))
+                },
+            )
         }
+        awaitClose()
     }
 }

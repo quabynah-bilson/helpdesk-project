@@ -3,6 +3,7 @@ package io.helpdesk.model.data
 import android.os.Parcelable
 import androidx.room.*
 import com.google.gson.annotations.SerializedName
+import com.google.gson.internal.LinkedTreeMap
 import kotlinx.parcelize.Parcelize
 import java.sql.Date
 
@@ -25,7 +26,6 @@ enum class TicketPriority {
 @Entity(tableName = Ticket.TABLE_NAME)
 data class Ticket(
     @PrimaryKey
-    @SerializedName("_id")
     @ColumnInfo(name = "_id")
     val id: String,
     val user: String,
@@ -37,7 +37,6 @@ data class Ticket(
     var type: TicketType = TicketType.Question,
     val linkedTickets: List<String> = emptyList(),
     var priority: TicketPriority = TicketPriority.Medium,
-    @SerializedName("createdAt")
     @ColumnInfo(name = "createdAt")
     val timestamp: String = Date(System.currentTimeMillis()).toString(),
     val dueDate: String = Date(System.currentTimeMillis() + 720000000).toString(),
@@ -49,6 +48,23 @@ data class Ticket(
 
     companion object {
         const val TABLE_NAME = "tickets"
+
+        @Suppress("UNCHECKED_CAST")
+        fun parser(map: LinkedTreeMap<String, Any?>) = Ticket(
+            id = map["_id"].toString(),
+            user = map["user"].toString(),
+            name = map["name"].toString(),
+            technician = map["technician"].toString(),
+            description = map["description"].toString(),
+            comment = map["comment"].toString(),
+            status = TicketCompletionState.values()[(map["status"] as Double).toInt()],
+            type = TicketType.values()[(map["type"] as Double).toInt()],
+            linkedTickets = map["linkedTickets"] as List<String>? ?: emptyList(),
+            timestamp = map["timestamp"].toString(),
+            dueDate = map["due_date"].toString(),
+            deleted = map["deleted"] as Boolean,
+            priority = TicketPriority.values()[(map["priority"] as Double).toInt()]
+        )
     }
 }
 

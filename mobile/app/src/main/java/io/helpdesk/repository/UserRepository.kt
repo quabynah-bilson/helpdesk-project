@@ -45,7 +45,7 @@ class UserRepository @Inject constructor(
     @ExperimentalCoroutinesApi
     override fun updateUser(user: User): Flow<Result<Unit>> = channelFlow {
         launch(Dispatchers.IO) { dao.update(user) }
-        userCollection.document(user.id).set(user, SetOptions.merge()).await()
+        userCollection.document(user.id).set(user, SetOptions.merge()).await(scope)
     }
 
     @ExperimentalCoroutinesApi
@@ -76,7 +76,7 @@ class UserRepository @Inject constructor(
     override fun addUser(user: User): Flow<Result<Unit>> = channelFlow {
         offer(Result.Loading)
         launch(Dispatchers.IO) { dao.insert(user) }
-        userCollection.document(user.id).set(user, SetOptions.merge()).await()
+        userCollection.document(user.id).set(user, SetOptions.merge()).await(scope)
         offer(Result.Initial)
     }
 
@@ -138,7 +138,7 @@ class UserRepository @Inject constructor(
     override suspend fun deleteUser(user: User) {
         scope.launch {
             dao.delete(user)
-            userCollection.document(user.id).delete().await()
+            userCollection.document(user.id).delete().await(scope)
         }
     }
 }

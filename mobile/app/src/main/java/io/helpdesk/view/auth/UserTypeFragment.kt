@@ -16,12 +16,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
 import io.helpdesk.databinding.FragmentUserTypeBinding
 import io.helpdesk.model.data.UserType
-import io.helpdesk.view.admin.UsersFragmentDirections
 import io.helpdesk.viewmodel.AuthState
 import io.helpdesk.viewmodel.AuthViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -85,7 +83,7 @@ class UserTypeFragment : Fragment() {
 
                         is AuthState.Success -> {
                             Snackbar.make(root, "Account type saved", Snackbar.LENGTH_LONG).show()
-                            navController.navigate(UsersFragmentDirections.actionNavUsersToNavRegister())
+                            navController.navigate(UserTypeFragmentDirections.actionNavUserTypeToNavDashboard())
                         }
 
                         else -> {

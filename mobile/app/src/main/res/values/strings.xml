@@ -45,7 +45,7 @@
     <string name="send_feedback">Send feedback</string>
     <string name="update_priority">Update priority</string>
     <string name="reassign">Reassign</string>
-    <string name="feedback">Feedback...</string>
+    <string name="feedback">Feedback…</string>
     <string name="feedback_title_hint">Create a feedback for this ticket. Your words should not be more than 100.</string>
     <string name="add_user">Add user</string>
     <string name="empty_users_state">All users will appear here</string>
@@ -56,4 +56,5 @@
     <string name="create_user">Create account</string>
     <string name="delete">delete</string>
     <string name="call">call</string>
+    <string name="update_state">Mark as…</string>
 </resources>

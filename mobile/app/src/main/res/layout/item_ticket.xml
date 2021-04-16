@@ -18,6 +18,10 @@
             type="UserAndTicket" />
 
         <variable
+            name="priorityColor"
+            type="Integer" />
+
+        <variable
             name="technician"
             type="User" />
     </data>
@@ -28,117 +32,149 @@
         android:layout_marginHorizontal="@dimen/spacing_12"
         android:layout_marginTop="@dimen/spacing_8"
         android:background="@drawable/outlined_border_background"
-        android:paddingHorizontal="@dimen/spacing_20"
-        android:paddingVertical="@dimen/spacing_16">
+        android:clipChildren="true"
+        android:clipToPadding="true"
+        android:paddingBottom="@dimen/spacing_16">
 
-        <!-- name -->
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/ticket_name"
-            android:layout_width="wrap_content"
+        <!-- priority -->
+        <FrameLayout
+            android:id="@+id/ticket_priority"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{data.ticket.name}"
-            android:textAppearance="?textAppearanceBody1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@sample/samples_tickets.json/data/name" />
+            android:background="@drawable/priority_background"
+            android:backgroundTint="@{priorityColor, default=`@color/helpdesk_blue_700`}"
+            android:paddingVertical="@dimen/spacing_12"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!-- description -->
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/ticket_comment"
-            android:layout_width="wrap_content"
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{data.ticket.priority.name()}"
+                android:textAppearance="?textAppearanceCaption"
+                android:textColor="?colorOnBackground"
+                app:textAllCaps="true"
+                tools:text="High" />
+
+        </FrameLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_6"
-            android:alpha="?emphasis_medium"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:text="@{data.ticket.description}"
-            android:textAppearance="?textAppearanceSubtitle2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ticket_name"
-            tools:text="@sample/samples_tickets.json/data/comment" />
-
-        <!-- separator -->
-        <View
-            android:id="@+id/separator"
-            android:layout_width="@dimen/spacing_none"
-            android:layout_height="@dimen/spacing_1"
-            android:layout_marginVertical="@dimen/spacing_12"
-            android:alpha="?emphasis_low"
-            android:background="?divider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/ticket_comment"
-            app:layout_constraintTop_toBottomOf="@id/ticket_comment" />
-
-        <!-- technician's avatar -->
-        <ImageView
-            android:id="@+id/technician_avatar"
-            android:layout_width="@dimen/spacing_avatar"
-            android:layout_height="@dimen/spacing_avatar"
             android:layout_marginTop="@dimen/spacing_12"
-            android:background="@drawable/avatar_circular_clip"
-            android:contentDescription="@{data.user.avatar}"
-            app:circleCrop="@{true}"
-            app:error="@{@drawable/avatar_circular_clip}"
-            app:imageUrl="@{data.user.avatar}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/separator"
-            app:placeholder="@{@drawable/avatar_circular_clip}"
-            tools:src="@tools:sample/avatars" />
+            android:paddingHorizontal="@dimen/spacing_20"
+            app:layout_constraintTop_toBottomOf="@id/ticket_priority">
 
-        <!-- technician's name -->
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/technician_name"
-            android:layout_width="@dimen/spacing_none"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/spacing_16"
-            android:layout_marginTop="@dimen/spacing_6"
-            android:alpha="?emphasis_high"
-            android:text="@{data.user.name}"
-            android:textAlignment="textStart"
-            android:textAppearance="?textAppearanceSubtitle2"
-            app:layout_constraintEnd_toStartOf="@id/chat_button"
-            app:layout_constraintStart_toEndOf="@id/technician_avatar"
-            app:layout_constraintTop_toTopOf="@id/technician_avatar"
-            tools:text="@sample/samples_tickets.json/data/technician/name" />
+            <!-- name -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/ticket_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{data.ticket.name}"
+                android:textAppearance="?textAppearanceBody1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@sample/samples_tickets.json/data/name" />
 
-        <!-- technician's phone -->
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/technician_phone"
-            android:layout_width="@dimen/spacing_none"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/spacing_16"
-            android:layout_marginTop="@dimen/spacing_2"
-            android:alpha="?emphasis_high"
-            android:text="@{data.user.phone}"
-            android:textAlignment="textStart"
-            android:textAppearance="?textAppearanceCaption"
-            app:layout_constraintEnd_toStartOf="@id/chat_button"
-            app:layout_constraintStart_toEndOf="@id/technician_avatar"
-            app:layout_constraintTop_toBottomOf="@id/technician_name"
-            tools:text="@sample/samples_tickets.json/data/technician/phone" />
+            <!-- description -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/ticket_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_6"
+                android:alpha="?emphasis_medium"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:text="@{data.ticket.description}"
+                android:textAppearance="?textAppearanceSubtitle2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ticket_name"
+                tools:text="@sample/samples_tickets.json/data/comment" />
 
-        <!-- call -->
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/call_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_phone"
-            app:layout_constraintBottom_toBottomOf="@id/technician_avatar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/technician_avatar" />
+            <!-- separator -->
+            <!--            <View-->
+            <!--                android:id="@+id/separator"-->
+            <!--                android:layout_width="@dimen/spacing_none"-->
+            <!--                android:layout_height="@dimen/spacing_1"-->
+            <!--                android:layout_marginVertical="@dimen/spacing_12"-->
+            <!--                android:alpha="?emphasis_low"-->
+            <!--                android:background="?divider"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintStart_toStartOf="@id/ticket_comment"-->
+            <!--                app:layout_constraintTop_toBottomOf="@id/ticket_comment" />-->
 
-        <!-- chat -->
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/chat_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_16"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_send"
-            app:layout_constraintBottom_toBottomOf="@id/technician_avatar"
-            app:layout_constraintEnd_toStartOf="@id/call_button"
-            app:layout_constraintTop_toTopOf="@id/technician_avatar" />
+            <!-- technician's avatar -->
+            <ImageView
+                android:id="@+id/technician_avatar"
+                android:layout_width="@dimen/spacing_avatar"
+                android:layout_height="@dimen/spacing_avatar"
+                android:layout_marginTop="@dimen/spacing_20"
+                android:background="@drawable/avatar_circular_clip"
+                android:contentDescription="@{data.user.avatar}"
+                app:circleCrop="@{true}"
+                app:error="@{@drawable/avatar_circular_clip}"
+                app:imageUrl="@{data.user.avatar}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ticket_comment"
+                app:placeholder="@{@drawable/avatar_circular_clip}"
+                tools:src="@tools:sample/avatars" />
+
+            <!-- technician's name -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/technician_name"
+                android:layout_width="@dimen/spacing_none"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_16"
+                android:layout_marginTop="@dimen/spacing_6"
+                android:alpha="?emphasis_high"
+                android:text="@{data.user.name}"
+                android:textAlignment="textStart"
+                android:textAppearance="?textAppearanceSubtitle2"
+                app:layout_constraintEnd_toStartOf="@id/chat_button"
+                app:layout_constraintStart_toEndOf="@id/technician_avatar"
+                app:layout_constraintTop_toTopOf="@id/technician_avatar"
+                tools:text="@sample/samples_tickets.json/data/technician/name" />
+
+            <!-- technician's phone -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/technician_phone"
+                android:layout_width="@dimen/spacing_none"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_16"
+                android:layout_marginTop="@dimen/spacing_2"
+                android:alpha="?emphasis_high"
+                android:text="@{data.user.phone}"
+                android:textAlignment="textStart"
+                android:textAppearance="?textAppearanceCaption"
+                app:layout_constraintEnd_toStartOf="@id/chat_button"
+                app:layout_constraintStart_toEndOf="@id/technician_avatar"
+                app:layout_constraintTop_toBottomOf="@id/technician_name"
+                tools:text="@sample/samples_tickets.json/data/technician/phone" />
+
+            <!-- call -->
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/call_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_phone"
+                app:layout_constraintBottom_toBottomOf="@id/technician_avatar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/technician_avatar" />
+
+            <!-- chat -->
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/chat_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_16"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_send"
+                app:layout_constraintBottom_toBottomOf="@id/technician_avatar"
+                app:layout_constraintEnd_toStartOf="@id/call_button"
+                app:layout_constraintTop_toTopOf="@id/technician_avatar" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

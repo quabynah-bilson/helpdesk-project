@@ -72,6 +72,7 @@
         <item name="colorSecondaryVariant">@color/helpdesk_yellow_400</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/black</item>
+<!--        <item name="colorOnSurface">@android:color/darker_gray</item>-->
     </style>
 
     <style name="ThemeOverlay.HelpDesk.Blue" parent="@style/ThemeOverlay.MaterialComponents.Light">

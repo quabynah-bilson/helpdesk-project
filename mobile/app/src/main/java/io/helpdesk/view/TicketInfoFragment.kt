@@ -1,12 +1,9 @@
 package io.helpdesk.view
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -15,17 +12,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import io.helpdesk.R
 import io.helpdesk.databinding.FragmentTicketInfoBinding
-import io.helpdesk.model.data.Ticket
-import io.helpdesk.model.data.TicketPriority
-import io.helpdesk.model.data.User
-import io.helpdesk.model.data.UserType
+import io.helpdesk.model.data.*
 import io.helpdesk.view.bottomsheet.*
 import io.helpdesk.viewmodel.TicketsViewModel
 import io.helpdesk.viewmodel.UsersViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 
@@ -51,7 +47,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
         super.onViewCreated(view, savedInstanceState)
 
         val argTicket: Ticket = args.ticket
-        println("ticket found => $argTicket")
+        println("ticket found => ${ticketsViewModel.parseTicketDate(argTicket.timestamp)}")
 
         binding?.run {
             deleteTicket.setOnClickListener {
@@ -69,73 +65,31 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
 
             backButton.setOnClickListener { findNavController().popBackStack() }
 
-            lifecycleScope.launchWhenCreated {
-                with(usersViewModel) {
-                    // get technician
-                    getUserById(argTicket.technician).collectLatest { technician ->
-                        ticket = argTicket
-                        if (technician != null) user = technician
-                        executePendingBindings()
-                    }
-
-                    // get current user
-                    currentUser().collectLatest { currentUser ->
-                        Timber.tag("user details").d("current user -> $currentUser")
-
-                        if (currentUser?.type == UserType.Technician) {
-                            requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                            requireActivity().window?.navigationBarColor =
-                                ContextCompat.getColor(requireActivity(), TypedValue().apply {
-                                    requireContext().theme.resolveAttribute(R.attr.colorPrimary, this, true)
-                                }.data)
-                            updateTicketStatus.isVisible = true
-                        }
-
-                        deleteTicket.isInvisible = currentUser?.id != argTicket.user
-                        executePendingBindings()
-                    }
-                }
-
+            with(usersViewModel) {
                 updateTicketStatus.setOnClickListener {
                     TicketOptionsBottomSheet.newInstance(argTicket, this@TicketInfoFragment).show(
                         childFragmentManager,
                         TicketOptionsBottomSheet::class.java.canonicalName
                     )
                 }
-            }
-        }
-    }
 
-    override fun onItemSelected(item: TicketOptionsItem) {
-        with(childFragmentManager) {
-            when (item) {
-                TicketOptionsItem.SendFeedback -> {
-                    TicketFeedbackBottomSheet.newInstance(this@TicketInfoFragment)
-                        .show(this, TicketFeedbackBottomSheet.TAG)
-                }
-                TicketOptionsItem.UpdatePriority -> {
-                    var priority: TicketPriority = TicketPriority.Medium
-                    MaterialAlertDialogBuilder(requireContext()).apply {
-                        setTitle("Ticket priority")
-                        val options = arrayOf("Low", "Medium", "High")
-                        setItems(options) { dialog, index ->
-                            priority = when (index) {
-                                0 -> TicketPriority.Low
-                                1 -> TicketPriority.Medium
-                                else -> TicketPriority.High
-                            }
-                            dialog.dismiss()
-                        }
-                        setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
-                        show()
+                lifecycleScope.launchWhenCreated {
+                    // get technician
+                    getUserById(argTicket.technician).collectLatest { technician ->
+                        ticket = argTicket
+                        if (technician != null) user = technician
+                        executePendingBindings()
                     }
-
-                    // update ticket
-                    ticketsViewModel.updateTicket(args.ticket.copy(priority = priority))
                 }
-                TicketOptionsItem.Reassign -> {
-                    TechniciansBottomSheet.newInstance(this@TicketInfoFragment)
-                        .show(this, TechniciansBottomSheet.TAG)
+            }
+
+            GlobalScope.launch(Dispatchers.Main) {
+                // get current user
+                usersViewModel.currentUser().collectLatest { currentUser ->
+                    Timber.tag("user details").d("current user -> $currentUser")
+                    updateTicketStatus.isVisible = currentUser?.type != UserType.Customer
+                    deleteTicket.isInvisible = currentUser?.id != argTicket.user
+                    executePendingBindings()
                 }
             }
         }
@@ -147,6 +101,77 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
 
     override fun onComplete(feedback: String) {
         ticketsViewModel.updateTicket(ticket = args.ticket.copy(comment = feedback))
+    }
+
+    override fun onItemSelected(ticket: Ticket, item: TicketOptionsItem) {
+        with(childFragmentManager) {
+            when (item) {
+                TicketOptionsItem.SendFeedback -> {
+                    TicketFeedbackBottomSheet.newInstance(this@TicketInfoFragment)
+                        .show(this, TicketFeedbackBottomSheet.TAG)
+                }
+
+                TicketOptionsItem.MarkAs -> {
+                    var completion: TicketCompletionState = args.ticket.status
+                    MaterialAlertDialogBuilder(requireContext()).apply {
+                        setTitle("Mark ticket as...")
+                        val options = arrayOf(
+                            TicketCompletionState.Pending.name,
+                            TicketCompletionState.Cancelled.name,
+                            TicketCompletionState.Done.name,
+                        )
+                        setSingleChoiceItems(
+                            options,
+                            options.indexOf(completion.name)
+                        ) { dialog, index ->
+                            completion = when (index) {
+                                0 -> TicketCompletionState.Pending
+                                1 -> TicketCompletionState.Cancelled
+                                else -> TicketCompletionState.Done
+                            }
+
+                            // update ticket
+                            ticketsViewModel.updateTicket(args.ticket.copy(status = completion))
+                            dialog.dismiss()
+                        }
+                        setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+                        show()
+                    }
+                }
+
+                TicketOptionsItem.UpdatePriority -> {
+                    var priority: TicketPriority = args.ticket.priority
+                    MaterialAlertDialogBuilder(requireContext()).apply {
+                        setTitle("Ticket priority")
+                        val options = arrayOf(
+                            TicketPriority.Low.name,
+                            TicketPriority.Medium.name,
+                            TicketPriority.High.name,
+                        )
+                        setSingleChoiceItems(
+                            options,
+                            options.indexOf(priority.name)
+                        ) { dialog, index ->
+                            priority = when (index) {
+                                0 -> TicketPriority.Low
+                                1 -> TicketPriority.Medium
+                                else -> TicketPriority.High
+                            }
+                            dialog.dismiss()
+
+                            // update ticket
+                            ticketsViewModel.updateTicket(args.ticket.copy(priority = priority))
+                        }
+                        setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+                        show()
+                    }
+                }
+                TicketOptionsItem.Reassign -> {
+                    TechniciansBottomSheet.newInstance(this@TicketInfoFragment)
+                        .show(this, TechniciansBottomSheet.TAG)
+                }
+            }
+        }
     }
 
 }

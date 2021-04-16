@@ -40,13 +40,14 @@ object RepositoryModule {
         storage: BaseUserPersistentStorage,
         firestore: FirebaseFirestore,
     ): BaseUserRepository =
-        UserRepository(scope,userDao, storage, firestore)
+        UserRepository(scope, userDao, storage, firestore)
 
     @Singleton
     @Provides
     fun provideTicketRepository(
+        scope: CoroutineScope,
         storage: BaseUserPersistentStorage,
         db: LocalDatabase,
         firestore: FirebaseFirestore,
-    ): BaseTicketRepository = TicketRepository(storage, db, firestore)
+    ): BaseTicketRepository = TicketRepository(scope, storage, db, firestore)
 }

@@ -39,12 +39,12 @@ suspend inline fun <reified T> Task<QuerySnapshot>.fold(
     addOnFailureListener { scope.launch { errorBlock(it) } }
 }
 
-suspend inline fun Task<Void>.await() = withContext(Dispatchers.IO) {
+fun Task<Void>.await(scope: CoroutineScope) = scope.launch {
     try {
         addOnCompleteListener {
             if (it.isSuccessful)
                 Timber.tag("task-completion").i("successful")
-            else Timber.tag("task-completion").e("failed -> ${it.exception}")
+            else Timber.tag("task-completion").e("failed -> ${it.exception?.localizedMessage}")
 
         }
 

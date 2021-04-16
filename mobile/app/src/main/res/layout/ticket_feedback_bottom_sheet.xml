@@ -56,7 +56,7 @@
         android:gravity="center"
         android:text="@string/submit"
         android:textAppearance="?textAppearanceButton"
-        android:textColor="?colorOnSecondary"
+        android:textColor="?colorOnPrimary"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -24,4 +24,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!--<color name="divider">#FFA7A8B3</color>-->
+
+    <!-- priority -->
+    <color name="priority_low">#E9F4F5</color>
+    <color name="priority_mid">#DCEEFF</color>
+    <color name="priority_high">#FFEEDB</color>
 </resources>

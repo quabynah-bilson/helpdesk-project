@@ -13,6 +13,8 @@ import io.helpdesk.repository.BaseTicketRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import java.text.DateFormat
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +42,7 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
                             )
                         )
                     )
-                    is Result.Loading -> _ticketsUIState.emit(LatestTicketUIState.Loading)
+                    else -> _ticketsUIState.emit(LatestTicketUIState.Loading)
                 }
             }
         }
@@ -53,12 +55,12 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
     ) = ioScope {
         repository.postNewTicket(title, description).collectLatest { result ->
             when (result) {
-                is Result.Loading -> _postTicketUIState.emit(PostTicketUIState.Loading)
                 is Result.Error -> _postTicketUIState.emit(PostTicketUIState.Error(result.toString()))
                 is Result.Success -> {
                     _postTicketUIState.emit(PostTicketUIState.Success)
                     uiScope { navController.popBackStack() }
                 }
+                else -> _postTicketUIState.emit(PostTicketUIState.Loading)
             }
         }
     }
@@ -68,6 +70,9 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
 
     fun deleteTicket(ticket: Ticket) =
         ioScope { repository.deleteTicket(ticket) }
+
+    fun parseTicketDate(timestamp: String): String =
+        DateFormat.getDateTimeInstance().format(Date(timestamp))
 }
 
 sealed class LatestTicketUIState {

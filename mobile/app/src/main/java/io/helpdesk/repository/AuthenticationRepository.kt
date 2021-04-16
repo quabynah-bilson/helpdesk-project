@@ -125,7 +125,7 @@ class AuthenticationRepository @Inject constructor(
                                         type = userType,
                                     )
                                 userCollection.document(user.id).set(user, SetOptions.merge())
-                                    .await()
+                                    .await(scope)
                                 userDao.insert(user)
                                 offer(Result.Success(user))
                             }

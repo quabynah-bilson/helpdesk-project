@@ -1,17 +1,13 @@
 package io.helpdesk.view.bottomsheet
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.PagingData
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import io.helpdesk.R
 import io.helpdesk.databinding.TechniciansBottomSheetBinding
 import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.User
@@ -38,20 +34,8 @@ class TechniciansBottomSheet private constructor(private val listener: OnTechnic
         return binding?.root
     }
 
-    override fun onDestroyView() {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), TypedValue().apply {
-                requireContext().theme.resolveAttribute(R.attr.colorPrimary, this, true)
-            }.data)
-        super.onDestroyView()
-    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        requireActivity().window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        requireActivity().window?.navigationBarColor =
-            ContextCompat.getColor(requireActivity(), R.color.white)
         super.onViewCreated(view, savedInstanceState)
 
         binding?.run {

@@ -1,5 +1,6 @@
 package io.helpdesk
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -18,6 +19,9 @@ import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.Period
+import kotlin.random.Random
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -59,12 +63,20 @@ class MainActivity : AppCompatActivity() {
                             R.id.nav_faqs,
                             R.id.nav_welcome,
                             R.id.nav_user_type,
+                            R.id.nav_ticket_info,
                             R.id.nav_tickets -> {
                                 window?.run {
                                     navigationBarColor = ContextCompat.getColor(
                                         this@MainActivity,
                                         R.color.helpdesk_blue_800
                                     )
+
+                                    if (destination.id == R.id.nav_ticket_info && user?.type == UserType.Customer) {
+                                        navigationBarColor = ContextCompat.getColor(
+                                            this@MainActivity,
+                                            R.color.white
+                                        )
+                                    }
                                 }
 
                                 // add bottom padding to escape bottom navigation view
@@ -74,6 +86,7 @@ class MainActivity : AppCompatActivity() {
                                     0,
                                     if (destination.id == R.id.nav_welcome
                                         || destination.id == R.id.nav_user_type
+                                        || destination.id == R.id.nav_ticket_info
                                     ) 0 else resources.getDimensionPixelOffset(R.dimen.spacing_64)
                                 )
 

@@ -73,28 +73,25 @@ class UserProfileBottomSheet private constructor(private val user: User) :
 
             nameField.run {
                 addTextChangedListener { text ->
-                    if (text.isNullOrEmpty()) {
-                        setText(user.name)
-                    } else {
-                        currentUser = currentUser?.copy(name = text.toString())
-                    }
+                    if (text.isNullOrEmpty()) return@addTextChangedListener
+                    currentUser = currentUser?.copy(name = text.toString())
+                    executePendingBindings()
                 }
             }
 
             phoneField.run {
                 addTextChangedListener { text ->
-                    if (text.isNullOrEmpty()) {
-                        setText(user.name)
-                    } else {
-                        currentUser = currentUser?.copy(name = text.toString())
-                    }
+                    if (text.isNullOrEmpty()) return@addTextChangedListener
+                    currentUser = currentUser?.copy(phone = text.toString())
+                    executePendingBindings()
                 }
             }
 
             saveButton.setOnClickListener {
                 if (user == currentUser) return@setOnClickListener
                 usersViewModel.saveUser(currentUser)
-                Toast.makeText(requireContext(), "Saved successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Saved successfully", Toast.LENGTH_SHORT)
+                    .show()
             }
 
             executePendingBindings()
