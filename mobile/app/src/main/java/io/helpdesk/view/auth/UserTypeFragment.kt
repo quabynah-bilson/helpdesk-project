@@ -15,11 +15,14 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
 import io.helpdesk.databinding.FragmentUserTypeBinding
-import io.helpdesk.databinding.ProgressIndicatorBinding
 import io.helpdesk.model.data.UserType
 import io.helpdesk.view.admin.UsersFragmentDirections
 import io.helpdesk.viewmodel.AuthState
 import io.helpdesk.viewmodel.AuthViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -32,17 +35,16 @@ data class NewUserAuthParams(val email: String, val password: String, val userna
 @AndroidEntryPoint
 class UserTypeFragment : Fragment() {
     private var binding: FragmentUserTypeBinding? = null
-    private var progressBinding: ProgressIndicatorBinding? = null
 
     private val authViewModel by activityViewModels<AuthViewModel>()
     private val args by navArgs<UserTypeFragmentArgs>()
+    private val userTypeState = MutableStateFlow(UserType.Customer)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentUserTypeBinding.inflate(inflater, container, false)
-        progressBinding = ProgressIndicatorBinding.bind(binding?.progressIndicator?.root!!)
         // Inflate the layout for this fragment
         return binding?.root
     }
@@ -54,21 +56,21 @@ class UserTypeFragment : Fragment() {
         val selectedCardContentColor = resources.getColor(R.color.white, requireActivity().theme)
         val unselectedCardContentColor = resources.getColor(R.color.black, requireActivity().theme)
 
-        lifecycleScope.launchWhenCreated {
-            binding?.run {
+        binding?.run {
+            val navController = findNavController()
 
-                val navController = findNavController()
+            // register user account
+            saveButton.setOnClickListener {
+                authViewModel.register(
+                    username = args.authParams.username,
+                    email = args.authParams.email,
+                    password = args.authParams.password,
+                    userType = userTypeState.value,
+                )
+            }
 
-                // navigate to home screen
-                saveButton.setOnClickListener {
-                    authViewModel.register(
-                        username = args.authParams.username,
-                        email = args.authParams.email,
-                        password = args.authParams.password,
-                        userType = authViewModel.userTypeState.value,
-                    )
-                }
-
+            lifecycleScope.launchWhenCreated {
+                // observe authentication state
                 authViewModel.authState.collectLatest { state ->
                     when (state) {
                         is AuthState.Error -> {
@@ -91,19 +93,21 @@ class UserTypeFragment : Fragment() {
                         }
                     }
 
-                    progressBinding?.run {
-                        this.root.isVisible = state is AuthState.Loading
-                        saveButton.isVisible = state !is AuthState.Loading
-                    }
+                    progressIndicator.root.isVisible = state is AuthState.Loading
+                    saveButton.isVisible = state !is AuthState.Loading
+                    customerCard.isVisible = state !is AuthState.Loading
+                    technicianCard.isVisible = state !is AuthState.Loading
                 }
+            }
 
-                authViewModel.userTypeState.collectLatest { state ->
-                    Timber.tag("user type selector").d("current state -> $state")
+            GlobalScope.launch(Dispatchers.Main) {
+                userTypeState.collectLatest { userType ->
+                    Timber.tag("user-type-selector").d("current state -> $userType")
                     with(customerCard) {
-                        isSelected = state == UserType.Customer
+                        isSelected = userType == UserType.Customer
                         setOnClickListener {
-                            if (state == UserType.Customer) return@setOnClickListener
-                            authViewModel.updateUserType(UserType.Customer.ordinal)
+                            if (userType == UserType.Customer) return@setOnClickListener
+                            userTypeState.tryEmit(UserType.Customer)
                         }
 
                         if (isSelected) {
@@ -122,10 +126,10 @@ class UserTypeFragment : Fragment() {
                     }
 
                     with(technicianCard) {
-                        isSelected = state == UserType.Technician
+                        isSelected = userType == UserType.Technician
                         setOnClickListener {
-                            if (state == UserType.Technician) return@setOnClickListener
-                            authViewModel.updateUserType(UserType.Technician.ordinal)
+                            if (userType == UserType.Technician) return@setOnClickListener
+                            userTypeState.tryEmit(UserType.Technician)
                         }
 
                         if (isSelected) {
@@ -142,6 +146,7 @@ class UserTypeFragment : Fragment() {
                     }
                 }
             }
+
         }
     }
 }

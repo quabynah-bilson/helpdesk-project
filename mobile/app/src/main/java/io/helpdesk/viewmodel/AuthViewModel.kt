@@ -1,7 +1,6 @@
 package io.helpdesk.viewmodel
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.core.util.Result
 import io.helpdesk.core.util.ioScope
@@ -11,7 +10,6 @@ import io.helpdesk.repository.BaseAuthenticationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -21,16 +19,9 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenticationRepository) :
     ViewModel() {
     private val _authState = MutableStateFlow<AuthState>(AuthState.Initial)
-    private val _userTypeState = MutableStateFlow(UserType.Customer)
 
     val authState = _authState.asStateFlow()
     val loginState = authRepository.loginState
-    val userTypeState = _userTypeState.asStateFlow()
-
-    // set user type
-    fun updateUserType(type: Int) = viewModelScope.launch {
-        _userTypeState.emit(UserType.values()[type])
-    }
 
     // login with email & password
     fun login(email: String?, password: String?) = ioScope {
@@ -55,13 +46,11 @@ class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenti
             if (email.isNullOrEmpty() || password.isNullOrEmpty() || username.isNullOrEmpty()) {
                 _authState.emit(AuthState.Error("cannot validate fields"))
             } else {
-                _authState.emit(AuthState.Loading)
-
                 authRepository.register(username, email, password, userType)
                     .collectLatest { result ->
                         when (result) {
                             is Result.Loading, Result.Initial -> _authState.emit(AuthState.Loading)
-                            is Result.Error -> _authState.emit(AuthState.Error(result.toString()))
+                            is Result.Error -> _authState.emit(AuthState.Error(result.exception?.localizedMessage.toString()))
                             is Result.Success -> _authState.emit(AuthState.Success(result.data))
                         }
                     }

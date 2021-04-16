@@ -33,7 +33,6 @@ interface BaseUserRepository {
     suspend fun deleteUser(user: User)
 }
 
-
 class UserRepository @Inject constructor(
     private val scope: CoroutineScope,
     private val dao: UserDao,

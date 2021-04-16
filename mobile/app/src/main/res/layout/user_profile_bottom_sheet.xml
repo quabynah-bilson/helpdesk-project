@@ -10,10 +10,6 @@
         <import type="io.helpdesk.viewmodel.UsersViewModel" />
 
         <variable
-            name="currentUserViewModel"
-            type="UsersViewModel" />
-
-        <variable
             name="currentUser"
             type="User" />
     </data>
@@ -68,50 +64,105 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_full_name"
-            tools:text="@tools:sample/full_names" />
+            tools:text="@tools:sample/us_phones" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_36"
+            android:layout_marginTop="@dimen/spacing_16"
+            android:contentDescription="@string/call"
             android:src="@drawable/ic_call"
             app:backgroundTint="?colorPrimaryVariant"
             app:fabSize="mini"
-            app:layout_constraintEnd_toStartOf="@+id/fab_reassign"
+            app:layout_constraintEnd_toStartOf="@+id/fab_delete"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_email"
-            app:tint="?colorOnPrimary" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_reassign"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_36"
-            android:src="@drawable/ic_supervisor_account"
-            app:backgroundTint="?colorSecondaryVariant"
-            app:fabSize="mini"
-            app:layout_constraintEnd_toStartOf="@+id/fab_delete"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/fab_call"
-            app:layout_constraintTop_toBottomOf="@id/user_email"
-            app:tint="?colorOnSecondary" />
+            app:tint="?colorOnPrimary"
+            tools:layout_editor_absoluteY="252dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_36"
-            android:onClick="@{(view) -> currentUserViewModel.deleteUser(view, currentUser)}"
+            android:layout_marginTop="@dimen/spacing_16"
+            android:contentDescription="@string/delete"
             android:src="@drawable/ic_delete"
             app:backgroundTint="?colorError"
             app:fabSize="mini"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/fab_reassign"
+            app:layout_constraintStart_toEndOf="@+id/fab_call"
             app:layout_constraintTop_toBottomOf="@id/user_email"
-            app:tint="?colorOnError" />
+            app:tint="?colorOnError"
+            tools:layout_editor_absoluteY="252dp" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/user_details_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_24"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/fab_delete">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/name_field_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:endIconTint="?colorPrimaryVariant"
+                app:startIconDrawable="@drawable/user"
+                app:startIconTint="?colorPrimaryVariant">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/name_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName|textCapSentences|textAutoCorrect|textAutoComplete"
+                    android:text="@{currentUser.name}"
+                    android:textAppearance="?textAppearanceBody1"
+                    tools:text="@tools:sample/full_names" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phone_field_container"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:endIconMode="clear_text"
+                app:endIconTint="?colorPrimaryVariant"
+                app:startIconDrawable="@drawable/ic_call"
+                app:startIconTint="?colorPrimaryVariant"
+                tools:textAlignment="center">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phone_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName|textCapSentences|textAutoCorrect|textAutoComplete"
+                    android:text="@{currentUser.phone, default=`not set`}"
+                    android:textAppearance="?textAppearanceBody1"
+                    tools:text="@tools:sample/us_phones" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/save_button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing_56"
+                android:layout_marginTop="@dimen/spacing_20"
+                android:background="@drawable/button_background"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/spacing_20"
+                android:text="@string/save"
+                android:textAppearance="?textAppearanceButton"
+                android:textColor="?colorOnPrimary"
+                tools:enabled="false" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

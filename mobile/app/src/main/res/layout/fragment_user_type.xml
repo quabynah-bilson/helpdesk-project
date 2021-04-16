@@ -1,176 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.auth.UserTypeFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_56"
-        android:gravity="center"
-        android:text="@string/account_type"
-        android:textAlignment="center"
-        android:textAppearance="?textAppearanceHeadline6"
-        android:textColor="?colorPrimary" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/spacing_56"
-        android:paddingHorizontal="@dimen/spacing_24"
-        android:paddingVertical="@dimen/spacing_20">
+        tools:context=".view.auth.UserTypeFragment">
+
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/account_picker_prompt"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:alpha="?emphasis_medium"
-            android:text="@string/account_picker_prompt"
-            android:textAlignment="textStart"
-            android:textAppearance="?textAppearanceSubtitle1"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="@dimen/spacing_56"
+            android:gravity="center"
+            android:text="@string/account_type"
+            android:textAlignment="center"
+            android:textAppearance="?textAppearanceHeadline6"
+            android:textColor="?colorPrimary" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/customer_card"
-            android:layout_width="@dimen/spacing_none"
-            android:layout_height="@dimen/spacing_300"
-            android:layout_marginStart="@dimen/spacing_none"
-            android:layout_marginEnd="@dimen/spacing_12"
-            android:layout_marginBottom="@dimen/spacing_64"
-            android:background="@drawable/toggleable_card_background"
-            android:gravity="bottom"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/technician_card"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/account_picker_prompt">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/customer_card_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_12"
-                android:alpha="?emphasis_high"
-                android:text="@string/customer"
-                android:textAppearance="?textAppearanceHeadline6" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/customer_card_feature_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_6"
-                android:alpha="?emphasis_low"
-                android:text="@string/verify_faqs"
-                android:textAppearance="?textAppearanceSubtitle2" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/customer_card_feature_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_6"
-                android:alpha="?emphasis_low"
-                android:text="@string/create_tickets"
-                android:textAppearance="?textAppearanceSubtitle2" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/customer_card_feature_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_6"
-                android:alpha="?emphasis_low"
-                android:text="@string/smart_search"
-                android:textAppearance="?textAppearanceSubtitle2" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/customer_card_feature_4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_6"
-                android:alpha="?emphasis_low"
-                android:text="@string/receive_feedback_from_technicians"
-                android:textAppearance="?textAppearanceSubtitle2" />
-
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/technician_card"
-            android:layout_width="@dimen/spacing_none"
-            android:layout_height="@dimen/spacing_300"
-            android:layout_marginStart="@dimen/spacing_12"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginTop="@dimen/spacing_56"
-            android:layout_marginBottom="@dimen/spacing_64"
-            android:background="@drawable/toggleable_card_background"
-            android:gravity="bottom"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/customer_card"
-            app:layout_constraintTop_toBottomOf="@id/account_picker_prompt">
+            android:paddingHorizontal="@dimen/spacing_24"
+            android:paddingVertical="@dimen/spacing_20">
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/technician_card_title"
-                android:layout_width="wrap_content"
+                android:id="@+id/account_picker_prompt"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_12"
-                android:alpha="?emphasis_high"
-                android:text="@string/technician"
-                android:textAppearance="?textAppearanceHeadline6" />
+                android:alpha="?emphasis_medium"
+                android:text="@string/account_picker_prompt"
+                android:textAlignment="textStart"
+                android:textAppearance="?textAppearanceSubtitle1"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/technician_card_feature_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_6"
-                android:alpha="?emphasis_low"
-                android:text="@string/upload_faqs"
-                android:textAppearance="?textAppearanceSubtitle2" />
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/customer_card"
+                android:layout_width="@dimen/spacing_none"
+                android:layout_height="@dimen/spacing_300"
+                android:layout_marginStart="@dimen/spacing_none"
+                android:layout_marginEnd="@dimen/spacing_12"
+                android:layout_marginBottom="@dimen/spacing_64"
+                android:background="@drawable/toggleable_card_background"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/technician_card"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/account_picker_prompt">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/technician_card_feature_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_6"
-                android:alpha="?emphasis_low"
-                android:text="@string/manage_tasks"
-                android:textAppearance="?textAppearanceSubtitle2" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/customer_card_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_12"
+                    android:alpha="?emphasis_high"
+                    android:text="@string/customer"
+                    android:textAppearance="?textAppearanceHeadline6" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/technician_card_feature_3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_6"
-                android:alpha="?emphasis_low"
-                android:text="@string/send_alerts"
-                android:textAppearance="?textAppearanceSubtitle2" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/customer_card_feature_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_6"
+                    android:alpha="?emphasis_low"
+                    android:text="@string/verify_faqs"
+                    android:textAppearance="?textAppearanceSubtitle2" />
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/customer_card_feature_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_6"
+                    android:alpha="?emphasis_low"
+                    android:text="@string/create_tickets"
+                    android:textAppearance="?textAppearanceSubtitle2" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/customer_card_feature_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_6"
+                    android:alpha="?emphasis_low"
+                    android:text="@string/smart_search"
+                    android:textAppearance="?textAppearanceSubtitle2" />
 
-    <!-- save -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/save_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_64"
-        android:layout_gravity="bottom|center_horizontal"
-        android:background="@drawable/button_background"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        android:gravity="center"
-        android:text="@string/save"
-        android:textAppearance="?textAppearanceButton"
-        android:textColor="?colorOnPrimary" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/customer_card_feature_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_6"
+                    android:alpha="?emphasis_low"
+                    android:text="@string/receive_feedback_from_technicians"
+                    android:textAppearance="?textAppearanceSubtitle2" />
 
-    <!-- progress -->
-    <include
-        android:id="@+id/progress_indicator"
-        layout="@layout/progress_indicator"
-        android:visibility="gone"
-        tools:visibility="gone" />
 
-</FrameLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/technician_card"
+                android:layout_width="@dimen/spacing_none"
+                android:layout_height="@dimen/spacing_300"
+                android:layout_marginStart="@dimen/spacing_12"
+                android:layout_marginTop="@dimen/spacing_56"
+                android:layout_marginBottom="@dimen/spacing_64"
+                android:background="@drawable/toggleable_card_background"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/customer_card"
+                app:layout_constraintTop_toBottomOf="@id/account_picker_prompt">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/technician_card_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_12"
+                    android:alpha="?emphasis_high"
+                    android:text="@string/technician"
+                    android:textAppearance="?textAppearanceHeadline6" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/technician_card_feature_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_6"
+                    android:alpha="?emphasis_low"
+                    android:text="@string/upload_faqs"
+                    android:textAppearance="?textAppearanceSubtitle2" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/technician_card_feature_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_6"
+                    android:alpha="?emphasis_low"
+                    android:text="@string/manage_tasks"
+                    android:textAppearance="?textAppearanceSubtitle2" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/technician_card_feature_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_6"
+                    android:alpha="?emphasis_low"
+                    android:text="@string/send_alerts"
+                    android:textAppearance="?textAppearanceSubtitle2" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- save -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_64"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@drawable/button_background"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="@string/create_user"
+            android:textAppearance="?textAppearanceButton"
+            android:textColor="?colorOnPrimary" />
+
+        <!-- progress -->
+        <include
+            android:id="@+id/progress_indicator"
+            layout="@layout/progress_indicator"
+            android:visibility="gone"
+            tools:visibility="gone" />
+
+    </FrameLayout>
+</layout>

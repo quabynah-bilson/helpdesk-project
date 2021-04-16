@@ -3,6 +3,7 @@ package io.helpdesk.repository
 import android.util.Patterns
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.core.util.*
 import io.helpdesk.model.data.User
@@ -11,10 +12,7 @@ import io.helpdesk.model.db.UserDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -58,38 +56,39 @@ class AuthenticationRepository @Inject constructor(
                 else -> {
                     offer(Result.Loading)
 
-                    val firebaseUser =
-                        auth.signInWithEmailAndPassword(email, password).awaitAuthResult(scope)
-                    if (firebaseUser == null) {
-                        logger.e("user credentials may be invalid")
-                        offer(Result.Error(Exception("no user found")))
-                    } else {
-                        // get user from database
-                        userCollection.document(firebaseUser.uid).get().foldDoc<User>(scope,
-                            { user ->
-                                scope.launch {
-                                    logger
-                                        .i("user logged in with data -> $user")
-                                    if (user == null) {
-                                        offer(Result.Error(Exception("no user found")))
-                                    } else {
+                    auth.signInWithEmailAndPassword(email, password).awaitAuthResult(scope)
+                        .collectLatest { firebaseUser ->
+                            if (firebaseUser == null) {
+                                logger.e("user credentials may be invalid")
+                                offer(Result.Error(Exception("no user found")))
+                            } else {
+                                // get user from database
+                                userCollection.document(firebaseUser.uid).get().foldDoc<User>(scope,
+                                    { user ->
+                                        scope.launch {
+                                            logger
+                                                .i("user logged in with data -> $user")
+                                            if (user == null) {
+                                                offer(Result.Error(Exception("no user found")))
+                                            } else {
 
-                                        // store user type
-                                        storage.userId = user.id
-                                        storage.userType = user.type.ordinal
+                                                // store user type
+                                                storage.userId = user.id
+                                                storage.userType = user.type.ordinal
 
-                                        // save user data
-                                        userDao.insert(user)
+                                                // save user data
+                                                userDao.insert(user)
 
-                                        offer(Result.Success(user))
+                                                offer(Result.Success(user))
+                                            }
+                                        }
+                                    },
+                                    { err ->
+                                        scope.launch { offer(Result.Error(err)) }
                                     }
-                                }
-                            },
-                            { err ->
-                                scope.launch { offer(Result.Error(err)) }
+                                )
                             }
-                        )
-                    }
+                        }
                 }
             }
 
@@ -113,23 +112,24 @@ class AuthenticationRepository @Inject constructor(
                 else -> {
                     offer(Result.Loading)
 
-                    val firebaseUser =
-                        auth.createUserWithEmailAndPassword(email, password).awaitAuthResult(scope)
-
-                    if (firebaseUser == null) {
-                        offer(Result.Error(Exception("user already exists or there is an internet connection issue")))
-                    } else {
-                        val user =
-                            User(
-                                id = firebaseUser.uid,
-                                email = email,
-                                name = username,
-                                type = userType,
-                            )
-                        userCollection.document(user.id).set(user).await()
-                        userDao.insert(user)
-                        offer(Result.Success(user))
-                    }
+                    auth.createUserWithEmailAndPassword(email, password).awaitAuthResult(scope)
+                        .collectLatest { firebaseUser ->
+                            if (firebaseUser == null) {
+                                offer(Result.Error(Exception("user already exists or there is an internet connection issue")))
+                            } else {
+                                val user =
+                                    User(
+                                        id = firebaseUser.uid,
+                                        email = email,
+                                        name = username,
+                                        type = userType,
+                                    )
+                                userCollection.document(user.id).set(user, SetOptions.merge())
+                                    .await()
+                                userDao.insert(user)
+                                offer(Result.Success(user))
+                            }
+                        }
                 }
 
             }

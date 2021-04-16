@@ -53,12 +53,15 @@ class RegisterUserFragment : Fragment() {
                 }
 
                 registerButton.setOnClickListener {
+                    val fullName = nameField.text.toString()
+                    val username = usernameField.text.toString()
+                    val password = passwordField.text.toString()
                     navController.navigate(
                         RegisterUserFragmentDirections.actionNavRegisterToNavUserType(
                             authParams = NewUserAuthParams(
-                                username = nameField.text.toString(),
-                                email = usernameField.text.toString(),
-                                password = passwordField.text.toString(),
+                                username = fullName,
+                                email = username,
+                                password = password,
                             )
                         )
                     )

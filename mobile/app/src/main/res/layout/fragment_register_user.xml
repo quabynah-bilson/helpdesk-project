@@ -181,7 +181,7 @@
             android:background="@drawable/button_background"
             android:gravity="center"
             android:paddingHorizontal="@dimen/spacing_20"
-            android:text="@string/join"
+            android:text="@string/save"
             android:textAppearance="?textAppearanceButton"
             android:textColor="?colorOnPrimary"
             app:layout_constraintEnd_toEndOf="parent"

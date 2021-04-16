@@ -1,17 +1,13 @@
 package io.helpdesk.viewmodel
 
-import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.core.util.Result
 import io.helpdesk.core.util.ioScope
-import io.helpdesk.core.util.uiScope
 import io.helpdesk.model.data.User
 import io.helpdesk.model.data.UserType
 import io.helpdesk.repository.BaseUserRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
@@ -24,7 +20,8 @@ class UsersViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UserUIState>(UserUIState.Loading)
     val loadTechniciansState = _uiState.asStateFlow()
 
-    fun saveUser(user: User) = ioScope {
+    fun saveUser(user: User?) = ioScope {
+        if (user == null) return@ioScope
         repository.addUser(user).collectLatest { result ->
             when (result) {
                 is Result.Initial, Result.Loading -> {
@@ -82,7 +79,6 @@ class UsersViewModel @Inject constructor(
         awaitClose()
     }.stateIn(viewModelScope)
 
-    @ExperimentalCoroutinesApi
     fun getUserById(id: String): Flow<User?> = channelFlow {
         repository.getUserById(id).collectLatest { result ->
             when (result) {
@@ -98,16 +94,7 @@ class UsersViewModel @Inject constructor(
         }
     }
 
-    fun deleteUser(view: View?, user: User) = uiScope {
-        if (view != null) {
-            Snackbar.make(view, "Do you wish to delete this user?", Snackbar.LENGTH_LONG).apply {
-                setAction("Proceed") {
-                    ioScope { repository.deleteUser(user) }
-                }
-                show()
-            }
-        }
-    }
+    fun deleteUser(user: User?) = ioScope { if (user != null) repository.deleteUser(user) }
 }
 
 sealed class UserUIState {

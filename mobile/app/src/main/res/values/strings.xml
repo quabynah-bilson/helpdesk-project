@@ -28,7 +28,7 @@
     <string name="full_name">Full Name</string>
     <string name="join">Proceed</string>
     <string name="account_type">Account Type</string>
-    <string name="save"><![CDATA[save & continue]]></string>
+    <string name="save">save</string>
     <string name="account_picker_prompt">Select your account type to get started. This will enable us to create a more personalized experience for you</string>
     <string name="manage_tasks">Manage tasks</string>
     <string name="send_alerts">Send alerts</string>
@@ -53,4 +53,7 @@
     <string name="all_users">All Users</string>
     <string name="customers">Customers</string>
     <string name="technicians">Technicians</string>
+    <string name="create_user">Create account</string>
+    <string name="delete">delete</string>
+    <string name="call">call</string>
 </resources>

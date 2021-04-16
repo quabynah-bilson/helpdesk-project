@@ -1,13 +1,16 @@
 package io.helpdesk.core.util
 
 import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 
 
@@ -53,15 +56,31 @@ suspend inline fun Task<Void>.await() = withContext(Dispatchers.IO) {
     }
 }
 
-suspend inline fun Task<AuthResult>.awaitAuthResult(scope: CoroutineScope): FirebaseUser? {
-    val logger = Timber.tag("auth-result-task-error")
-    return try {
-        Tasks.await(this@awaitAuthResult).user
-    } catch (e: Exception) {
-        logger.d("failed to authenticate user: ${e.localizedMessage}")
-        null
-    }
-}
+@ExperimentalCoroutinesApi
+suspend fun Task<AuthResult>.awaitAuthResult(scope: CoroutineScope): Flow<FirebaseUser?> =
+    channelFlow {
+        val logger = Timber.tag("auth-result-task-error")
+        try {
+            addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    logger.i("user created")
+                    offer(task.result?.user)
+                } else {
+                    logger.e("unable to create user: ${task.exception?.localizedMessage}")
+                    offer(null)
+                }
+            }
+
+            addOnFailureListener { exception ->
+                logger.e(exception)
+                offer(null)
+            }
+        } catch (e: Exception) {
+            logger.d("failed to authenticate user: ${e.localizedMessage}")
+            offer(null)
+        }
+        awaitClose()
+    }.stateIn(scope)
 
 /**
  * Document snapshots
@@ -75,7 +94,6 @@ inline fun <reified T> Task<DocumentSnapshot>.foldDoc(
     addOnCompleteListener { snapshot ->
         if (snapshot.isSuccessful) {
             Timber.tag("fold-doc").i("result -> ${snapshot.result?.data}")
-//            scope.launch {  }
             successBlock(snapshot.result?.toObject(T::class.java))
         } else {
             Timber.tag("fold-doc").e("error -> ${snapshot.exception?.localizedMessage}")

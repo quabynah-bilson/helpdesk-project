@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
                             supportedDestinations.contains(destination.id) && user?.type == UserType.SuperAdmin
 
                         when (destination.id) {
+
                             R.id.nav_dashboard,
                             R.id.nav_users,
                             R.id.nav_faqs,
@@ -66,15 +67,15 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
 
-                                if (destination.id != R.id.nav_welcome && destination.id != R.id.nav_user_type && destination.id != R.id.nav_user_type) {
-                                    // add bottom padding to escape bottom navigation view
-                                    navHost.view?.setPadding(
-                                        0,
-                                        0,
-                                        0,
-                                        resources.getDimensionPixelOffset(R.dimen.spacing_64)
-                                    )
-                                }
+                                // add bottom padding to escape bottom navigation view
+                                navHost.view?.setPadding(
+                                    0,
+                                    0,
+                                    0,
+                                    if (destination.id == R.id.nav_welcome
+                                        || destination.id == R.id.nav_user_type
+                                    ) 0 else resources.getDimensionPixelOffset(R.dimen.spacing_64)
+                                )
 
                                 onBackPressedDispatcher.addCallback(
                                     this@MainActivity,
