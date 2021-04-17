@@ -45,6 +45,12 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -59,6 +65,9 @@ android {
     buildFeatures {
         viewBinding true
         dataBinding true
+    }
+    lintOptions {
+        checkReleaseBuilds false
     }
 }
 

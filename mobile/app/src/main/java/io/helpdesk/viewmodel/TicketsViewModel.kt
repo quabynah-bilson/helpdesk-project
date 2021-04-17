@@ -88,7 +88,7 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun parseTicketDate(timestamp: String): String =
-        with(SimpleDateFormat("~yyyy-MM-dd @ hh:mm", Locale.getDefault())) {
+        with(SimpleDateFormat("yyyy-MM-dd @ HH:mm", Locale.getDefault())) {
             val logger = Timber.tag("date-parser")
             var format = "not set"
             try {

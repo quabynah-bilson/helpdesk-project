@@ -42,8 +42,8 @@ abstract class LocalDatabase : RoomDatabase() {
             instance ?: Room.databaseBuilder(context, LocalDatabase::class.java, "helpdesk.db")
                 .fallbackToDestructiveMigration()
                 .addCallback(object : Callback() {
-                    override fun onOpen(db: SupportSQLiteDatabase) {
-                        super.onOpen(db)
+                    override fun onCreate(db: SupportSQLiteDatabase) {
+                        super.onCreate(db)
                         with(WorkManager.getInstance(context)) {
                             enqueue(OneTimeWorkRequestBuilder<LocalDatabaseWorker>().build())
                         }
