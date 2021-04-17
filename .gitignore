@@ -74,3 +74,5 @@ typings/
 
 # FuseBox cache
 .fusebox/
+*.apk
+mobile/app/release/output-metadata.json
