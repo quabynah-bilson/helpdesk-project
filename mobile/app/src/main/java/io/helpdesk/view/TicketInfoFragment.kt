@@ -46,10 +46,9 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        lifecycleScope.launchWhenCreated { }
-
         binding?.run {
+            ticket = args.ticket
+
             deleteTicket.setOnClickListener {
                 MaterialAlertDialogBuilder(requireContext()).apply {
                     setTitle("Confirm deletion")
