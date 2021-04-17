@@ -19,8 +19,8 @@
             app:popUpTo="@id/nav_welcome"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_nav_welcome_to_nav_dashboard"
-            app:destination="@id/nav_dashboard" />
+            android:id="@+id/action_nav_welcome_to_nav_users"
+            app:destination="@id/nav_users" />
     </fragment>
     <fragment
         android:id="@id/nav_login"
@@ -33,8 +33,8 @@
             app:popUpTo="@id/nav_welcome"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_nav_login_to_nav_dashboard"
-            app:destination="@id/nav_dashboard" />
+            android:id="@+id/action_nav_login_to_nav_users"
+            app:destination="@id/nav_users" />
     </fragment>
     <fragment
         android:id="@id/nav_home"
@@ -79,48 +79,43 @@
             android:name="authParams"
             app:argType="io.helpdesk.view.auth.NewUserAuthParams" />
         <action
-            android:id="@+id/action_nav_user_type_to_nav_dashboard"
-            app:destination="@id/nav_dashboard"
-            app:popUpTo="@id/nav_dashboard"
+            android:id="@+id/action_nav_user_type_to_nav_users"
+            app:destination="@id/nav_users"
+            app:popUpTo="@id/nav_users"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@id/nav_register"
         android:name="io.helpdesk.view.auth.RegisterUserFragment"
         android:label="@string/fragment_register_user"
-        tools:layout="@layout/fragment_register_user">
+        tools:layout="@layout/fragment_register_user" >
         <action
             android:id="@+id/action_nav_register_to_nav_user_type"
-            app:destination="@id/nav_user_type"
-            app:popUpTo="@id/nav_dashboard"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
-        android:id="@id/nav_dashboard"
-        android:name="io.helpdesk.view.admin.DashboardFragment"
-        android:label="@string/fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" >
-        <action
-            android:id="@+id/action_nav_dashboard_to_nav_login"
-            app:destination="@id/nav_login"
-            app:popUpTo="@id/nav_login"
-            app:popUpToInclusive="true" />
+            app:destination="@id/nav_user_type" />
     </fragment>
     <fragment
         android:id="@id/nav_faqs"
-        android:name="io.helpdesk.view.home.FaqsFragment"
+        android:name="io.helpdesk.view.shared.FaqsFragment"
         android:label="@string/fragment_faqs"
-        tools:layout="@layout/faqs_fragment" />
+        tools:layout="@layout/faqs_fragment" >
+        <action
+            android:id="@+id/action_nav_faqs_to_nav_post_ticket"
+            app:destination="@id/nav_post_ticket" />
+    </fragment>
     <fragment
         android:id="@id/nav_tickets"
-        android:name="io.helpdesk.view.home.TicketsFragment"
+        android:name="io.helpdesk.view.shared.TicketsFragment"
         android:label="@string/fragment_tickets"
-        tools:layout="@layout/tickets_fragment" />
+        tools:layout="@layout/tickets_fragment" >
+        <action
+            android:id="@+id/action_nav_tickets_to_nav_ticket_info"
+            app:destination="@id/nav_ticket_info" />
+    </fragment>
     <fragment
         android:id="@+id/nav_users"
         android:name="io.helpdesk.view.admin.UsersFragment"
         android:label="@string/fragment_users"
-        tools:layout="@layout/fragment_users" >
+        tools:layout="@layout/fragment_users">
         <action
             android:id="@+id/action_nav_users_to_nav_register"
             app:destination="@id/nav_register" />

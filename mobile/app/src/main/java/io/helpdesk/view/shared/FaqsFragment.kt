@@ -1,4 +1,4 @@
-package io.helpdesk.view.home
+package io.helpdesk.view.shared
 
 import android.os.Bundle
 import android.view.LayoutInflater

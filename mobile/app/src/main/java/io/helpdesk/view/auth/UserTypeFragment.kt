@@ -83,7 +83,7 @@ class UserTypeFragment : Fragment() {
 
                         is AuthState.Success -> {
                             Snackbar.make(root, "Account type saved", Snackbar.LENGTH_LONG).show()
-                            navController.navigate(UserTypeFragmentDirections.actionNavUserTypeToNavDashboard())
+                            navController.navigate(UserTypeFragmentDirections.actionNavUserTypeToNavUsers())
                         }
 
                         else -> {

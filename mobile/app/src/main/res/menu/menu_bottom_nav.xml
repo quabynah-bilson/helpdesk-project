@@ -2,22 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@id/nav_dashboard"
-        android:icon="@drawable/ic_dashboard"
-        android:title="@string/fragment_dashboard" />
-
-    <item
-        android:id="@+id/nav_users"
+        android:id="@id/nav_users"
         android:icon="@drawable/ic_account"
         android:title="@string/fragment_users" />
 
     <item
-        android:id="@+id/nav_faqs"
+        android:id="@id/nav_faqs"
         android:icon="@drawable/ic_faqs"
         android:title="@string/fragment_faqs" />
 
     <item
-        android:id="@+id/nav_tickets"
+        android:id="@id/nav_tickets"
         android:icon="@drawable/ic_ticket"
         android:title="@string/fragment_tickets" />
 

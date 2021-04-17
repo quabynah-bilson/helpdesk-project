@@ -8,6 +8,7 @@ import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +21,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
 import io.helpdesk.core.util.visible
 import io.helpdesk.databinding.FragmentHomeBinding
+import io.helpdesk.view.shared.FaqsFragment
+import io.helpdesk.view.shared.TicketsFragment
 import io.helpdesk.viewmodel.AuthViewModel
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -100,7 +103,7 @@ class HomeFragment : Fragment() {
                     registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                         override fun onPageSelected(position: Int) {
                             // hide FAB for chat screen
-                            binding?.fabPostTicket?.visible(position != 2)
+                            binding?.fabPostTicket?.isVisible = position != 2
                             super.onPageSelected(position)
                         }
                     })

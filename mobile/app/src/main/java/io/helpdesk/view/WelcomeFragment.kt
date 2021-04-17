@@ -58,7 +58,7 @@ class WelcomeFragment : Fragment() {
                 } else {
                     // destination
                     val dir = if (user.type == UserType.SuperAdmin) {
-                        WelcomeFragmentDirections.actionNavWelcomeToNavDashboard()
+                        WelcomeFragmentDirections.actionNavWelcomeToNavUsers()
                     } else {
                         WelcomeFragmentDirections.actionNavWelcomeToNavHome()
                     }

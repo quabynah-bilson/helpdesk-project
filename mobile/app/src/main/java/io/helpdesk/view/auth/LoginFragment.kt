@@ -75,7 +75,7 @@ class LoginFragment : Fragment() {
                         is AuthState.Success -> {
                             // destination
                             val dir = if (state.user.type == UserType.SuperAdmin) {
-                                LoginFragmentDirections.actionNavLoginToNavDashboard()
+                                LoginFragmentDirections.actionNavLoginToNavUsers()
                             } else {
                                 LoginFragmentDirections.actionNavLoginToNavHome()
                             }

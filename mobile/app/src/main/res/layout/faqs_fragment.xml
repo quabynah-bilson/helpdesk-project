@@ -13,7 +13,7 @@
         android:visibility="gone"
         tools:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:context=".view.home.FaqsFragment"
+        tools:context=".view.shared.FaqsFragment"
         tools:itemCount="12"
         tools:listitem="@layout/item_faq" />
 

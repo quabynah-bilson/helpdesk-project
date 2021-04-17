@@ -1,6 +1,5 @@
 package io.helpdesk
 
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -19,9 +18,6 @@ import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
-import java.time.LocalDate
-import java.time.Period
-import kotlin.random.Random
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -48,7 +44,6 @@ class MainActivity : AppCompatActivity() {
                     Timber.tag("current-user").i("user -> $user")
                     navController.addOnDestinationChangedListener { _, destination, _ ->
                         val supportedDestinations = arrayOf(
-                            R.id.nav_dashboard,
                             R.id.nav_users,
                             R.id.nav_faqs,
                             R.id.nav_tickets
@@ -58,7 +53,6 @@ class MainActivity : AppCompatActivity() {
 
                         when (destination.id) {
 
-                            R.id.nav_dashboard,
                             R.id.nav_users,
                             R.id.nav_faqs,
                             R.id.nav_welcome,
@@ -94,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                                     this@MainActivity,
                                     object : OnBackPressedCallback(true) {
                                         override fun handleOnBackPressed() {
-                                            if (destination.id == R.id.nav_dashboard) {
+                                            if (destination.id == R.id.nav_users) {
                                                 MaterialAlertDialogBuilder(this@MainActivity).apply {
                                                     setTitle(getString(R.string.leave_app_prompt_title))
                                                     setMessage(getString(R.string.leave_app_prompt_content))
@@ -110,7 +104,7 @@ class MainActivity : AppCompatActivity() {
                                                 }.show()
                                             } else {
                                                 // otherwise, select the initial page
-                                                navController.navigate(R.id.nav_dashboard)
+                                                navController.navigate(R.id.nav_users)
                                             }
                                         }
                                     })
