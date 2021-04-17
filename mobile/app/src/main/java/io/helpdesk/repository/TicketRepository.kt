@@ -98,7 +98,7 @@ class TicketRepository @Inject constructor(
     override suspend fun updateTicket(ticket: Ticket): Flow<Result<Boolean>> = channelFlow {
         offer(Result.Loading)
         try {
-            dao.update(ticket)
+            dao.insert(ticket)
             ticketCollection.document(ticket.id).set(ticket, SetOptions.merge()).await(scope)
             offer(Result.Success(true))
         } catch (e: Exception) {

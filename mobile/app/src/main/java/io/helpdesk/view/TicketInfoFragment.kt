@@ -47,7 +47,24 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
         super.onViewCreated(view, savedInstanceState)
 
         binding?.run {
-            ticket = args.ticket
+
+            lifecycleScope.launchWhenStarted {
+                ticketsViewModel.getTicketById(args.ticket.id).collectLatest { data ->
+                    ticket = data
+                    ticketVM = ticketsViewModel
+                    executePendingBindings()
+                }
+            }
+
+            lifecycleScope.launchWhenCreated {
+                // get current user
+                usersViewModel.currentUser().collectLatest { currentUser ->
+                    Timber.tag("user details").d("current user -> $currentUser")
+                    updateTicketStatus.isVisible = currentUser?.type != UserType.Customer
+                    deleteTicket.isInvisible = currentUser?.id != args.ticket.user
+                    executePendingBindings()
+                }
+            }
 
             deleteTicket.setOnClickListener {
                 MaterialAlertDialogBuilder(requireContext()).apply {
@@ -77,20 +94,9 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                     if (technician != null) user = technician
                     executePendingBindings()
                 }
-
-                // get current user
-                usersViewModel.currentUser().collectLatest { currentUser ->
-                    Timber.tag("user details").d("current user -> $currentUser")
-                    updateTicketStatus.isVisible = currentUser?.type != UserType.Customer
-                    deleteTicket.isInvisible = currentUser?.id != args.ticket.user
-                    executePendingBindings()
-                }
-
-                ticketsViewModel.getTicketById(args.ticket.id).collectLatest { data ->
-                    ticket = data
-                    executePendingBindings()
-                }
             }
+
+            executePendingBindings()
         }
     }
 

@@ -61,6 +61,6 @@
         android:gravity="center_vertical"
         android:text="@string/update_state"
         android:textAppearance="?textAppearanceBody1"
-        app:drawableStartCompat="@drawable/ic_send" />
+        app:drawableStartCompat="@drawable/ic_edit" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -1,16 +1,12 @@
 package io.helpdesk.view.bottomsheet
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import io.helpdesk.R
 import io.helpdesk.databinding.TicketFeedbackBottomSheetBinding
 import io.helpdesk.model.data.Ticket
 
@@ -46,8 +42,8 @@ class TicketFeedbackBottomSheet private constructor(private val listener: OnFeed
                                 Toast.LENGTH_SHORT
                             ).show()
                         else {
-                            dismissAllowingStateLoss()
                             listener.onComplete(text.toString())
+                            dismissAllowingStateLoss()
                         }
                     }
                 }

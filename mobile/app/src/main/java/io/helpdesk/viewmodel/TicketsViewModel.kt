@@ -4,6 +4,7 @@ import android.icu.text.SimpleDateFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,16 +52,16 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
         }
     }
 
-    fun getTicketById(id: String): Flow<Ticket?> = channelFlow {
+    suspend fun getTicketById(id: String): Flow<Ticket?> = channelFlow {
         repository.getTicketById(id).collectLatest { result ->
             if (result is Result.Success) {
-                offer(result.data)
+                send(result.data)
             } else if (result is Result.Error) {
-                offer(null)
+                send(null)
             }
         }
         awaitClose()
-    }
+    }.stateIn(viewModelScope)
 
     fun postNewTicket(
         title: String,
@@ -80,23 +81,24 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
     }
 
     fun updateTicket(ticket: Ticket?) =
-        ioScope { if(ticket != null) repository.updateTicket(ticket) }
+        ioScope { if (ticket != null) repository.updateTicket(ticket) }
 
     fun deleteTicket(ticket: Ticket) =
         ioScope { repository.deleteTicket(ticket) }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun parseTicketDate(timestamp: String): String =
-        with(SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault())) {
+        with(SimpleDateFormat("~yyyy-MM-dd @ hh:mm", Locale.getDefault())) {
             val logger = Timber.tag("date-parser")
+            var format = "not set"
             try {
                 val date = Date.from(Instant.parse(timestamp))
-                val format = format(date)
+                format = format(date)
                 println("parsed-date -> $format")
             } catch (e: Exception) {
                 logger.e(e.localizedMessage)
             }
-            return@with timestamp
+            return@with format
         }
 }
 

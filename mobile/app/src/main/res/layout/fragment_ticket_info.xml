@@ -10,10 +10,17 @@
 
         <import type="io.helpdesk.model.data.User" />
 
+        <import type="android.view.View" />
+
+        <import type="io.helpdesk.viewmodel.TicketsViewModel" />
+
         <variable
             name="ticket"
             type="Ticket" />
 
+        <variable
+            name="ticketVM"
+            type="TicketsViewModel" />
 
         <variable
             name="user"
@@ -82,8 +89,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/spacing_24"
-                android:paddingBottom="@dimen/spacing_72"
-                android:paddingTop="@dimen/spacing_36">
+                android:paddingTop="@dimen/spacing_36"
+                android:paddingBottom="@dimen/spacing_72">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/ticket_name"
@@ -97,16 +104,86 @@
                     tools:text="@sample/samples_tickets.json/data/name" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/ticket_comment"
+                    android:id="@+id/ticket_desc_header"
                     android:layout_width="@dimen/spacing_none"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_24"
-                    android:text="@{ticket.description}"
-                    android:textAppearance="?textAppearanceBody1"
+                    android:alpha="?emphasis_medium"
+                    android:text="@string/description"
+                    android:textAppearance="?textAppearanceSubtitle2"
+                    android:visibility="@{ticket.description != null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ticket_name"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_name" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/ticket_desc"
+                    android:layout_width="@dimen/spacing_none"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_4"
+                    android:text="@{ticket.description}"
+                    android:textAppearance="?textAppearanceBody2"
+                    android:visibility="@{ticket.description != null ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_desc_header"
                     tools:text="@sample/samples_tickets.json/data/comment" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/ticket_comment_header"
+                    android:layout_width="@dimen/spacing_none"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_24"
+                    android:alpha="?emphasis_medium"
+                    android:text="@string/feedback"
+                    android:textAppearance="?textAppearanceSubtitle2"
+                    android:visibility="@{ticket.comment != null ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_desc" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/ticket_comment"
+                    android:layout_width="@dimen/spacing_none"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_4"
+                    android:text="@{ticket.comment}"
+                    android:textAppearance="?textAppearanceBody2"
+                    android:visibility="@{ticket.comment != null ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_comment_header"
+                    tools:ellipsize="end"
+                    tools:maxLines="4"
+                    tools:text="@tools:sample/lorem/random" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/ticket_timestamp_header"
+                    android:layout_width="@dimen/spacing_none"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_24"
+                    android:alpha="?emphasis_medium"
+                    android:gravity="end"
+                    android:text="@string/created_on"
+                    android:textAppearance="?textAppearanceBody2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_comment" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/ticket_timestamp"
+                    android:layout_width="@dimen/spacing_none"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_4"
+                    android:gravity="end"
+                    android:text="@{ticketVM.parseTicketDate(ticket.timestamp)}"
+                    android:textAppearance="?textAppearanceCaption"
+                    android:textColor="?colorPrimaryVariant"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_timestamp_header"
+                    tools:text="@tools:sample/date/ddmmyy" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
