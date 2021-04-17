@@ -46,8 +46,8 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val argTicket: Ticket = args.ticket
-        println("ticket found => ${ticketsViewModel.parseTicketDate(argTicket.timestamp)}")
+
+        lifecycleScope.launchWhenCreated { }
 
         binding?.run {
             deleteTicket.setOnClickListener {
@@ -56,7 +56,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                     setMessage("Do you wish to delete this ticket?\nThis action cannot be undone")
                     setPositiveButton("Cancel") { dialog, _ -> dialog.cancel() }
                     setNegativeButton("Yes, delete") { dialog, _ ->
-                        ticketsViewModel.deleteTicket(argTicket)
+                        ticketsViewModel.deleteTicket(ticket!!)
                         dialog.dismiss()
                     }
                     show()
@@ -65,30 +65,30 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
 
             backButton.setOnClickListener { findNavController().popBackStack() }
 
-            with(usersViewModel) {
-                updateTicketStatus.setOnClickListener {
-                    TicketOptionsBottomSheet.newInstance(argTicket, this@TicketInfoFragment).show(
-                        childFragmentManager,
-                        TicketOptionsBottomSheet::class.java.canonicalName
-                    )
-                }
-
-                lifecycleScope.launchWhenCreated {
-                    // get technician
-                    getUserById(argTicket.technician).collectLatest { technician ->
-                        ticket = argTicket
-                        if (technician != null) user = technician
-                        executePendingBindings()
-                    }
-                }
+            updateTicketStatus.setOnClickListener {
+                TicketOptionsBottomSheet.newInstance(ticket!!, this@TicketInfoFragment).show(
+                    childFragmentManager,
+                    TicketOptionsBottomSheet::class.java.canonicalName
+                )
             }
 
             GlobalScope.launch(Dispatchers.Main) {
+                // get technician
+                usersViewModel.getUserById(args.ticket.technician).collectLatest { technician ->
+                    if (technician != null) user = technician
+                    executePendingBindings()
+                }
+
                 // get current user
                 usersViewModel.currentUser().collectLatest { currentUser ->
                     Timber.tag("user details").d("current user -> $currentUser")
                     updateTicketStatus.isVisible = currentUser?.type != UserType.Customer
-                    deleteTicket.isInvisible = currentUser?.id != argTicket.user
+                    deleteTicket.isInvisible = currentUser?.id != args.ticket.user
+                    executePendingBindings()
+                }
+
+                ticketsViewModel.getTicketById(args.ticket.id).collectLatest { data ->
+                    ticket = data
                     executePendingBindings()
                 }
             }
@@ -96,11 +96,11 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
     }
 
     override fun onItemSelected(technician: User) {
-        ticketsViewModel.updateTicket(ticket = args.ticket.copy(technician = technician.id))
+        ticketsViewModel.updateTicket(ticket = binding?.ticket?.copy(technician = technician.id))
     }
 
     override fun onComplete(feedback: String) {
-        ticketsViewModel.updateTicket(ticket = args.ticket.copy(comment = feedback))
+        ticketsViewModel.updateTicket(ticket = binding?.ticket?.copy(comment = feedback))
     }
 
     override fun onItemSelected(ticket: Ticket, item: TicketOptionsItem) {
@@ -112,7 +112,8 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                 }
 
                 TicketOptionsItem.MarkAs -> {
-                    var completion: TicketCompletionState = args.ticket.status
+                    var completion: TicketCompletionState =
+                        binding?.ticket?.status ?: TicketCompletionState.Pending
                     MaterialAlertDialogBuilder(requireContext()).apply {
                         setTitle("Mark ticket as...")
                         val options = arrayOf(
@@ -131,7 +132,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                             }
 
                             // update ticket
-                            ticketsViewModel.updateTicket(args.ticket.copy(status = completion))
+                            ticketsViewModel.updateTicket(binding?.ticket?.copy(status = completion))
                             dialog.dismiss()
                         }
                         setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
@@ -140,7 +141,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                 }
 
                 TicketOptionsItem.UpdatePriority -> {
-                    var priority: TicketPriority = args.ticket.priority
+                    var priority: TicketPriority = binding?.ticket?.priority ?: TicketPriority.Low
                     MaterialAlertDialogBuilder(requireContext()).apply {
                         setTitle("Ticket priority")
                         val options = arrayOf(
@@ -160,7 +161,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                             dialog.dismiss()
 
                             // update ticket
-                            ticketsViewModel.updateTicket(args.ticket.copy(priority = priority))
+                            ticketsViewModel.updateTicket(binding?.ticket?.copy(priority = priority))
                         }
                         setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
                         show()

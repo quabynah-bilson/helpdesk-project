@@ -20,5 +20,6 @@ interface TicketDao : BaseDao<Ticket> {
 
     @Transaction
     @Query("select * from tickets where _id = :id")
-    fun getUserAndTicketById(id: String): Flow<UserAndTicket?>
+    fun getTicketById(id: String): Flow<Ticket?>
+
 }

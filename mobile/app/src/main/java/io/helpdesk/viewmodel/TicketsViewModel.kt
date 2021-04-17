@@ -1,5 +1,8 @@
 package io.helpdesk.viewmodel
 
+import android.icu.text.SimpleDateFormat
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.paging.PagingData
@@ -10,10 +13,10 @@ import io.helpdesk.core.util.uiScope
 import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.UserAndTicket
 import io.helpdesk.repository.BaseTicketRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import java.text.DateFormat
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.*
+import timber.log.Timber
+import java.time.Instant
 import java.util.*
 import javax.inject.Inject
 
@@ -48,6 +51,17 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
         }
     }
 
+    fun getTicketById(id: String): Flow<Ticket?> = channelFlow {
+        repository.getTicketById(id).collectLatest { result ->
+            if (result is Result.Success) {
+                offer(result.data)
+            } else if (result is Result.Error) {
+                offer(null)
+            }
+        }
+        awaitClose()
+    }
+
     fun postNewTicket(
         title: String,
         description: String = "",
@@ -65,14 +79,25 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
         }
     }
 
-    fun updateTicket(ticket: Ticket) =
-        ioScope { repository.updateTicket(ticket) }
+    fun updateTicket(ticket: Ticket?) =
+        ioScope { if(ticket != null) repository.updateTicket(ticket) }
 
     fun deleteTicket(ticket: Ticket) =
         ioScope { repository.deleteTicket(ticket) }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun parseTicketDate(timestamp: String): String =
-        DateFormat.getDateTimeInstance().format(Date(timestamp))
+        with(SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault())) {
+            val logger = Timber.tag("date-parser")
+            try {
+                val date = Date.from(Instant.parse(timestamp))
+                val format = format(date)
+                println("parsed-date -> $format")
+            } catch (e: Exception) {
+                logger.e(e.localizedMessage)
+            }
+            return@with timestamp
+        }
 }
 
 sealed class LatestTicketUIState {

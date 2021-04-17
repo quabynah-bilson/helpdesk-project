@@ -6,6 +6,7 @@ import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.core.util.Result
 import io.helpdesk.core.util.await
 import io.helpdesk.core.util.fold
+import io.helpdesk.core.util.foldDoc
 import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.TicketPriority
 import io.helpdesk.model.data.UserAndTicket
@@ -18,22 +19,26 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.random.Random
 
 interface BaseTicketRepository {
-    fun postNewTicket(
+    suspend fun postNewTicket(
         title: String,
         description: String,
     ): Flow<Result<Boolean>>
 
-    fun updateTicket(ticket: Ticket): Flow<Result<Boolean>>
+    suspend fun updateTicket(ticket: Ticket): Flow<Result<Boolean>>
 
-    fun deleteTicket(ticket: Ticket): Flow<Result<Boolean>>
+    suspend fun getTicketById(id: String): Flow<Result<Ticket?>>
 
-    fun allTickets(): Flow<Result<List<UserAndTicket>>>
+    suspend fun deleteTicket(ticket: Ticket): Flow<Result<Boolean>>
+
+    suspend fun allTickets(): Flow<Result<List<UserAndTicket>>>
 }
 
 /**
@@ -51,7 +56,7 @@ class TicketRepository @Inject constructor(
     private val ticketCollection = firestore.collection(Ticket.TABLE_NAME)
 
     @ExperimentalCoroutinesApi
-    override fun postNewTicket(
+    override suspend fun postNewTicket(
         title: String,
         description: String,
     ): Flow<Result<Boolean>> = channelFlow {
@@ -87,10 +92,10 @@ class TicketRepository @Inject constructor(
             offer(Result.Error(Exception("user not logged in")))
         }
         awaitClose()
-    }
+    }.stateIn(scope)
 
     @ExperimentalCoroutinesApi
-    override fun updateTicket(ticket: Ticket): Flow<Result<Boolean>> = channelFlow {
+    override suspend fun updateTicket(ticket: Ticket): Flow<Result<Boolean>> = channelFlow {
         offer(Result.Loading)
         try {
             dao.update(ticket)
@@ -100,10 +105,10 @@ class TicketRepository @Inject constructor(
             offer(Result.Error(e))
         }
         awaitClose()
-    }
+    }.stateIn(scope)
 
     @ExperimentalCoroutinesApi
-    override fun deleteTicket(ticket: Ticket): Flow<Result<Boolean>> = channelFlow {
+    override suspend fun deleteTicket(ticket: Ticket): Flow<Result<Boolean>> = channelFlow {
         offer(Result.Loading)
         try {
             val updatedTicket = ticket.copy(deleted = true)
@@ -114,10 +119,10 @@ class TicketRepository @Inject constructor(
             offer(Result.Error(e))
         }
         awaitClose()
-    }
+    }.stateIn(scope)
 
     @ExperimentalCoroutinesApi
-    override fun allTickets(): Flow<Result<List<UserAndTicket>>> = channelFlow {
+    override suspend fun allTickets(): Flow<Result<List<UserAndTicket>>> = channelFlow {
         offer(Result.Loading)
         if (storage.userId == null) {
             offer(Result.Error(Exception("only logged in users can access this data")))
@@ -148,5 +153,23 @@ class TicketRepository @Inject constructor(
             )
         }
         awaitClose()
-    }
+    }.stateIn(scope)
+
+    @ExperimentalCoroutinesApi
+    override suspend fun getTicketById(id: String): Flow<Result<Ticket?>> = channelFlow {
+        dao.getTicketById(id).collectLatest { ticket ->
+            Timber.tag("get-ticket-by-id").i("found: $ticket")
+            offer(Result.Success(ticket))
+        }
+        ticketCollection.document(id).get().foldDoc<Ticket>(
+            scope,
+            { ticket ->
+                if (ticket != null) scope.launch { dao.insert(ticket) }
+            },
+            { exception ->
+                Timber.tag("get-ticket-by-id")
+                    .e("could not find ticket: ${exception?.localizedMessage}")
+            })
+        awaitClose()
+    }.stateIn(scope)
 }

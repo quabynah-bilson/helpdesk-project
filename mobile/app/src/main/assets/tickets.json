@@ -8,7 +8,7 @@
     "comment": "",
     "status": 0,
     "type": 0,
-    "timestamp" : "2021-04-16T13:45:45+0000",
+    "timestamp" : "2021-04-16T13:45:45Z",
     "deleted": false,
     "priority": 0
   },
@@ -21,7 +21,7 @@
     "comment": "",
     "status": 1,
     "type": 0,
-    "timestamp" : "2021-04-16T14:45:45+0000",
+    "timestamp" : "2021-04-16T14:45:45Z",
     "linkedTickets": [],
     "deleted": false,
     "priority": 1
@@ -35,7 +35,7 @@
     "comment": "",
     "status": 2,
     "type": 0,
-    "timestamp" : "2021-04-16T03:45:45+0000",
+    "timestamp" : "2021-04-16T03:45:45Z",
     "deleted": false,
     "priority": 2
   }
