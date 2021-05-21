@@ -26,7 +26,6 @@ class LoginFragment : Fragment() {
 
     private var binding: FragmentLoginBinding? = null
 
-
     private val authViewModel by viewModels<AuthViewModel>()
 
     override fun onCreateView(
@@ -59,7 +58,9 @@ class LoginFragment : Fragment() {
                 }
 
                 loginButton.setOnClickListener {
-                    authViewModel.login(
+                    authViewModel.register(
+                        username = "Demo user",
+                        userType = UserType.Technician,
                         email = usernameField.text.toString().trim(),
                         password = passwordField.text.toString().trim(),
                     )

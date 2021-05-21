@@ -60,7 +60,7 @@ class AuthenticationRepository @Inject constructor(
                         .collectLatest { firebaseUser ->
                             if (firebaseUser == null) {
                                 logger.e("user credentials may be invalid")
-                                offer(Result.Error(Exception("no user found")))
+                                offer(Result.Error(Exception("no user record found")))
                             } else {
                                 // get user from database
                                 userCollection.document(firebaseUser.uid).get().foldDoc<User>(scope,
