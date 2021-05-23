@@ -61,7 +61,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    ndkVersion '23.0.7123448 rc1'
     buildFeatures {
         viewBinding true
         dataBinding true
@@ -69,6 +68,7 @@ android {
     lintOptions {
         checkReleaseBuilds false
     }
+    ndkVersion '23.0.7196353 rc2'
 }
 
 dependencies {
