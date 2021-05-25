@@ -58,9 +58,7 @@ class LoginFragment : Fragment() {
                 }
 
                 loginButton.setOnClickListener {
-                    authViewModel.register(
-                        username = "Demo user",
-                        userType = UserType.Technician,
+                    authViewModel.login(
                         email = usernameField.text.toString().trim(),
                         password = passwordField.text.toString().trim(),
                     )
