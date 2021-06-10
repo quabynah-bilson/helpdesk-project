@@ -13,7 +13,7 @@ import javax.inject.Singleton
 /**
  * storage module
  *
- * * handles scaffolding of persisted storage related dependencies
+ * handles scaffolding of persisted storage related dependencies
  */
 @InstallIn(SingletonComponent::class)
 @Module
