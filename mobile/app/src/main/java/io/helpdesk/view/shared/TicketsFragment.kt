@@ -60,8 +60,6 @@ class TicketsFragment : Fragment() {
 
                     // show loading view
                     progressBinding?.root?.isVisible = state is LatestTicketUIState.Loading
-
-
                 }
 
             }

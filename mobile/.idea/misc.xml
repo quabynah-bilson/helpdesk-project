@@ -3,8 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/quaby/Documents/Dev/helpdesk-project/mobile/app/src/main/res/layout/faqs_fragment.xml" value="0.27735042735042736" />
         <entry key="..\:/Users/quaby/Documents/Dev/helpdesk-project/mobile/app/src/main/res/layout/fragment_home.xml" value="0.276282590412111" />
         <entry key="..\:/Users/quaby/Documents/Dev/helpdesk-project/mobile/app/src/main/res/layout/fragment_register_user.xml" value="0.28076923076923077" />
+        <entry key="..\:/Users/quaby/Documents/Dev/helpdesk-project/mobile/app/src/main/res/layout/fragment_ticket_info.xml" value="0.27735042735042736" />
+        <entry key="..\:/Users/quaby/Documents/Dev/helpdesk-project/mobile/app/src/main/res/layout/fragment_welcome.xml" value="0.27735042735042736" />
         <entry key="..\:/Users/quaby/Documents/Dev/helpdesk-project/mobile/app/src/main/res/layout/item_ticket.xml" value="0.28076923076923077" />
         <entry key="..\:/Users/quaby/Documents/Dev/helpdesk-project/mobile/app/src/main/res/layout/tickets_fragment.xml" value="0.28076923076923077" />
         <entry key="..\:/Users/quaby/Documents/GitHub/helpdesk-project/mobile/app/src/main/res/layout/fragment_home.xml" value="0.22407407407407406" />
