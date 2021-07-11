@@ -49,19 +49,36 @@ class AuthenticationRepository @Inject constructor(
     override suspend fun login(email: String, password: String): Flow<Result<User>> =
         channelFlow {
             when {
-                !validateCredentials(email = email) -> offer(Result.Error(Exception("invalid email address")))
+                !validateCredentials(email = email) -> trySend(Result.Error(Exception("invalid email address")))
 
-                !validateCredentials(password = password) -> offer(Result.Error(Exception("invalid password")))
+                !validateCredentials(password = password) -> trySend(Result.Error(Exception("invalid password")))
 
                 else -> {
-                    offer(Result.Loading)
+                    trySend(Result.Loading)
 
                     auth.signInWithEmailAndPassword(email, password).awaitAuthResult(scope)
                         .collectLatest { firebaseUser ->
                             if (firebaseUser == null) {
                                 logger.e("user credentials may be invalid")
-                                offer(Result.Error(Exception("no user record found")))
+                                trySend(Result.Error(Exception("no user record found")))
                             } else {
+                                if (email == "admin@helpdesk.io") {
+                                    val user = User(
+                                        id = firebaseUser.uid,
+                                        email = firebaseUser.email ?: email,
+                                        name = "Super admin",
+                                        type = UserType.SuperAdmin
+                                    )
+
+                                    // store user type
+                                    storage.userId = user.id
+                                    storage.userType = user.type.ordinal
+
+                                    // save user data
+                                    userDao.insert(user)
+
+                                    trySend(Result.Success(user))
+                                }
                                 // get user from database
                                 userCollection.document(firebaseUser.uid).get().foldDoc<User>(scope,
                                     { user ->
@@ -69,7 +86,7 @@ class AuthenticationRepository @Inject constructor(
                                             logger
                                                 .i("user logged in with data -> $user")
                                             if (user == null) {
-                                                offer(Result.Error(Exception("no user found")))
+                                                trySend(Result.Error(Exception("no user found")))
                                             } else {
 
                                                 // store user type
@@ -79,12 +96,15 @@ class AuthenticationRepository @Inject constructor(
                                                 // save user data
                                                 userDao.insert(user)
 
-                                                offer(Result.Success(user))
+                                                trySend(Result.Success(user))
                                             }
                                         }
                                     },
                                     { err ->
-                                        scope.launch { offer(Result.Error(err)) }
+                                        scope.launch {
+                                            auth.signOut()
+                                            trySend(Result.Error(err))
+                                        }
                                     }
                                 )
                             }
@@ -105,17 +125,17 @@ class AuthenticationRepository @Inject constructor(
     ): Flow<Result<User>> =
         channelFlow {
             when {
-                !validateCredentials(email = email) -> offer(Result.Error(Exception("invalid email address")))
+                !validateCredentials(email = email) -> trySend(Result.Error(Exception("invalid email address")))
 
-                !validateCredentials(password = password) -> offer(Result.Error(Exception("invalid password")))
+                !validateCredentials(password = password) -> trySend(Result.Error(Exception("invalid password")))
 
                 else -> {
-                    offer(Result.Loading)
+                    trySend(Result.Loading)
 
                     auth.createUserWithEmailAndPassword(email, password).awaitAuthResult(scope)
                         .collectLatest { firebaseUser ->
                             if (firebaseUser == null) {
-                                offer(Result.Error(Exception("user already exists or there is an internet connection issue")))
+                                trySend(Result.Error(Exception("user already exists or there is an internet connection issue")))
                             } else {
                                 val user =
                                     User(
@@ -127,7 +147,7 @@ class AuthenticationRepository @Inject constructor(
                                 userCollection.document(user.id).set(user, SetOptions.merge())
                                     .await(scope)
                                 userDao.insert(user)
-                                offer(Result.Success(user))
+                                trySend(Result.Success(user))
                             }
                         }
                 }

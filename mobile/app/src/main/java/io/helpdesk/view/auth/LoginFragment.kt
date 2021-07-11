@@ -18,7 +18,11 @@ import io.helpdesk.databinding.FragmentLoginBinding
 import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.AuthState
 import io.helpdesk.viewmodel.AuthViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -65,11 +69,13 @@ class LoginFragment : Fragment() {
                 }
                 authViewModel.authState.collectLatest { state ->
                     when (state) {
-                        is AuthState.Error -> Snackbar.make(
-                            root,
-                            state.reason,
-                            Snackbar.LENGTH_LONG
-                        ).show()
+                        is AuthState.Error -> GlobalScope.launch(Dispatchers.Main) {
+                            Snackbar.make(
+                                root,
+                                state.reason,
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                        }
 
                         is AuthState.Success -> {
                             // destination
