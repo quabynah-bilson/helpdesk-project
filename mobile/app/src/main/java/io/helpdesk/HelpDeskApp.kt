@@ -16,6 +16,8 @@ import javax.inject.Inject
 
 /**
  * application entry point
+ *
+ * https://dagger.dev/hilt/gradle-setup.html
  */
 @HiltAndroidApp
 class HelpDeskApp : Application(), Configuration.Provider {

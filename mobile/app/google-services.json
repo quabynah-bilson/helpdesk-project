@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "566695822473",
-    "project_id": "helpdesk-mobile-platform",
-    "storage_bucket": "helpdesk-mobile-platform.appspot.com"
+    "project_number": "36763104510",
+    "project_id": "helpdesk-8820c",
+    "storage_bucket": "helpdesk-8820c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:566695822473:android:6dc7d9b713fe74f3513258",
+        "mobilesdk_app_id": "1:36763104510:android:37d5922490d9b62e0961af",
         "android_client_info": {
           "package_name": "io.helpdesk"
         }
       },
       "oauth_client": [
         {
-          "client_id": "566695822473-c10f9m11g51ijnna6s0fub53lolu9db9.apps.googleusercontent.com",
+          "client_id": "36763104510-u20ucdvu7d0b3ni84lfdqhguo79653of.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "io.helpdesk",
-            "certificate_hash": "83414532c2a0db3a56d2d37254045dddcc38b74f"
+            "certificate_hash": "80a36057ce3801b31652159c0922ee3c6ab8d4dc"
           }
         },
         {
-          "client_id": "566695822473-tvn68aoq21u0bv17olue97klkrf072ac.apps.googleusercontent.com",
+          "client_id": "36763104510-94avomophc6vkd4i5ulan85e8tlf5708.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAeIGsKScwwSiuhr59f1tcRWGo0hDz_fV4"
+          "current_key": "AIzaSyDFCqR-bX4FiMWbWlTVpjKHLpaRzKHX_JI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "566695822473-tvn68aoq21u0bv17olue97klkrf072ac.apps.googleusercontent.com",
+              "client_id": "36763104510-94avomophc6vkd4i5ulan85e8tlf5708.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

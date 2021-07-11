@@ -4,24 +4,24 @@ buildscript {
         google()
         mavenCentral()
         maven {
-            url  "https://oss.sonatype.org/content/repositories/snapshots"
+            url "https://oss.sonatype.org/content/repositories/snapshots"
             content {
                 includeModule("com.google.dagger", "hilt-android-gradle-plugin")
             }
         }
     }
 
-    ext.hilt_version = '2.35.1'
+    ext.hilt_version = '2.37'
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.0-alpha02'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32'
-        classpath 'com.google.gms:google-services:4.3.5'
+        classpath 'com.android.tools.build:gradle:7.1.0-alpha03'
+        //noinspection GradleDependency
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10'
+        classpath 'com.google.gms:google-services:4.3.8'
 
         def nav_version = "2.3.4"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
-        // classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
-        // https://github.com/google/dagger/issues/2337
-        classpath "com.google.dagger:hilt-android-gradle-plugin:HEAD-SNAPSHOT"
+        // classpath 'com.google.dagger:hilt-android-gradle-plugin:2.28-alpha'
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
     }
 }
 
