@@ -2,7 +2,6 @@
 
     <!--Base theme, all common styling here-->
     <style name="Base.HelpDesk" parent="@style/Theme.MaterialComponents.DayNight.NoActionBar">
-
         <!-- Emphasis -->
         <item name="emphasis_low">0.37</item>
         <item name="emphasis_medium">0.65</item>

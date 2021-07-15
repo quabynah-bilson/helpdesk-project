@@ -25,6 +25,7 @@ data class User(
     var avatar: String? = "",
     @ColumnInfo(name = "phoneNumber")
     var phone: String? = "",
+    var token: String? = "",
     @SerializedName("type")
     @ColumnInfo(name = "userType")
     var type: UserType = UserType.Customer,
@@ -41,6 +42,7 @@ data class User(
             email = map["username"].toString(),
             phone = map["phoneNumber"].toString(),
             avatar = map["avatar"].toString(),
+            token = map["token"].toString(),
             type = UserType.values()[(map["user_type"] as Double).toInt()],
         )
     }

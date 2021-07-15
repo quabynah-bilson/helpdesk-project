@@ -54,6 +54,13 @@ class BaseMessagingService : FirebaseMessagingService() {
         // Check if message contains a notification payload.
         p0.notification?.let {
             Timber.tag("on-receive-messages").i("Message Notification Body: ${it.body}")
+            NotificationUtil.push(
+                applicationContext,
+                title = it.title ?: "New notification received",
+                message = it.body ?: "Tap here for more details",
+                type = NotificationType.Feedback,
+                payload = it.tag,
+            )
         }
     }
 

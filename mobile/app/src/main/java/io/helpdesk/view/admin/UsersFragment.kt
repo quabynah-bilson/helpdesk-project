@@ -9,14 +9,17 @@ import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagingData
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.helpdesk.R
 import io.helpdesk.databinding.FragmentUsersBinding
 import io.helpdesk.model.data.UserType
 import io.helpdesk.view.bottomsheet.UserProfileBottomSheet
 import io.helpdesk.view.recyclerview.UsersListAdapter
+import io.helpdesk.viewmodel.AuthViewModel
 import io.helpdesk.viewmodel.UserUIState
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +33,7 @@ class UsersFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
     private var binding: FragmentUsersBinding? = null
 
     private val usersViewModel by activityViewModels<UsersViewModel>()
+    private val authViewModel by activityViewModels<AuthViewModel>()
     private val queryUserType = MutableStateFlow(UserType.All)
 
     override fun onCreateView(
@@ -92,16 +96,38 @@ class UsersFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         return when (item?.itemId) {
+
             R.id.user_type_all -> {
                 queryUserType.tryEmit(UserType.All)
                 true
             }
+
             R.id.user_type_customer -> {
                 queryUserType.tryEmit(UserType.Customer)
                 true
             }
+
             R.id.user_type_technician -> {
                 queryUserType.tryEmit(UserType.Technician)
+                true
+            }
+
+            R.id.sign_out -> {
+                MaterialAlertDialogBuilder(requireContext()).apply {
+                    setTitle(getString(R.string.leave_app_prompt_title))
+                    setMessage(getString(R.string.sign_out_prompt_content))
+                    setPositiveButton("yes") { dialog, _ ->
+                        run {
+                            // leave app
+                            dialog.dismiss()
+                            authViewModel.logout()
+                            val navController = findNavController()
+                            navController.navigate(UsersFragmentDirections.actionNavUsersToNavWelcome())
+                        }
+                    }
+                    setNegativeButton("no") { dialog, _ -> dialog.cancel() }
+                    create()
+                }.show()
                 true
             }
             else -> false

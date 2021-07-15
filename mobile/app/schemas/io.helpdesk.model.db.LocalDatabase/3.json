@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "4ba670b7c195c3e69d66cc4a1fce33ed",
+    "identityHash": "450526b0bcc2666c3dca3b4a687a62a6",
     "entities": [
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `username` TEXT NOT NULL, `name` TEXT NOT NULL, `avatar` TEXT, `phoneNumber` TEXT, `userType` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `username` TEXT NOT NULL, `name` TEXT NOT NULL, `avatar` TEXT, `phoneNumber` TEXT, `token` TEXT, `userType` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -35,6 +35,12 @@
           {
             "fieldPath": "phone",
             "columnName": "phoneNumber",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "token",
+            "columnName": "token",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -188,7 +194,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4ba670b7c195c3e69d66cc4a1fce33ed')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '450526b0bcc2666c3dca3b4a687a62a6')"
     ]
   }
 }

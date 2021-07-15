@@ -2,6 +2,7 @@ package io.helpdesk.core.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,8 +30,9 @@ object RepositoryModule {
         storage: BaseUserPersistentStorage,
         firestore: FirebaseFirestore,
         auth: FirebaseAuth,
+        messaging: FirebaseMessaging,
     ): BaseAuthenticationRepository =
-        AuthenticationRepository(scope, userDao, storage, firestore, auth)
+        AuthenticationRepository(scope, userDao, storage, firestore, auth, messaging)
 
     @Singleton
     @Provides

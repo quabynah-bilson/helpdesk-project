@@ -119,5 +119,8 @@
         <action
             android:id="@+id/action_nav_users_to_nav_register"
             app:destination="@id/nav_register" />
+        <action
+            android:id="@+id/action_nav_users_to_nav_welcome"
+            app:destination="@id/nav_welcome" />
     </fragment>
 </navigation>

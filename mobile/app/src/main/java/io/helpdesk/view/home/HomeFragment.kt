@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -67,6 +68,12 @@ class HomeFragment : Fragment() {
 
         lifecycleScope.launchWhenCreated {
             binding?.run {
+                // setup FAB
+                fabPostTicket.setOnClickListener {
+                    Toast.makeText(requireContext(), "Hello word", Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.nav_post_ticket)
+                }
+
                 userViewModel.currentUser().collectLatest { user ->
                     if (user != null) {
                         currentUser = user
@@ -94,7 +101,6 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-
                 // setup view pager
                 val pagerAdapter = HomePagerAdapter(this@HomeFragment)
                 with(pager) {
@@ -117,11 +123,6 @@ class HomeFragment : Fragment() {
                         else -> tab.text = getString(R.string.fragment_live_chat)
                     }
                 }.attach()
-
-                // setup FAB
-                fabPostTicket.setOnClickListener {
-                    findNavController().navigate(HomeFragmentDirections.actionNavHomeToNavPostTicket())
-                }
 
                 // handle back press action
                 requireActivity().onBackPressedDispatcher.addCallback(

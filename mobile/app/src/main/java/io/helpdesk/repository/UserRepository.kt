@@ -50,13 +50,13 @@ class UserRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun currentUser(): Flow<Result<User?>> = channelFlow {
-        offer(Result.Loading)
+        trySend(Result.Loading)
         if (storage.userId == null) {
-            offer(Result.Error(Exception("no user found")))
+            trySend(Result.Error(Exception("no user found")))
         } else {
             dao.getUserByIdAndType(id = storage.userId!!, type = storage.userType)
                 .collectLatest { currentUser ->
-                    offer(Result.Success(currentUser))
+                    trySend(Result.Success(currentUser))
                 }
 
             userCollection.document(storage.userId!!).observe<User>(this) { user, exception ->
@@ -65,7 +65,7 @@ class UserRepository @Inject constructor(
                 }
 
                 if (exception != null) {
-                    offer(Result.Error(exception))
+                    trySend(Result.Error(exception))
                 }
             }
         }
@@ -74,63 +74,63 @@ class UserRepository @Inject constructor(
 
     @ExperimentalCoroutinesApi
     override fun addUser(user: User): Flow<Result<Unit>> = channelFlow {
-        offer(Result.Loading)
+        trySend(Result.Loading)
         launch(Dispatchers.IO) { dao.insert(user) }
         userCollection.document(user.id).set(user, SetOptions.merge()).await(scope)
-        offer(Result.Initial)
+        trySend(Result.Initial)
     }
 
     @ExperimentalCoroutinesApi
     override fun allUsers(): Flow<Result<List<User>>> = channelFlow {
-        offer(Result.Loading)
+        trySend(Result.Loading)
         dao.allUsers().collectLatest { users ->
-            offer(Result.Success(users))
+            trySend(Result.Success(users))
         }
 
         userCollection.get()
             .fold<User>(this, { users ->
                 users.forEach { launch(Dispatchers.IO) { dao.insert(it) } }
-            }, { exception -> offer(Result.Error(exception)) })
+            }, { exception -> trySend(Result.Error(exception)) })
 
         awaitClose()
     }
 
     @ExperimentalCoroutinesApi
     override fun usersByType(type: Int): Flow<Result<List<User>>> = channelFlow {
-        offer(Result.Loading)
+        trySend(Result.Loading)
 
         dao.allUsers().collectLatest { users ->
             val filteredList = when (type) {
                 UserType.All.ordinal, UserType.SuperAdmin.ordinal -> users
                 else -> users.filter { person -> person.type == UserType.values()[type] }
             }
-            offer(Result.Success(filteredList))
+            trySend(Result.Success(filteredList))
         }
 
         userCollection.whereEqualTo("type", type).get()
             .fold<User>(this, { users ->
                 launch(Dispatchers.IO) { users.forEach { dao.insert(it) } }
-            }, { exception -> offer(Result.Error(exception)) })
+            }, { exception -> trySend(Result.Error(exception)) })
 
         awaitClose()
     }
 
     @ExperimentalCoroutinesApi
     override fun getUserById(id: String): Flow<Result<User>> = channelFlow {
-        offer(Result.Loading)
+        trySend(Result.Loading)
         dao.getUserById(id).collectLatest { user ->
-            if (user == null) offer(Result.Error(Exception("no user found")))
-            else offer(Result.Success(user))
+            if (user == null) trySend(Result.Error(Exception("no user found")))
+            else trySend(Result.Success(user))
         }
 
         userCollection.document(id).get()
             .foldDoc<User>(this, { user ->
                 if (user == null) {
-                    offer(Result.Error(Exception("no user found")))
+                    trySend(Result.Error(Exception("no user found")))
                 } else {
                     launch(Dispatchers.IO) { dao.insert(user) }
                 }
-            }, { exception -> offer(Result.Error(exception)) })
+            }, { exception -> trySend(Result.Error(exception)) })
 
         awaitClose()
     }

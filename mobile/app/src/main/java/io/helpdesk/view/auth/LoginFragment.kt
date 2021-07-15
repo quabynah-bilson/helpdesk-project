@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import io.helpdesk.core.util.logger
 import io.helpdesk.databinding.FragmentLoginBinding
 import io.helpdesk.model.data.UserType
 import io.helpdesk.viewmodel.AuthState
@@ -84,7 +85,11 @@ class LoginFragment : Fragment() {
                             } else {
                                 LoginFragmentDirections.actionNavLoginToNavHome()
                             }
-                            navController.navigate(dir)
+                            try {
+                                navController.navigate(dir)
+                            } catch (e: Exception) {
+                                logger.e(e)
+                            }
                         }
 
                         else -> {
@@ -97,13 +102,13 @@ class LoginFragment : Fragment() {
                     progressIndicator.isVisible = state is AuthState.Loading
 
                     // disable back press
-                    requireActivity().onBackPressedDispatcher.addCallback(
+                    /*requireActivity().onBackPressedDispatcher.addCallback(
                         viewLifecycleOwner,
                         object : OnBackPressedCallback(true) {
                             override fun handleOnBackPressed() {
                                 if (state !is AuthState.Loading) navController.popBackStack()
                             }
-                        })
+                        })*/
                 }
             }
         }

@@ -5,6 +5,7 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -14,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import io.helpdesk.R
 import io.helpdesk.databinding.FragmentPostTicketBinding
 import io.helpdesk.viewmodel.PostTicketUIState
 import io.helpdesk.viewmodel.TicketsViewModel
@@ -39,6 +41,9 @@ class PostTicketFragment : Fragment() {
 
     // show colored system bar
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        requireActivity().window?.run {
+            navigationBarColor = ContextCompat.getColor(requireContext(), R.color.helpdesk_blue_800)
+        }
         super.onViewCreated(view, savedInstanceState)
 
         lifecycleScope.launchWhenCreated {

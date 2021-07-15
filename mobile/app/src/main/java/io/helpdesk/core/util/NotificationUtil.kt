@@ -131,4 +131,4 @@ object NotificationUtil {
     }
 }
 
-enum class NotificationType { Feedback, Ticket }
+enum class NotificationType { Feedback, Ticket, DeletedAccount }

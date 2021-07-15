@@ -53,7 +53,7 @@ class WelcomeFragment : Fragment() {
         userViewModel.currentUser().collectLatest { user ->
             Timber.tag("user-type").d("type -> ${user?.type}")
             binding?.skipButton?.setOnClickListener {
-                if (user == null) {
+                /*if (user == null) {
                     navController.navigate(WelcomeFragmentDirections.actionNavWelcomeToNavLogin())
                 } else {
                     // destination
@@ -63,7 +63,10 @@ class WelcomeFragment : Fragment() {
                         WelcomeFragmentDirections.actionNavWelcomeToNavHome()
                     }
                     navController.navigate(dir)
-                }
+                }*/
+
+
+                navController.navigate(WelcomeFragmentDirections.actionNavWelcomeToNavLogin())
             }
         }
     }

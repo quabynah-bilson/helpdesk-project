@@ -35,6 +35,28 @@ exports.sendTicketNotification = functions.firestore
       });
   });
 
+// delete user account when removed from the database
+exports.deleteUserAccount = functions.firestore
+  .document("users/{id}")
+  .onDelete(async (snapshot, context) => {
+    let { token } = snapshot.data();
+    if (!token) {
+      return await admin.auth().deleteUser(context.params.id);
+    }
+
+    let payload = {
+      data: {
+        title: "Account deleted",
+        body: "You are no longer a user of HelpDesk application. Please sign out and request a new account.",
+        type: "deleted_accounts",
+      },
+    };
+    return Promise.all([
+      admin.messaging().sendToDevice(token, payload),
+      admin.auth().deleteUser(context.params.id),
+    ]);
+  });
+
 // todo -> deploy changes
 // firebase login --reauth
 // firebase deploy --only functions:sendTicketNotification && firebase dpeloy --only functions:sendFeedbackNotification

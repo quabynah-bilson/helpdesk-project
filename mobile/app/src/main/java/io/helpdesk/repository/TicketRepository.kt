@@ -7,10 +7,7 @@ import io.helpdesk.core.util.Result
 import io.helpdesk.core.util.await
 import io.helpdesk.core.util.fold
 import io.helpdesk.core.util.foldDoc
-import io.helpdesk.model.data.Ticket
-import io.helpdesk.model.data.TicketPriority
-import io.helpdesk.model.data.UserAndTicket
-import io.helpdesk.model.data.UserType
+import io.helpdesk.model.data.*
 import io.helpdesk.model.db.LocalDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +45,7 @@ class TicketRepository @Inject constructor(
     private val scope: CoroutineScope,
     private val storage: BaseUserPersistentStorage,
     db: LocalDatabase,
-    firestore: FirebaseFirestore,
+    private val firestore: FirebaseFirestore,
 ) : BaseTicketRepository {
     private val dao = db.ticketDao()
     private val userDao = db.userDao()
@@ -60,72 +57,81 @@ class TicketRepository @Inject constructor(
         title: String,
         description: String,
     ): Flow<Result<Boolean>> = channelFlow {
-        offer(Result.Loading)
+        trySend(Result.Loading)
+
         // evaluate user auth state
         if (storage.userId != null) {
-            // get technicians
-            userDao.getTechnicians().collectLatest { technicians ->
-                if (technicians.isEmpty()) {
-                    offer(Result.Error(Exception("no technicians found")))
-                } else {
-                    // set priority at random
-                    val seed = Random.nextInt(2)
-                    val ticketPriority = TicketPriority.values()[seed]
+            firestore.collection(User.TABLE_NAME).get()
+                .fold<User>(scope, { users ->
+                    userDao.insertAll(users)
+                    val technicians = mutableListOf<User>()
+                    users.forEach {
+                        if (it.type == UserType.Technician) {
+                            technicians.add(it)
+                        }
+                    }
+                    if (technicians.isEmpty()) {
+                        trySend(Result.Error(Exception("no technicians found")))
+                    } else {
+                        // set priority at random
+                        val ticketPriority = TicketPriority.values()[Random.nextInt(2)]
 
-                    // create a new ticket
-                    val ticket = Ticket(
-                        id = UUID.randomUUID().toString(),
-                        user = storage.userId!!,
-                        name = title,
-                        description = description,
-                        priority = ticketPriority,
-                        technician = technicians[Random.nextInt(technicians.size)].id,
-                    )
-                    launch(Dispatchers.IO) { dao.insert(ticket) }
-                    ticketCollection
-                        .document(ticket.id)
-                        .set(ticket, SetOptions.merge())
-                    offer(Result.Success(true))
-                }
-            }
+                        // create a new ticket
+                        val ticket = Ticket(
+                            id = UUID.randomUUID().toString(),
+                            user = storage.userId!!,
+                            name = title,
+                            description = description,
+                            priority = ticketPriority,
+                            technician = technicians[Random.nextInt(technicians.size)].id,
+                        )
+                        launch(Dispatchers.IO) { dao.insert(ticket) }
+                        ticketCollection
+                            .document(ticket.id)
+                            .set(ticket, SetOptions.merge())
+                        trySend(Result.Success(true))
+                    }
+                }, { exception ->
+                    trySend(Result.Error(exception))
+                })
         } else {
-            offer(Result.Error(Exception("user not logged in")))
+            trySend(Result.Error(Exception("user not logged in")))
         }
         awaitClose()
     }.stateIn(scope)
 
     @ExperimentalCoroutinesApi
     override suspend fun updateTicket(ticket: Ticket): Flow<Result<Boolean>> = channelFlow {
-        offer(Result.Loading)
+        trySend(Result.Loading)
         try {
             dao.insert(ticket)
             ticketCollection.document(ticket.id).set(ticket, SetOptions.merge()).await(scope)
-            offer(Result.Success(true))
+            trySend(Result.Success(true))
         } catch (e: Exception) {
-            offer(Result.Error(e))
+            trySend(Result.Error(e))
         }
         awaitClose()
     }.stateIn(scope)
 
     @ExperimentalCoroutinesApi
     override suspend fun deleteTicket(ticket: Ticket): Flow<Result<Boolean>> = channelFlow {
-        offer(Result.Loading)
+        trySend(Result.Loading)
         try {
             val updatedTicket = ticket.copy(deleted = true)
             dao.update(updatedTicket)
             ticketCollection.document(ticket.id).set(updatedTicket, SetOptions.merge())
-            offer(Result.Success(true))
+            trySend(Result.Success(true))
         } catch (e: Exception) {
-            offer(Result.Error(e))
+            trySend(Result.Error(e))
         }
         awaitClose()
     }.stateIn(scope)
 
     @ExperimentalCoroutinesApi
     override suspend fun allTickets(): Flow<Result<List<UserAndTicket>>> = channelFlow {
-        offer(Result.Loading)
+        trySend(Result.Loading)
         if (storage.userId == null) {
-            offer(Result.Error(Exception("only logged in users can access this data")))
+            trySend(Result.Error(Exception("only logged in users can access this data")))
         } else {
             val ticketsQuery =
                 if (storage.userType == UserType.SuperAdmin.ordinal) dao.getUsersAndTickets()
@@ -136,7 +142,7 @@ class TicketRepository @Inject constructor(
                 // Writes to the value property of MutableStateFlow,
                 // adding a new element to the flow and updating all
                 // of its collectors
-                offer(Result.Success(tickets))
+                trySend(Result.Success(tickets))
             }
 
             // fetch from server and update locally
@@ -148,7 +154,7 @@ class TicketRepository @Inject constructor(
                     }
                 },
                 { exception ->
-                    offer(Result.Error(exception))
+                    trySend(Result.Error(exception))
                 },
             )
         }
@@ -159,7 +165,7 @@ class TicketRepository @Inject constructor(
     override suspend fun getTicketById(id: String): Flow<Result<Ticket?>> = channelFlow {
         dao.getTicketById(id).collectLatest { ticket ->
             Timber.tag("get-ticket-by-id").i("found: $ticket")
-            offer(Result.Success(ticket))
+            trySend(Result.Success(ticket))
         }
         ticketCollection.document(id).get().foldDoc<Ticket>(
             scope,
