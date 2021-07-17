@@ -28,7 +28,7 @@ interface BaseUserRepository {
 
     fun allUsers(): Flow<Result<List<User>>>
 
-    fun usersByType(type: Int): Flow<Result<List<User>>>
+    fun usersByType(type: UserType): Flow<Result<List<User>>>
 
     suspend fun deleteUser(user: User)
 }
@@ -96,20 +96,19 @@ class UserRepository @Inject constructor(
     }
 
     @ExperimentalCoroutinesApi
-    override fun usersByType(type: Int): Flow<Result<List<User>>> = channelFlow {
+    override fun usersByType(type: UserType): Flow<Result<List<User>>> = channelFlow {
         trySend(Result.Loading)
 
-        dao.allUsers().collectLatest { users ->
-            val filteredList = when (type) {
-                UserType.All.ordinal, UserType.SuperAdmin.ordinal -> users
-                else -> users.filter { person -> person.type == UserType.values()[type] }
-            }
-            trySend(Result.Success(filteredList))
-        }
-
-        userCollection.whereEqualTo("type", type).get()
-            .fold<User>(this, { users ->
-                launch(Dispatchers.IO) { users.forEach { dao.insert(it) } }
+        userCollection.whereEqualTo("type", type.ordinal).get()
+            .fold<User>(this, { results ->
+                launch(Dispatchers.IO) { results.forEach { dao.insert(it) } }
+                dao.allUsers().collectLatest { users ->
+                    val filteredList = when (type) {
+                        UserType.All, UserType.SuperAdmin -> users
+                        else -> users.filter { person -> person.type == UserType.values()[type.ordinal] }
+                    }
+                    trySend(Result.Success(filteredList))
+                }
             }, { exception -> trySend(Result.Error(exception)) })
 
         awaitClose()

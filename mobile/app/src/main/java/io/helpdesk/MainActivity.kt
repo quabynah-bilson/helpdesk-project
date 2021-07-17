@@ -93,23 +93,30 @@ class MainActivity : AppCompatActivity() {
                                     this@MainActivity,
                                     object : OnBackPressedCallback(true) {
                                         override fun handleOnBackPressed() {
-                                            if (destination.id == R.id.nav_users) {
-                                                MaterialAlertDialogBuilder(this@MainActivity).apply {
-                                                    setTitle(getString(R.string.leave_app_prompt_title))
-                                                    setMessage(getString(R.string.leave_app_prompt_content))
-                                                    setPositiveButton("yes") { dialog, _ ->
-                                                        run {
-                                                            // leave app
-                                                            dialog.dismiss()
-                                                            finish()
+                                            when {
+                                                user?.type == UserType.Customer -> {
+                                                    finish()
+                                                }
+
+                                                destination.id == R.id.nav_users -> {
+                                                    MaterialAlertDialogBuilder(this@MainActivity).apply {
+                                                        setTitle(getString(R.string.leave_app_prompt_title))
+                                                        setMessage(getString(R.string.leave_app_prompt_content))
+                                                        setPositiveButton("yes") { dialog, _ ->
+                                                            run {
+                                                                // leave app
+                                                                dialog.dismiss()
+                                                                finish()
+                                                            }
                                                         }
-                                                    }
-                                                    setNegativeButton("no") { dialog, _ -> dialog.cancel() }
-                                                    create()
-                                                }.show()
-                                            } else {
-                                                // otherwise, select the initial page
-                                                navController.navigate(R.id.nav_users)
+                                                        setNegativeButton("no") { dialog, _ -> dialog.cancel() }
+                                                        create()
+                                                    }.show()
+                                                }
+                                                else -> {
+                                                    // otherwise, select the initial page
+                                                    navController.navigate(R.id.nav_users)
+                                                }
                                             }
                                         }
                                     })

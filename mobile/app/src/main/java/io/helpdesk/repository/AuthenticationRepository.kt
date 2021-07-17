@@ -153,7 +153,6 @@ class AuthenticationRepository @Inject constructor(
             awaitClose()
         }.stateIn(scope)
 
-
     @ExperimentalCoroutinesApi
     override suspend fun register(
         username: String,
@@ -189,7 +188,6 @@ class AuthenticationRepository @Inject constructor(
                             }
                         }
                 }
-
             }
             awaitClose()
         }.stateIn(scope)

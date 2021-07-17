@@ -12,6 +12,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.core.storage.BaseUserPersistentStorage
 import io.helpdesk.databinding.FragmentWelcomeBinding
 import io.helpdesk.model.data.UserType
+import io.helpdesk.viewmodel.UserUIState
 import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -46,14 +47,28 @@ class WelcomeFragment : Fragment() {
         // handle button click
         lifecycleScope.launchWhenCreated { observeCurrentUser() }
 
+
+        lifecycleScope.launchWhenStarted {
+            userViewModel.loadUsers(UserType.All)
+        }
+
+        lifecycleScope.launchWhenResumed {
+            userViewModel.loadTechniciansState.collectLatest { state ->
+
+                if (state is UserUIState.Success) {
+                    println(state.users)
+                }
+            }
+        }
     }
 
     private suspend fun observeCurrentUser() {
         val navController = findNavController()
         userViewModel.currentUser().collectLatest { user ->
             Timber.tag("user-type").d("type -> ${user?.type}")
+
             binding?.skipButton?.setOnClickListener {
-                /*if (user == null) {
+                if (user == null) {
                     navController.navigate(WelcomeFragmentDirections.actionNavWelcomeToNavLogin())
                 } else {
                     // destination
@@ -63,9 +78,9 @@ class WelcomeFragment : Fragment() {
                         WelcomeFragmentDirections.actionNavWelcomeToNavHome()
                     }
                     navController.navigate(dir)
-                }*/
+                }
 
-                navController.navigate(WelcomeFragmentDirections.actionNavWelcomeToNavLogin())
+//                navController.navigate(WelcomeFragmentDirections.actionNavWelcomeToNavLogin())
             }
         }
     }

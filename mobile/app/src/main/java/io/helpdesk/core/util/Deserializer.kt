@@ -23,7 +23,6 @@ fun Context.deserializeJson(source: String): List<Question> {
         val type = object : TypeToken<ArrayList<Question>>() {}.type
         val data = reader.readText()
         val result = gson.fromJson<List<Question>>(data, type).toList()
-        Timber.tag("serializer").d("data -> %s", result)
         result
     } catch (e: Exception) {
         Timber.tag("deserializer").e(e)

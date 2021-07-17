@@ -40,8 +40,8 @@ class UsersViewModel @Inject constructor(
         }
     }
 
-    fun loadUsers(userType: UserType = UserType.Technician) = ioScope {
-        repository.usersByType(userType.ordinal).collectLatest { result ->
+    suspend fun loadUsers(userType: UserType = UserType.Technician) = ioScope {
+        repository.usersByType(userType).collectLatest { result ->
             when (result) {
                 is Result.Success -> {
                     val users = result.data
