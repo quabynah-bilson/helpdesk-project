@@ -8,11 +8,13 @@ import io.helpdesk.core.util.ioScope
 import io.helpdesk.model.data.User
 import io.helpdesk.model.data.UserType
 import io.helpdesk.repository.BaseUserRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @HiltViewModel
 class UsersViewModel @Inject constructor(
     private val repository: BaseUserRepository
@@ -65,11 +67,11 @@ class UsersViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     Timber.tag("current-user").i("logged in as -> ${result.data}")
-                    offer(result.data)
+                    trySend(result.data)
                 }
 
                 is Result.Error -> {
-                    offer(null)
+                    trySend(null)
                 }
 
                 else -> {
@@ -83,10 +85,10 @@ class UsersViewModel @Inject constructor(
         repository.getUserById(id).collectLatest { result ->
             when (result) {
                 is Result.Success -> {
-                    offer(result.data)
+                    trySend(result.data)
                 }
                 is Result.Error -> {
-                    offer(null)
+                    trySend(null)
                 }
                 else -> {
                 }

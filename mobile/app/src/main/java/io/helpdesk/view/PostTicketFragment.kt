@@ -20,6 +20,7 @@ import io.helpdesk.databinding.FragmentPostTicketBinding
 import io.helpdesk.viewmodel.PostTicketUIState
 import io.helpdesk.viewmodel.TicketsViewModel
 import io.helpdesk.viewmodel.UsersViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -28,6 +29,7 @@ class PostTicketFragment : Fragment() {
     private var binding: FragmentPostTicketBinding? = null
 
     private val ticketsViewModel by activityViewModels<TicketsViewModel>()
+    @ExperimentalCoroutinesApi
     private val usersViewModel by activityViewModels<UsersViewModel>()
 
     override fun onCreateView(

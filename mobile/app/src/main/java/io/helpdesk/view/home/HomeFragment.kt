@@ -66,14 +66,63 @@ class HomeFragment : Fragment() {
         }
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launchWhenCreated {
-            binding?.run {
-                // setup FAB
-                fabPostTicket.setOnClickListener {
-                    Toast.makeText(requireContext(), "Hello word", Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(R.id.nav_post_ticket)
-                }
+        binding?.run {
+            // setup FAB
+            fabPostTicket.setOnClickListener {
+                findNavController().navigate(R.id.nav_post_ticket)
+            }
 
+            // setup view pager
+            val pagerAdapter = HomePagerAdapter(this@HomeFragment)
+            with(pager) {
+                adapter = pagerAdapter
+                setPageTransformer(DepthPageTransformer())
+                registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        // hide FAB for chat screen
+                        binding?.fabPostTicket?.isVisible = position != 2
+                        super.onPageSelected(position)
+                    }
+                })
+            }
+
+            // link tab layout to pager
+            TabLayoutMediator(tabLayout, pager) { tab, position ->
+                when (position) {
+                    0 -> tab.text = getString(R.string.fragment_faqs)
+                    1 -> tab.text = getString(R.string.fragment_tickets)
+                    else -> tab.text = getString(R.string.fragment_live_chat)
+                }
+            }.attach()
+
+            // handle back press action
+            requireActivity().onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner,
+                object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        val currentItem = pager.currentItem
+                        if (currentItem == 0) {
+                            MaterialAlertDialogBuilder(requireContext()).apply {
+                                setTitle(getString(R.string.leave_app_prompt_title))
+                                setMessage(getString(R.string.leave_app_prompt_content))
+                                setPositiveButton("yes") { dialog, _ ->
+                                    run {
+                                        // leave app
+                                        dialog.dismiss()
+                                        requireActivity().finish()
+                                    }
+                                }
+                                setNegativeButton("no") { dialog, _ -> dialog.cancel() }
+                                create()
+                            }.show()
+                        } else {
+                            // otherwise, select the initial page
+                            binding?.pager?.currentItem = 0
+                        }
+                    }
+                })
+
+            lifecycleScope.launchWhenCreated {
                 userViewModel.currentUser().collectLatest { user ->
                     if (user != null) {
                         currentUser = user
@@ -100,120 +149,70 @@ class HomeFragment : Fragment() {
                         }
                     }
                 }
+            }
 
-                // setup view pager
-                val pagerAdapter = HomePagerAdapter(this@HomeFragment)
-                with(pager) {
-                    adapter = pagerAdapter
-                    setPageTransformer(DepthPageTransformer())
-                    registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                        override fun onPageSelected(position: Int) {
-                            // hide FAB for chat screen
-                            binding?.fabPostTicket?.isVisible = position != 2
-                            super.onPageSelected(position)
-                        }
-                    })
-                }
+            executePendingBindings()
+        }
 
-                // link tab layout to pager
-                TabLayoutMediator(tabLayout, pager) { tab, position ->
-                    when (position) {
-                        0 -> tab.text = getString(R.string.fragment_faqs)
-                        1 -> tab.text = getString(R.string.fragment_tickets)
-                        else -> tab.text = getString(R.string.fragment_live_chat)
-                    }
-                }.attach()
+    }
 
-                // handle back press action
-                requireActivity().onBackPressedDispatcher.addCallback(
-                    viewLifecycleOwner,
-                    object : OnBackPressedCallback(true) {
-                        override fun handleOnBackPressed() {
-                            val currentItem = pager.currentItem
-                            if (currentItem == 0) {
-                                MaterialAlertDialogBuilder(requireContext()).apply {
-                                    setTitle(getString(R.string.leave_app_prompt_title))
-                                    setMessage(getString(R.string.leave_app_prompt_content))
-                                    setPositiveButton("yes") { dialog, _ ->
-                                        run {
-                                            // leave app
-                                            dialog.dismiss()
-                                            requireActivity().finish()
-                                        }
-                                    }
-                                    setNegativeButton("no") { dialog, _ -> dialog.cancel() }
-                                    create()
-                                }.show()
-                            } else {
-                                // otherwise, select the initial page
-                                binding?.pager?.currentItem = 0
-                            }
-                        }
-                    })
+    /**
+     * Pager adapter implementation
+     */
+    class HomePagerAdapter constructor(fragment: Fragment) : FragmentStateAdapter(fragment) {
+        override fun getItemCount(): Int = 2
 
-                executePendingBindings()
+        override fun createFragment(position: Int): Fragment {
+            return when (position) {
+                0 -> FaqsFragment()
+                else -> TicketsFragment()
             }
         }
     }
 
-}
-
-/**
- * Pager adapter implementation
- */
-class HomePagerAdapter constructor(fragment: Fragment) : FragmentStateAdapter(fragment) {
-    override fun getItemCount(): Int = 2
-
-    override fun createFragment(position: Int): Fragment {
-        return when (position) {
-            0 -> FaqsFragment()
-            else -> TicketsFragment()
-        }
-    }
-}
-
 // region page transformers
 
-@RequiresApi(21)
-class DepthPageTransformer : ViewPager2.PageTransformer {
+    @RequiresApi(21)
+    class DepthPageTransformer : ViewPager2.PageTransformer {
 
-    companion object {
-        private const val MIN_SCALE = 0.75f
-    }
+        companion object {
+            private const val MIN_SCALE = 0.75f
+        }
 
-    override fun transformPage(view: View, position: Float) {
-        view.apply {
-            val pageWidth = width
-            when {
-                position < -1 -> { // [-Infinity,-1)
-                    // This page is way off-screen to the left.
-                    alpha = 0f
-                }
-                position <= 0 -> { // [-1,0]
-                    // Use the default slide transition when moving to the left page
-                    alpha = 1f
-                    translationX = 0f
-                    translationZ = 0f
-                    scaleX = 1f
-                    scaleY = 1f
-                }
-                position <= 1 -> { // (0,1]
-                    // Fade the page out.
-                    alpha = 1 - position
+        override fun transformPage(view: View, position: Float) {
+            view.apply {
+                val pageWidth = width
+                when {
+                    position < -1 -> { // [-Infinity,-1)
+                        // This page is way off-screen to the left.
+                        alpha = 0f
+                    }
+                    position <= 0 -> { // [-1,0]
+                        // Use the default slide transition when moving to the left page
+                        alpha = 1f
+                        translationX = 0f
+                        translationZ = 0f
+                        scaleX = 1f
+                        scaleY = 1f
+                    }
+                    position <= 1 -> { // (0,1]
+                        // Fade the page out.
+                        alpha = 1 - position
 
-                    // Counteract the default slide transition
-                    translationX = pageWidth * -position
-                    // Move it behind the left page
-                    translationZ = -1f
+                        // Counteract the default slide transition
+                        translationX = pageWidth * -position
+                        // Move it behind the left page
+                        translationZ = -1f
 
-                    // Scale the page down (between MIN_SCALE and 1)
-                    val scaleFactor = (MIN_SCALE + (1 - MIN_SCALE) * (1 - abs(position)))
-                    scaleX = scaleFactor
-                    scaleY = scaleFactor
-                }
-                else -> { // (1,+Infinity]
-                    // This page is way off-screen to the right.
-                    alpha = 0f
+                        // Scale the page down (between MIN_SCALE and 1)
+                        val scaleFactor = (MIN_SCALE + (1 - MIN_SCALE) * (1 - abs(position)))
+                        scaleX = scaleFactor
+                        scaleY = scaleFactor
+                    }
+                    else -> { // (1,+Infinity]
+                        // This page is way off-screen to the right.
+                        alpha = 0f
+                    }
                 }
             }
         }

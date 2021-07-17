@@ -119,8 +119,9 @@ class UserRepository @Inject constructor(
     override fun getUserById(id: String): Flow<Result<User>> = channelFlow {
         trySend(Result.Loading)
         dao.getUserById(id).collectLatest { user ->
-            if (user == null) trySend(Result.Error(Exception("no user found")))
-            else trySend(Result.Success(user))
+//            if (user == null) trySend(Result.Error(Exception("no user found")))
+//            else
+            if (user != null) trySend(Result.Success(user))
         }
 
         userCollection.document(id).get()
