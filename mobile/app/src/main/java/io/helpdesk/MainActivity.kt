@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
                                     if (destination.id == R.id.nav_welcome
                                         || destination.id == R.id.nav_user_type
                                         || destination.id == R.id.nav_ticket_info
+                                        || destination.id == R.id.nav_post_ticket
                                         || destination.id == R.id.nav_register
                                     ) 0 else resources.getDimensionPixelOffset(R.dimen.spacing_64)
                                 )

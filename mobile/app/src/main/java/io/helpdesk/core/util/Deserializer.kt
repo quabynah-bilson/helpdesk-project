@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.GsonBuilder
 import com.google.gson.internal.LinkedTreeMap
 import com.google.gson.reflect.TypeToken
+import io.helpdesk.model.data.Question
 import timber.log.Timber
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -13,22 +14,17 @@ import java.io.InputStreamReader
  *
  * https://howtodoinjava.com/gson/gson-parse-json-array
  */
-inline fun <reified T> Context.deserializeJson(
-    source: String,
-    parser: (map: LinkedTreeMap<String, Any?>) -> T
-): List<T> {
+fun Context.deserializeJson(source: String): List<Question> {
 
     return try {
         val inputStream: InputStream = resources.assets.open(source)
         val reader = InputStreamReader(inputStream)
         val gson = GsonBuilder().setPrettyPrinting().create()
-        val type = object : TypeToken<ArrayList<T>>() {}.type
+        val type = object : TypeToken<ArrayList<Question>>() {}.type
         val data = reader.readText()
-        gson.fromJson<List<T>>(data, type).toList()
-            .map { item ->
-                @Suppress("UNCHECKED_CAST")
-                parser(item as LinkedTreeMap<String, Any?>)
-            }
+        val result = gson.fromJson<List<Question>>(data, type).toList()
+        Timber.tag("serializer").d("data -> %s", result)
+        result
     } catch (e: Exception) {
         Timber.tag("deserializer").e(e)
         emptyList()

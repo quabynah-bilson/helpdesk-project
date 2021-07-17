@@ -11,19 +11,19 @@ import kotlinx.coroutines.flow.Flow
 interface TicketDao : BaseDao<Ticket> {
 
     @Transaction
-    @Query("select * from tickets where user = :user order by priority desc")
+    @Query("select * from tickets where user = :user and not deleted order by priority desc")
     fun allTicketsForCustomer(user: String): Flow<List<UserAndTicket>>
 
     @Transaction
-    @Query("select * from tickets where technician = :technician order by priority desc")
+    @Query("select * from tickets where technician = :technician and not deleted order by priority desc")
     fun allTicketsForTechnician(technician: String): Flow<List<UserAndTicket>>
 
     @Transaction
-    @Query("select * from tickets order by priority desc")
+    @Query("select * from tickets where not deleted order by priority desc")
     fun getUsersAndTickets(): Flow<List<UserAndTicket>>
 
     @Transaction
-    @Query("select * from tickets where _id = :id")
+    @Query("select * from tickets where _id = :id and not deleted")
     fun getTicketById(id: String): Flow<Ticket?>
 
 }

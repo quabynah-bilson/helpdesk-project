@@ -15,11 +15,9 @@ data class Question(
     @ColumnInfo(name = "_id")
     @SerializedName("_id")
     val id: String,
-    @ColumnInfo(name = "question")
-    @SerializedName("question")
     val title: String,
     val answer: String,
-    val priority: TicketPriority = TicketPriority.Low,
+//    val priority: TicketPriority = TicketPriority.Low,
 ) : Parcelable {
 
     // no-arg constructor for deserialization
@@ -27,11 +25,5 @@ data class Question(
 
     companion object {
         const val TABLE_NAME = "faqs"
-        fun parser(map: LinkedTreeMap<String, Any?>) = Question(
-            id = map["_id"].toString(),
-            title = map["question"].toString(),
-            answer = map["answer"].toString(),
-            priority = TicketPriority.values()[(map["priority"] as Double).toInt()]
-        )
     }
 }

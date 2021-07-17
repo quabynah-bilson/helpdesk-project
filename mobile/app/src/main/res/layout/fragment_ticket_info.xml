@@ -29,6 +29,10 @@
         <variable
             name="user"
             type="User" />
+
+        <variable
+            name="technician"
+            type="User" />
     </data>
 
     <FrameLayout
@@ -89,8 +93,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_56"
             android:background="@drawable/status_background"
-            android:backgroundTint="@{ticketStatusColor, default=`@color/helpdesk_blue_700`}"
-            android:paddingVertical="@dimen/spacing_12">
+
+            android:paddingVertical="@dimen/spacing_12"
+            android:visibility="@{ticketStatusColor == null ? View.GONE : View.VISIBLE, default=`gone`}">
+
+            <!-- android:backgroundTint="@{ticketStatusColor, default=`@color/helpdesk_blue_700`}" -->
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
@@ -182,6 +189,62 @@
                     tools:text="@tools:sample/lorem/random" />
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/ticket_user_header"
+                    android:layout_width="@dimen/spacing_none"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_24"
+                    android:alpha="?emphasis_medium"
+                    android:text="Created by..."
+                    android:textAppearance="?textAppearanceSubtitle2"
+                    android:visibility="@{user != null ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_comment" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/ticket_user"
+                    android:layout_width="@dimen/spacing_none"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_4"
+                    android:text="@{user.name}"
+                    android:textAppearance="?textAppearanceBody2"
+                    android:visibility="@{user != null ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_user_header"
+                    tools:ellipsize="end"
+                    tools:maxLines="4"
+                    tools:text="@tools:sample/lorem/random" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/ticket_technician_header"
+                    android:layout_width="@dimen/spacing_none"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_24"
+                    android:alpha="?emphasis_medium"
+                    android:text="Assigned to..."
+                    android:textAppearance="?textAppearanceSubtitle2"
+                    android:visibility="@{technician != null ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_user" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/ticket_technician"
+                    android:layout_width="@dimen/spacing_none"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_4"
+                    android:text="@{technician.name}"
+                    android:textAppearance="?textAppearanceBody2"
+                    android:visibility="@{technician != null ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_technician_header"
+                    tools:ellipsize="end"
+                    tools:maxLines="4"
+                    tools:text="@tools:sample/lorem/random" />
+
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/ticket_timestamp_header"
                     android:layout_width="@dimen/spacing_none"
                     android:layout_height="wrap_content"
@@ -192,7 +255,7 @@
                     android:textAppearance="?textAppearanceBody2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ticket_comment" />
+                    app:layout_constraintTop_toBottomOf="@id/ticket_technician" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/ticket_timestamp"

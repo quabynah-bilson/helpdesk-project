@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface QuestionDao : BaseDao<Question> {
-    @Query("select * from faqs order by priority asc")
+    @Query("select * from faqs order by title asc")
     fun faqs(): Flow<List<Question>>
 }

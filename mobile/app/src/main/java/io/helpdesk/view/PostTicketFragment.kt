@@ -29,8 +29,6 @@ class PostTicketFragment : Fragment() {
     private var binding: FragmentPostTicketBinding? = null
 
     private val ticketsViewModel by activityViewModels<TicketsViewModel>()
-    @ExperimentalCoroutinesApi
-    private val usersViewModel by activityViewModels<UsersViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,56 +46,55 @@ class PostTicketFragment : Fragment() {
         }
         super.onViewCreated(view, savedInstanceState)
 
-        lifecycleScope.launchWhenCreated {
-            binding?.run {
+        binding?.run {
+            val navController = findNavController()
 
-                val navController = findNavController()
-
-                // get args
-                with(titleField) {
-                    addTextChangedListener { text: Editable? ->
-                        postTicket.isEnabled = !text.isNullOrEmpty()
-                    }
-
-                    val question = args.question
-                    if (question != null) {
-                        setText(question.title)
-                    }
+            // get args
+            with(titleField) {
+                addTextChangedListener { text: Editable? ->
+                    postTicket.isEnabled = !text.isNullOrEmpty()
                 }
 
-
-                // leave page
-                backButton.setOnClickListener { navController.popBackStack() }
-
-                // clear fields
-                clearFields.setOnClickListener {
-                    MaterialAlertDialogBuilder(requireContext()).apply {
-                        setTitle("Reset all fields...")
-                        setMessage("Do you wish to reset all fields? Your content will be deleted if you continue.")
-                        setPositiveButton("yes") { d, _ ->
-                            titleField.text?.clear()
-                            descField.text?.clear()
-                            d.dismiss()
-                        }
-                        setNegativeButton("no") { d, _ -> d.cancel() }
-                        create()
-                    }.show()
+                val question = args.question
+                if (question != null) {
+                    setText(question.title)
                 }
+            }
 
-                // post ticket
-                postTicket.setOnClickListener {
-                    if (titleField.text.isNullOrEmpty()) {
-                        titleField.error = "Enter a name for this ticket first"
-                        return@setOnClickListener
+
+            // leave page
+            backButton.setOnClickListener { navController.popBackStack() }
+
+            // clear fields
+            clearFields.setOnClickListener {
+                MaterialAlertDialogBuilder(requireContext()).apply {
+                    setTitle("Reset all fields...")
+                    setMessage("Do you wish to reset all fields? Your content will be deleted if you continue.")
+                    setPositiveButton("yes") { d, _ ->
+                        titleField.text?.clear()
+                        descField.text?.clear()
+                        d.dismiss()
                     }
+                    setNegativeButton("no") { d, _ -> d.cancel() }
+                    create()
+                }.show()
+            }
 
-                    ticketsViewModel.postNewTicket(
-                        title = titleField.text.toString(),
-                        navController = navController,
-                        description = descField.text.toString(),
-                    )
+            // post ticket
+            postTicket.setOnClickListener {
+                if (titleField.text.isNullOrEmpty()) {
+                    titleField.error = "Enter a name for this ticket first"
+                    return@setOnClickListener
                 }
 
+                ticketsViewModel.postNewTicket(
+                    title = titleField.text.toString(),
+                    navController = navController,
+                    description = descField.text.toString(),
+                )
+            }
+
+            lifecycleScope.launchWhenCreated {
                 ticketsViewModel.postTicketUIState.collectLatest { state ->
                     Timber.tag("post ticket").d("state -> $state")
                     when (state) {
@@ -118,6 +115,7 @@ class PostTicketFragment : Fragment() {
                                 "ticket created successfully",
                                 Snackbar.LENGTH_LONG
                             ).show()
+                            findNavController().popBackStack()
                         }
 
                         is PostTicketUIState.Initial -> {

@@ -12,9 +12,11 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.databinding.ProgressIndicatorBinding
 import io.helpdesk.databinding.TicketsFragmentBinding
+import io.helpdesk.model.data.UserType
 import io.helpdesk.view.recyclerview.TicketsListAdapter
 import io.helpdesk.viewmodel.LatestTicketUIState
 import io.helpdesk.viewmodel.TicketsViewModel
+import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
@@ -24,6 +26,7 @@ class TicketsFragment : Fragment() {
     private var progressBinding: ProgressIndicatorBinding? = null
 
     private val ticketsViewModel by activityViewModels<TicketsViewModel>()
+    private val usersViewModel by activityViewModels<UsersViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,9 +74,15 @@ class TicketsFragment : Fragment() {
             ticketsList.run {
                 adapter = ticketsAdapter
             }
+            isAdmin = false
+            lifecycleScope.launchWhenStarted {
+                usersViewModel.currentUser().collectLatest { currentUser ->
+                    isAdmin = currentUser?.type == UserType.SuperAdmin
+                }
+            }
             executePendingBindings()
         }
-
     }
+
 
 }

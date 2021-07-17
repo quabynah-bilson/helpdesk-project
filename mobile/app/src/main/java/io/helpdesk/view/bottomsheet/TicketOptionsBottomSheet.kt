@@ -34,7 +34,7 @@ class TicketOptionsBottomSheet private constructor(private val ticketOptionSelec
 
         // get arguments
         val args = arguments?.getParcelable<Ticket>(ARG_USER_AND_TICKET)
-        val canReassign = arguments?.get(ARG_USER_TYPE) != UserType.Customer
+        val canReassign = arguments?.get(ARG_USER_TYPE) == UserType.SuperAdmin
 
         binding?.run {
             this.canReassign = canReassign

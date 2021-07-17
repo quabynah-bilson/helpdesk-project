@@ -1,35 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/faq_container"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/spacing_12"
-    android:layout_marginTop="@dimen/spacing_8"
-    android:background="@drawable/outlined_border_background"
-    android:paddingHorizontal="@dimen/spacing_16"
-    android:paddingVertical="@dimen/spacing_24"
-    app:layoutDescription="@xml/item_faq_scene">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/faq_title"
-        android:layout_width="@dimen/spacing_none"
-        android:layout_height="wrap_content"
-        android:textAppearance="?textAppearanceBody1"
-        android:textColor="?colorPrimaryVariant"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="@sample/samples_faqs.json/data/question" />
+    <data>
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/faq_answer"
-        android:layout_width="@dimen/spacing_none"
+        <import type="android.view.View" />
+
+        <variable
+            name="expanded"
+            type="Boolean" />
+
+        <variable
+            name="faq"
+            type="io.helpdesk.model.data.Question" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/faq_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_12"
         android:layout_marginTop="@dimen/spacing_8"
-        android:textAppearance="?textAppearanceBody2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/faq_title"
-        tools:text="@sample/samples_faqs.json/data/question" />
+        android:paddingHorizontal="@dimen/spacing_16"
+        android:paddingVertical="@dimen/spacing_8">
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/faq_title_container"
+            android:layout_width="@dimen/spacing_none"
+            android:layout_height="wrap_content"
+            android:background="@color/border"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/spacing_12"
+            android:paddingVertical="@dimen/spacing_8"
+            android:weightSum="5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/faq_title"
+                android:layout_width="@dimen/spacing_none"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@{faq.title}"
+                android:textAppearance="?textAppearanceBody1"
+                android:textColor="?colorPrimaryVariant"
+                tools:text="@sample/samples_faqs.json/data/title" />
+
+            <FrameLayout
+                android:layout_width="@dimen/spacing_none"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:contentDescription="@{faq.title}"
+                    android:src="@{expanded ? @drawable/ic_twotone_arrow_drop_up : @drawable/ic_twotone_arrow_drop_down}"
+                    tools:src="@drawable/ic_twotone_arrow_drop_down" />
+
+            </FrameLayout>
+
+            <!-- android:src="@{expanded ? `@{@drawable/ic_twotone_arrow_drop_up}` : `@drawable/ic_twotone_arrow_drop_down`}" -->
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/faq_answer"
+            android:layout_width="@dimen/spacing_none"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_8"
+            android:ellipsize="end"
+            android:maxLines="12"
+            android:paddingHorizontal="@dimen/spacing_12"
+            android:paddingVertical="@dimen/spacing_8"
+            android:text="@{faq.answer}"
+            android:textAppearance="?textAppearanceBody2"
+            android:visibility="@{expanded ? View.VISIBLE : View.GONE, default=`gone`}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/faq_title_container"
+            tools:text="@sample/samples_faqs.json/data/answer"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

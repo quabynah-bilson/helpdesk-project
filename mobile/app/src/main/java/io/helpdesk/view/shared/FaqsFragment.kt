@@ -6,15 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.databinding.FaqsFragmentBinding
 import io.helpdesk.databinding.ProgressIndicatorBinding
+import io.helpdesk.model.data.UserType
 import io.helpdesk.view.recyclerview.QuestionsListAdapter
 import io.helpdesk.viewmodel.FaqsViewModel
 import io.helpdesk.viewmodel.QuestionsUIState
+import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
@@ -23,6 +26,7 @@ class FaqsFragment : Fragment() {
     private var progressBinding: ProgressIndicatorBinding? = null
 
     private val viewModel by viewModels<FaqsViewModel>()
+    private val usersViewModel by activityViewModels<UsersViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,14 +41,23 @@ class FaqsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // setup recyclerview
-        val adapter = QuestionsListAdapter()
-        binding?.faqsList?.adapter = adapter
-        binding?.faqsList?.setHasFixedSize(true)
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.uiState.collectLatest { state ->
-                binding?.run {
+        binding?.run {
+            // setup recyclerview
+            val adapter = QuestionsListAdapter()
+            faqsList.adapter = adapter
+            faqsList.setHasFixedSize(true)
+            isAdmin = false
+            
+            lifecycleScope.launchWhenStarted {
+                usersViewModel.currentUser().collectLatest { currentUser ->
+                    isAdmin = currentUser?.type == UserType.SuperAdmin
+                }
+            }
+
+
+            lifecycleScope.launchWhenCreated {
+                viewModel.uiState.collectLatest { state ->
                     when (state) {
                         is QuestionsUIState.Loading -> {
                             // show loading view

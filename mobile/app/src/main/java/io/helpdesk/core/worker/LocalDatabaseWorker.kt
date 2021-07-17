@@ -14,7 +14,9 @@ import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.User
 import io.helpdesk.model.db.LocalDatabase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 /**
  * Loads sample data into the database
@@ -29,53 +31,26 @@ class LocalDatabaseWorker @AssistedInject constructor(
 
     // data access objects
     private val faqsDao = db.faqDao()
-    private val userDao = db.userDao()
-    private val ticketDao = db.ticketDao()
 
     // remote database
     private val firestore = FirebaseFirestore.getInstance()
 
-    override suspend fun doWork(): Result {
-        withContext(Dispatchers.IO) {
-            // faqs
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+        // faqs
+        try {
             val faqs =
-                applicationContext.deserializeJson("faqs.json") {
-                    Question.parser(it)
-                }
+                applicationContext.deserializeJson("faqs.json")
             faqsDao.insertAll(faqs)
-
-            // technicians
-            val technicians =
-                applicationContext.deserializeJson("technicians.json") {
-                    User.parser(it)
-                }
-            userDao.insertAll(technicians)
-
-            // tickets
-            val tickets =
-                applicationContext.deserializeJson("tickets.json") {
-                    Ticket.parser(it)
-                }
-            ticketDao.insertAll(tickets)
 
             // upload faqs to firestore
             faqs.forEach { faq ->
                 firestore.collection(Question.TABLE_NAME).document(faq.id)
                     .set(faq, SetOptions.merge())
             }
-
-            // upload user to firestore
-            technicians.forEach { user ->
-                firestore.collection(User.TABLE_NAME).document(user.id)
-                    .set(user, SetOptions.merge())
-            }
-
-            tickets.forEach { ticket ->
-                firestore.collection(Ticket.TABLE_NAME).document(ticket.id)
-                    .set(ticket, SetOptions.merge())
-            }
+            Result.success()
+        } catch (e: Exception) {
+            Timber.e(e)
+            Result.failure()
         }
-
-        return Result.success()
     }
 }
