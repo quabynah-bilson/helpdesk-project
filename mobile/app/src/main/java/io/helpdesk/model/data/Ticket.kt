@@ -8,7 +8,9 @@ import kotlinx.parcelize.Parcelize
 import java.sql.Date
 
 enum class TicketCompletionState {
-    Pending, Done, Cancelled,
+    Pending,
+    Done,
+    Cancelled,
 }
 
 enum class TicketType {

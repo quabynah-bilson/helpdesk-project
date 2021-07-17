@@ -55,9 +55,9 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
     suspend fun getTicketById(id: String): Flow<Ticket?> = channelFlow {
         repository.getTicketById(id).collectLatest { result ->
             if (result is Result.Success) {
-                send(result.data)
+                trySend(result.data)
             } else if (result is Result.Error) {
-                send(null)
+                trySend(null)
             }
         }
         awaitClose()

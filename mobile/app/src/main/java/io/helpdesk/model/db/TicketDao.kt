@@ -12,7 +12,11 @@ interface TicketDao : BaseDao<Ticket> {
 
     @Transaction
     @Query("select * from tickets where user = :user order by priority desc")
-    fun allTickets(user: String): Flow<List<UserAndTicket>>
+    fun allTicketsForCustomer(user: String): Flow<List<UserAndTicket>>
+
+    @Transaction
+    @Query("select * from tickets where technician = :technician order by priority desc")
+    fun allTicketsForTechnician(technician: String): Flow<List<UserAndTicket>>
 
     @Transaction
     @Query("select * from tickets order by priority desc")

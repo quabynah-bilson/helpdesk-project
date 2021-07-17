@@ -3,9 +3,7 @@ package io.helpdesk.core.util
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -37,6 +35,29 @@ suspend inline fun <reified T> Task<QuerySnapshot>.fold(
 
     // error branch
     addOnFailureListener { scope.launch { errorBlock(it) } }
+}
+
+suspend inline fun <reified T> CollectionReference.observeCollection(
+    scope: CoroutineScope,
+    crossinline successBlock: suspend (MutableList<T>) -> Unit,
+    crossinline errorBlock: suspend (Exception?) -> Unit
+) {
+    addSnapshotListener { snapshot, error ->
+        if (error != null) {
+            scope.launch { errorBlock(error) }
+            return@addSnapshotListener
+        }
+
+        if (snapshot != null) {
+            Timber.tag("task-completion").i("successful -> ${snapshot.documents}")
+            scope.launch {
+                successBlock(snapshot.toObjects(T::class.java) ?: mutableListOf())
+            }
+        } else {
+            Timber.tag("task-completion").i("failed")
+            scope.launch { errorBlock(Exception("no snapshots found")) }
+        }
+    }
 }
 
 fun Task<Void>.await(scope: CoroutineScope) = scope.launch {

@@ -3,10 +3,7 @@ package io.helpdesk.repository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import io.helpdesk.core.storage.BaseUserPersistentStorage
-import io.helpdesk.core.util.Result
-import io.helpdesk.core.util.await
-import io.helpdesk.core.util.fold
-import io.helpdesk.core.util.foldDoc
+import io.helpdesk.core.util.*
 import io.helpdesk.model.data.*
 import io.helpdesk.model.db.LocalDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -134,23 +131,27 @@ class TicketRepository @Inject constructor(
             trySend(Result.Error(Exception("only logged in users can access this data")))
         } else {
             val ticketsQuery =
-                if (storage.userType == UserType.SuperAdmin.ordinal) dao.getUsersAndTickets()
-                else dao.allTickets(storage.userId!!)
-
-            ticketsQuery.collectLatest { tickets ->
-                // Update View with the latest tickets
-                // Writes to the value property of MutableStateFlow,
-                // adding a new element to the flow and updating all
-                // of its collectors
-                trySend(Result.Success(tickets))
-            }
+                when (storage.userType) {
+                    UserType.Customer.ordinal -> dao.allTicketsForCustomer(storage.userId!!)
+                    UserType.Technician.ordinal -> dao.allTicketsForTechnician(storage.userId!!)
+                    else -> dao.getUsersAndTickets()
+                }
 
             // fetch from server and update locally
-            ticketCollection.get().fold<Ticket>(
+            ticketCollection.observeCollection<Ticket>(
                 scope,
-                { tickets ->
-                    tickets.forEach { item ->
+                { results ->
+                    results.forEach { item ->
+                        Timber.tag("tickets").d(item.toString())
                         dao.insert(item)
+                    }
+
+                    ticketsQuery.collectLatest { tickets ->
+                        // Update View with the latest tickets
+                        // Writes to the value property of MutableStateFlow,
+                        // adding a new element to the flow and updating all
+                        // of its collectors
+                        trySend(Result.Success(tickets))
                     }
                 },
                 { exception ->

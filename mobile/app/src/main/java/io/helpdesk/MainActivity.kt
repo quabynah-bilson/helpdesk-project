@@ -19,6 +19,10 @@ import io.helpdesk.viewmodel.UsersViewModel
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
+// technician -> wisdom@mail.com
+// customer -> christian@gimpa.edu.gh
+// admin -> admin@helpdesk.io
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

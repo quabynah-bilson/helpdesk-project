@@ -1,66 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_gravity="bottom|center_horizontal"
-    android:paddingHorizontal="@dimen/spacing_24"
-    android:paddingVertical="@dimen/spacing_20">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/reassign"
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="can_reassign"
+            type="Boolean" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_56"
-        android:alpha="?emphasis_high"
-        android:background="?attr/selectableItemBackground"
-        android:drawablePadding="@dimen/spacing_12"
-        android:drawableTint="?colorOnBackground"
-        android:gravity="center_vertical"
-        android:text="@string/reassign"
-        android:textAppearance="?textAppearanceBody1"
-        app:drawableStartCompat="@drawable/ic_supervisor_account" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/spacing_24"
+        android:paddingVertical="@dimen/spacing_20">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/update_priority"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_56"
-        android:layout_marginTop="@dimen/spacing_8"
-        android:alpha="?emphasis_high"
-        android:background="?attr/selectableItemBackground"
-        android:drawablePadding="@dimen/spacing_12"
-        android:drawableTint="?colorOnBackground"
-        android:gravity="center_vertical"
-        android:text="@string/update_priority"
-        android:textAppearance="?textAppearanceBody1"
-        app:drawableStartCompat="@drawable/ic_arrow_up" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/reassign"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_56"
+            android:alpha="?emphasis_high"
+            android:background="?attr/selectableItemBackground"
+            android:drawablePadding="@dimen/spacing_12"
+            android:drawableTint="?colorOnBackground"
+            android:gravity="center_vertical"
+            android:text="@string/reassign"
+            android:textAppearance="?textAppearanceBody1"
+            android:visibility="@{can_reassign ? View.VISIBLE : View.GONE, default=`gone`}"
+            app:drawableStartCompat="@drawable/ic_supervisor_account" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/send_feedback"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_56"
-        android:layout_marginTop="@dimen/spacing_8"
-        android:alpha="?emphasis_high"
-        android:background="?attr/selectableItemBackground"
-        android:drawablePadding="@dimen/spacing_12"
-        android:drawableTint="?colorOnBackground"
-        android:gravity="center_vertical"
-        android:text="@string/send_feedback"
-        android:textAppearance="?textAppearanceBody1"
-        app:drawableStartCompat="@drawable/ic_send" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/update_priority"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_56"
+            android:layout_marginTop="@dimen/spacing_8"
+            android:alpha="?emphasis_high"
+            android:background="?attr/selectableItemBackground"
+            android:drawablePadding="@dimen/spacing_12"
+            android:drawableTint="?colorOnBackground"
+            android:gravity="center_vertical"
+            android:text="@string/update_priority"
+            android:textAppearance="?textAppearanceBody1"
+            app:drawableStartCompat="@drawable/ic_arrow_up" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/update_state"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing_56"
-        android:layout_marginTop="@dimen/spacing_8"
-        android:alpha="?emphasis_high"
-        android:background="?attr/selectableItemBackground"
-        android:drawablePadding="@dimen/spacing_12"
-        android:drawableTint="?colorOnBackground"
-        android:gravity="center_vertical"
-        android:text="@string/update_state"
-        android:textAppearance="?textAppearanceBody1"
-        app:drawableStartCompat="@drawable/ic_edit" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/send_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_56"
+            android:layout_marginTop="@dimen/spacing_8"
+            android:alpha="?emphasis_high"
+            android:background="?attr/selectableItemBackground"
+            android:drawablePadding="@dimen/spacing_12"
+            android:drawableTint="?colorOnBackground"
+            android:gravity="center_vertical"
+            android:text="@string/send_feedback"
+            android:textAppearance="?textAppearanceBody1"
+            app:drawableStartCompat="@drawable/ic_send" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/update_state"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_56"
+            android:layout_marginTop="@dimen/spacing_8"
+            android:alpha="?emphasis_high"
+            android:background="?attr/selectableItemBackground"
+            android:drawablePadding="@dimen/spacing_12"
+            android:drawableTint="?colorOnBackground"
+            android:gravity="center_vertical"
+            android:text="@string/update_state"
+            android:textAppearance="?textAppearanceBody1"
+            app:drawableStartCompat="@drawable/ic_edit" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

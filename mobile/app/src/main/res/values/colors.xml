@@ -23,10 +23,16 @@
     <!-- others -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="border">#FFeeeeee</color>
     <!--<color name="divider">#FFA7A8B3</color>-->
 
     <!-- priority -->
     <color name="priority_low">#E9F4F5</color>
     <color name="priority_mid">#DCEEFF</color>
     <color name="priority_high">#FFEEDB</color>
+
+    <!-- status -->
+    <color name="ticket_status_pending">#FFEB3B</color>
+    <color name="ticket_status_cancelled">#E91E63</color>
+    <color name="ticket_status_done">#4CAF50</color>
 </resources>

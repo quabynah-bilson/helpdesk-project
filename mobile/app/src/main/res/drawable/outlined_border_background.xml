@@ -4,7 +4,7 @@
 
     <stroke
         android:width="@dimen/spacing_1"
-        android:color="?attr/divider" />
+        android:color="@color/border" />
 
     <corners android:radius="@dimen/spacing_12" />
 

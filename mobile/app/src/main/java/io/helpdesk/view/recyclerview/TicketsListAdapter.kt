@@ -26,9 +26,9 @@ class TicketsListAdapter :
         fun bind(item: UserAndTicket) = with(binding) {
             data = item
             priorityColor = when (item.ticket.priority) {
-                TicketPriority.High -> getColor(R.color.priority_high)
-                TicketPriority.Medium -> getColor(R.color.priority_mid)
-                TicketPriority.Low -> getColor(R.color.priority_low)
+                TicketPriority.High -> binding.root.context.getColor(R.color.priority_high)
+                TicketPriority.Medium -> binding.root.context.getColor(R.color.priority_mid)
+                TicketPriority.Low -> binding.root.context.getColor(R.color.priority_low)
             }
             root.setOnClickListener {
                 root.findNavController()
@@ -36,11 +36,6 @@ class TicketsListAdapter :
             }
             executePendingBindings()
         }
-
-        private fun getColor(@ColorRes color: Int): Int = binding.root.context.resources.getColor(
-            color,
-            binding.root.context.theme
-        )
     }
 
     override fun onBindViewHolder(holder: TicketsListViewHolder, position: Int) {

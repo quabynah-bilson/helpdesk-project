@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -12,6 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import io.helpdesk.R
+import io.helpdesk.core.util.getColorInt
 import io.helpdesk.databinding.FragmentTicketInfoBinding
 import io.helpdesk.model.data.*
 import io.helpdesk.view.bottomsheet.*
@@ -46,57 +49,72 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding?.run {
-
-            lifecycleScope.launchWhenStarted {
-                ticketsViewModel.getTicketById(args.ticket.id).collectLatest { data ->
-                    ticket = data
-                    ticketVM = ticketsViewModel
-                    executePendingBindings()
-                }
+        GlobalScope.launch(Dispatchers.Main) {
+            binding?.let {
+                it.ticketStatusColor = requireContext().getColorInt(R.color.ticket_status_pending)
+                it.executePendingBindings()
             }
 
-            lifecycleScope.launchWhenCreated {
-                // get current user
-                usersViewModel.currentUser().collectLatest { currentUser ->
-                    Timber.tag("user details").d("current user -> $currentUser")
-                    updateTicketStatus.isVisible = currentUser?.type != UserType.Customer
-                    deleteTicket.isInvisible = currentUser?.id != args.ticket.user
-                    executePendingBindings()
-                }
-            }
-
-            deleteTicket.setOnClickListener {
-                MaterialAlertDialogBuilder(requireContext()).apply {
-                    setTitle("Confirm deletion")
-                    setMessage("Do you wish to delete this ticket?\nThis action cannot be undone")
-                    setPositiveButton("Cancel") { dialog, _ -> dialog.cancel() }
-                    setNegativeButton("Yes, delete") { dialog, _ ->
-                        ticketsViewModel.deleteTicket(ticket!!)
-                        dialog.dismiss()
-                    }
-                    show()
-                }
-            }
-
-            backButton.setOnClickListener { findNavController().popBackStack() }
-
-            updateTicketStatus.setOnClickListener {
-                TicketOptionsBottomSheet.newInstance(ticket!!, this@TicketInfoFragment).show(
-                    childFragmentManager,
-                    TicketOptionsBottomSheet::class.java.canonicalName
-                )
-            }
-
-            GlobalScope.launch(Dispatchers.Main) {
-                // get technician
-                usersViewModel.getUserById(args.ticket.technician).collectLatest { technician ->
+            // get technician
+            usersViewModel.getUserById(args.ticket.technician).collectLatest { technician ->
+                binding?.run {
                     if (technician != null) user = technician
+                    ticketsViewModel.getTicketById(args.ticket.id).collectLatest { data ->
+                        ticket = data
+                        ticketVM = ticketsViewModel
+                        if (data != null) {
+                            ticketStatusColor = when (data.status) {
+                                TicketCompletionState.Cancelled -> requireContext().getColor(
+                                    R.color.ticket_status_cancelled
+                                )
+                                TicketCompletionState.Pending -> requireContext().getColor(
+                                    R.color.ticket_status_pending
+                                )
+                                TicketCompletionState.Done -> requireContext().getColor(
+                                    R.color.ticket_status_done
+                                )
+
+                            }
+                        }
+                    }
+
+                    // get current user
+                    usersViewModel.currentUser().collectLatest { currentUser ->
+                        Timber.tag("user details").d("current user -> $currentUser")
+                        updateTicketStatus.isVisible = currentUser?.type != UserType.Customer
+                        deleteTicket.isInvisible = currentUser?.id != args.ticket.user
+                        updateTicketStatus.setOnClickListener {
+                            currentUser?.type?.let { type ->
+                                TicketOptionsBottomSheet.newInstance(
+                                    ticket!!,
+                                    type,
+                                    this@TicketInfoFragment
+                                ).show(
+                                    childFragmentManager,
+                                    TicketOptionsBottomSheet::class.java.canonicalName
+                                )
+                            }
+                        }
+                    }
+
+                    deleteTicket.setOnClickListener {
+                        MaterialAlertDialogBuilder(requireContext()).apply {
+                            setTitle("Confirm deletion")
+                            setMessage("Do you wish to delete this ticket?\nThis action cannot be undone")
+                            setPositiveButton("Cancel") { dialog, _ -> dialog.cancel() }
+                            setNegativeButton("Yes, delete") { dialog, _ ->
+                                ticketsViewModel.deleteTicket(ticket!!)
+                                dialog.dismiss()
+                            }
+                            show()
+                        }
+                    }
+
+                    backButton.setOnClickListener { findNavController().popBackStack() }
+
                     executePendingBindings()
                 }
             }
-
-            executePendingBindings()
         }
     }
 

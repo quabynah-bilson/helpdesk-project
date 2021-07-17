@@ -9,6 +9,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import io.helpdesk.databinding.TicketOptionsBottomSheetBinding
 import io.helpdesk.model.data.Ticket
+import io.helpdesk.model.data.UserType
 
 /**
  * [Ticket] bottom sheet for showing actions to be performed on that item
@@ -33,8 +34,10 @@ class TicketOptionsBottomSheet private constructor(private val ticketOptionSelec
 
         // get arguments
         val args = arguments?.getParcelable<Ticket>(ARG_USER_AND_TICKET)
+        val canReassign = arguments?.get(ARG_USER_TYPE) != UserType.Customer
 
         binding?.run {
+            this.canReassign = canReassign
             if (args == null) {
                 Snackbar.make(root, "No ticket found", Snackbar.LENGTH_LONG).show()
                 dismissAllowingStateLoss()
@@ -66,15 +69,20 @@ class TicketOptionsBottomSheet private constructor(private val ticketOptionSelec
 
     companion object {
         const val ARG_USER_AND_TICKET = "user.ticket.args"
+        const val ARG_USER_TYPE = "user.type.args"
 
         @JvmStatic
         fun newInstance(
             ticket: Ticket,
+            userType: UserType,
             listener: OnTicketOptionSelectListener
         ): TicketOptionsBottomSheet {
             val fragment = TicketOptionsBottomSheet(listener)
             with(fragment) {
-                arguments = bundleOf(ARG_USER_AND_TICKET to ticket)
+                arguments = bundleOf(
+                    ARG_USER_AND_TICKET to ticket,
+                    ARG_USER_TYPE to userType,
+                )
             }
             return fragment
         }

@@ -19,6 +19,10 @@
             type="Ticket" />
 
         <variable
+            name="ticketStatusColor"
+            type="Integer" />
+
+        <variable
             name="ticketVM"
             type="TicketsViewModel" />
 
@@ -30,7 +34,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <!-- toolbar -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -80,22 +83,43 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <FrameLayout
+            android:id="@+id/ticket_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_56"
+            android:background="@drawable/status_background"
+            android:backgroundTint="@{ticketStatusColor, default=`@color/helpdesk_blue_700`}"
+            android:paddingVertical="@dimen/spacing_12">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{ticket.status.name()}"
+                android:textAppearance="?textAppearanceCaption"
+                android:textColor="?colorOnPrimary"
+                app:textAllCaps="true"
+                tools:text="High" />
+
+        </FrameLayout>
+
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/spacing_56">
+            android:layout_marginTop="@dimen/spacing_72">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="@dimen/spacing_24"
-                android:paddingTop="@dimen/spacing_36"
                 android:paddingBottom="@dimen/spacing_72">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/ticket_name"
                     android:layout_width="@dimen/spacing_none"
                     android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/spacing_36"
                     android:text="@{ticket.name}"
                     android:textAppearance="?textAppearanceHeadline5"
                     app:layout_constraintEnd_toEndOf="parent"
