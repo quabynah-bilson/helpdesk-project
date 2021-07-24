@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "835a2eec350e0cf51600d4f7bb2b5bfb",
+    "identityHash": "55fe22e8550c50426203245cdad4658e",
     "entities": [
       {
         "tableName": "users",
@@ -62,7 +62,7 @@
       },
       {
         "tableName": "tickets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `user` TEXT NOT NULL, `name` TEXT NOT NULL, `technician` TEXT NOT NULL, `description` TEXT NOT NULL, `comment` TEXT NOT NULL, `status` INTEGER NOT NULL, `type` INTEGER NOT NULL, `linkedTickets` TEXT NOT NULL, `priority` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `dueDate` TEXT NOT NULL, `deleted` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `user` TEXT NOT NULL, `name` TEXT NOT NULL, `technician` TEXT NOT NULL, `description` TEXT NOT NULL, `comment` TEXT NOT NULL, `status` INTEGER NOT NULL, `type` INTEGER NOT NULL, `linkedTickets` TEXT NOT NULL, `priority` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `dueDate` TEXT NOT NULL, `deleted` INTEGER NOT NULL, `commentUpdatedAt` TEXT, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -141,6 +141,12 @@
             "columnName": "deleted",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "commentUpdatedAt",
+            "columnName": "commentUpdatedAt",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -188,7 +194,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '835a2eec350e0cf51600d4f7bb2b5bfb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '55fe22e8550c50426203245cdad4658e')"
     ]
   }
 }

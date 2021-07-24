@@ -229,7 +229,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun parseTicketDate(timestamp: String): String =
-        with(SimpleDateFormat("yyyy-MM-dd @ HH:mm", Locale.getDefault())) {
+        with(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())) {
             val logger = Timber.tag("date-parser")
             var format = "not set"
             try {

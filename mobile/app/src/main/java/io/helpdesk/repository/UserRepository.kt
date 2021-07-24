@@ -99,17 +99,20 @@ class UserRepository @Inject constructor(
     override fun usersByType(type: UserType): Flow<Result<List<User>>> = channelFlow {
         trySend(Result.Loading)
 
-        userCollection.whereEqualTo("type", type.ordinal).get()
-            .fold<User>(this, { results ->
+        userCollection.whereEqualTo("type", type.ordinal).get().fold<User>(
+            this,
+            { results ->
                 launch(Dispatchers.IO) { results.forEach { dao.insert(it) } }
                 dao.allUsers().collectLatest { users ->
+                    logger.i("users from type $type -> $users")
                     val filteredList = when (type) {
                         UserType.All, UserType.SuperAdmin -> users
                         else -> users.filter { person -> person.type == UserType.values()[type.ordinal] }
                     }
                     trySend(Result.Success(filteredList))
                 }
-            }, { exception -> trySend(Result.Error(exception)) })
+            },
+            { exception -> trySend(Result.Error(exception)) })
 
         awaitClose()
     }
