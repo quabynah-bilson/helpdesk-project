@@ -81,6 +81,7 @@ class TicketRepository @Inject constructor(
                             description = description,
                             priority = ticketPriority,
                             technician = technicians[Random.nextInt(technicians.size)].id,
+
                         )
                         launch(Dispatchers.IO) { dao.insert(ticket) }
                         ticketCollection

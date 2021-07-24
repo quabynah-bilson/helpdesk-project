@@ -189,6 +189,19 @@
                     tools:text="@tools:sample/lorem/random" />
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/ticket_comment_timestamp"
+                    android:layout_width="@dimen/spacing_none"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_4"
+                    android:gravity="end"
+                    android:textAppearance="?textAppearanceCaption"
+                    android:textColor="?colorPrimaryVariant"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ticket_comment"
+                    tools:text="@tools:sample/date/ddmmyy" />
+
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/ticket_user_header"
                     android:layout_width="@dimen/spacing_none"
                     android:layout_height="wrap_content"
@@ -199,7 +212,7 @@
                     android:visibility="@{user != null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ticket_comment" />
+                    app:layout_constraintTop_toBottomOf="@id/ticket_comment_timestamp" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/ticket_user"
@@ -263,7 +276,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_4"
                     android:gravity="end"
-                    android:text="@{ticketVM.parseTicketDate(ticket.timestamp)}"
                     android:textAppearance="?textAppearanceCaption"
                     android:textColor="?colorPrimaryVariant"
                     app:layout_constraintEnd_toEndOf="parent"

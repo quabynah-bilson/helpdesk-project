@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "c3240650c3433deb51ef69df58c483a3",
+    "identityHash": "55fe22e8550c50426203245cdad4658e",
     "entities": [
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `username` TEXT NOT NULL, `name` TEXT NOT NULL, `avatar` TEXT, `phoneNumber` TEXT, `userType` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `username` TEXT NOT NULL, `name` TEXT NOT NULL, `avatar` TEXT, `phoneNumber` TEXT, `token` TEXT, `userType` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -39,6 +39,12 @@
             "notNull": false
           },
           {
+            "fieldPath": "token",
+            "columnName": "token",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "type",
             "columnName": "userType",
             "affinity": "INTEGER",
@@ -56,7 +62,7 @@
       },
       {
         "tableName": "tickets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `user` TEXT NOT NULL, `name` TEXT NOT NULL, `technician` TEXT NOT NULL, `description` TEXT NOT NULL, `comment` TEXT NOT NULL, `status` INTEGER NOT NULL, `type` INTEGER NOT NULL, `linkedTickets` TEXT NOT NULL, `priority` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `dueDate` TEXT NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `user` TEXT NOT NULL, `name` TEXT NOT NULL, `technician` TEXT NOT NULL, `description` TEXT NOT NULL, `comment` TEXT NOT NULL, `status` INTEGER NOT NULL, `type` INTEGER NOT NULL, `linkedTickets` TEXT NOT NULL, `priority` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `dueDate` TEXT NOT NULL, `deleted` INTEGER NOT NULL, `commentUpdatedAt` TEXT, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -129,6 +135,18 @@
             "columnName": "dueDate",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "deleted",
+            "columnName": "deleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "commentUpdatedAt",
+            "columnName": "commentUpdatedAt",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -142,7 +160,7 @@
       },
       {
         "tableName": "faqs",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `question` TEXT NOT NULL, `answer` TEXT NOT NULL, `priority` INTEGER NOT NULL, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `title` TEXT NOT NULL, `answer` TEXT NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -152,7 +170,7 @@
           },
           {
             "fieldPath": "title",
-            "columnName": "question",
+            "columnName": "title",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -160,12 +178,6 @@
             "fieldPath": "answer",
             "columnName": "answer",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "priority",
-            "columnName": "priority",
-            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -182,7 +194,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c3240650c3433deb51ef69df58c483a3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '55fe22e8550c50426203245cdad4658e')"
     ]
   }
 }

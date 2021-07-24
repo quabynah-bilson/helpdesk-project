@@ -25,7 +25,7 @@ import io.helpdesk.model.data.User
 )
 @Database(
     entities = [User::class, Ticket::class, Question::class],
-    version = 1,
+    version = 3,
     exportSchema = true
 )
 abstract class LocalDatabase : RoomDatabase() {

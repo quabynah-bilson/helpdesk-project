@@ -1,11 +1,13 @@
 package io.helpdesk.view
 
+import android.icu.text.SimpleDateFormat
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getColor
+import androidx.annotation.RequiresApi
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -21,9 +23,13 @@ import io.helpdesk.model.data.*
 import io.helpdesk.view.bottomsheet.*
 import io.helpdesk.viewmodel.TicketsViewModel
 import io.helpdesk.viewmodel.UsersViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
+import java.sql.Date
+import java.time.Instant
+import java.util.*
 
 
 class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicianSelectListener,
@@ -47,7 +53,6 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         binding?.run {
             deleteTicket.setOnClickListener {
@@ -78,7 +83,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                 }
             }
 
-                // get current user
+            // get current user
             lifecycleScope.launchWhenResumed {
                 usersViewModel.currentUser().collectLatest { currentUser ->
                     Timber.tag("user details").d("current user -> $currentUser")
@@ -106,6 +111,14 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                     ticketsViewModel.getTicketById(args.ticket.id).collectLatest { data ->
                         ticket = data
                         ticketVM = ticketsViewModel
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && ticket != null) {
+                            ticketTimestamp.text = parseTicketDate(ticket!!.timestamp)
+
+                            if (!ticket!!.commentUpdatedAt.isNullOrEmpty()) {
+                                ticketCommentTimestamp.text =
+                                    parseTicketDate(ticket!!.commentUpdatedAt!!)
+                            }
+                        }
                         ticketStatusColor = when (data?.status) {
                             TicketCompletionState.Cancelled -> requireContext().getColorInt(
                                 R.color.ticket_status_cancelled
@@ -134,7 +147,12 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
     }
 
     override fun onComplete(feedback: String) {
-        ticketsViewModel.updateTicket(ticket = binding?.ticket?.copy(comment = feedback))
+        ticketsViewModel.updateTicket(
+            ticket = binding?.ticket?.copy(
+                comment = feedback,
+                commentUpdatedAt = Date(System.currentTimeMillis()).toString(),
+            )
+        )
     }
 
     override fun onItemSelected(ticket: Ticket, item: TicketOptionsItem) {
@@ -208,5 +226,20 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
             }
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun parseTicketDate(timestamp: String): String =
+        with(SimpleDateFormat("yyyy-MM-dd @ HH:mm", Locale.getDefault())) {
+            val logger = Timber.tag("date-parser")
+            var format = "not set"
+            try {
+                val date = Date.from(Instant.parse(timestamp))
+                format = format(date)
+                println("parsed-date -> $format")
+            } catch (e: Exception) {
+                logger.e(e.localizedMessage)
+            }
+            return@with format
+        }
 
 }

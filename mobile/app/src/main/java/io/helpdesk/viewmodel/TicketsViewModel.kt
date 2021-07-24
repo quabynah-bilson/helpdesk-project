@@ -85,21 +85,6 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
 
     fun deleteTicket(ticket: Ticket) =
         ioScope { repository.deleteTicket(ticket) }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun parseTicketDate(timestamp: String): String =
-        with(SimpleDateFormat("yyyy-MM-dd @ HH:mm", Locale.getDefault())) {
-            val logger = Timber.tag("date-parser")
-            var format = "not set"
-            try {
-                val date = Date.from(Instant.parse(timestamp))
-                format = format(date)
-                println("parsed-date -> $format")
-            } catch (e: Exception) {
-                logger.e(e.localizedMessage)
-            }
-            return@with format
-        }
 }
 
 sealed class LatestTicketUIState {
