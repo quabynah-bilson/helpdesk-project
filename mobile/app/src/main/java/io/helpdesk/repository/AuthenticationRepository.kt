@@ -38,21 +38,30 @@ interface BaseAuthenticationRepository {
 
 class AuthenticationRepository @Inject constructor(
     private val scope: CoroutineScope,
-    private val userDao: UserDao,
+    private val userDao: UserDao, // local data source
     private val storage: BaseUserPersistentStorage,
-    firestore: FirebaseFirestore,
+    firestore: FirebaseFirestore,   // remote data source
     private val auth: FirebaseAuth,
     private val messaging: FirebaseMessaging,
 ) : BaseAuthenticationRepository {
 
     private val userCollection = firestore.collection(User.TABLE_NAME)
 
+    /**
+     * This method signs in a [UserType.Customer], [UserType.SuperAdmin] or a [UserType.Technician]
+     */
     @ExperimentalCoroutinesApi
     override suspend fun login(email: String, password: String): Flow<Result<User>> =
         channelFlow {
             when {
+                /**
+                 * sends an error message to the view model for invalid email addresses
+                 */
                 !validateCredentials(email = email) -> trySend(Result.Error(Exception("invalid email address")))
 
+                /**
+                 * sends an error message to the view model for invalid password
+                 */
                 !validateCredentials(password = password) -> trySend(Result.Error(Exception("invalid password")))
 
                 else -> {
@@ -153,6 +162,9 @@ class AuthenticationRepository @Inject constructor(
             awaitClose()
         }.stateIn(scope)
 
+    /**
+     * This method signs is used by a [UserType.SuperAdmin] to create a new  [UserType.Customer] or a [UserType.Technician]
+     */
     @ExperimentalCoroutinesApi
     override suspend fun register(
         username: String,
@@ -181,9 +193,18 @@ class AuthenticationRepository @Inject constructor(
                                         name = username,
                                         type = userType,
                                     )
+                                /**
+                                 * stores user details remotely on firebase
+                                 */
                                 userCollection.document(user.id).set(user, SetOptions.merge())
                                     .await(scope)
+
+                                /**
+                                 * stores user details locally using sql
+                                 */
                                 userDao.insert(user)
+
+
                                 trySend(Result.Success(user))
                             }
                         }
@@ -201,6 +222,9 @@ class AuthenticationRepository @Inject constructor(
     override val loginState: Flow<Boolean>
         get() = storage.loginState
 
+    /**
+     * This method validates user authentication credentials (i.e. email & password)
+     */
     private fun validateCredentials(email: String? = null, password: String? = null): Boolean =
         when {
             email != null -> {

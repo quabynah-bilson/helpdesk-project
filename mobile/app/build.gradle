@@ -96,7 +96,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
-    implementation 'com.google.firebase:firebase-functions-ktx'
 
     // google auth
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
@@ -150,24 +149,14 @@ dependencies {
     def paging_version = "3.1.0-alpha02"
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
-    // glide
+    // glide -> load images
     implementation "com.github.bumptech.glide:glide:4.12.0"
     kapt "com.github.bumptech.glide:compiler:4.12.0"
 
-    // okhttp
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
-    implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.okhttp3:logging-interceptor")
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.0")
-
-    // retrofit
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
-
-    // gson
+    // gson -> serialize data coming from firebase
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    // mockito
+    // mockito -> testing
     testImplementation "org.mockito.kotlin:mockito-kotlin:2.2.11"
 
     // timber -> logging tool

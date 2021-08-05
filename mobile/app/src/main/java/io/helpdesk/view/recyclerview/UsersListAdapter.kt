@@ -55,6 +55,6 @@ class UsersListAdapter constructor(private val onUserSelect: (User) -> Unit) :
 
     override fun onBindViewHolder(holder: UsersListViewHolder, position: Int) {
         val user = getItem(position)
-        user?.let { holder.bind(it, onUserSelect) }
+        user?.let { person -> holder.bind(person, onUserSelect) }
     }
 }

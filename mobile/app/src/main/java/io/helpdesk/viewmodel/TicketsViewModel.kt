@@ -1,8 +1,5 @@
 package io.helpdesk.viewmodel
 
-import android.icu.text.SimpleDateFormat
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -16,9 +13,6 @@ import io.helpdesk.model.data.UserAndTicket
 import io.helpdesk.repository.BaseTicketRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import timber.log.Timber
-import java.time.Instant
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel

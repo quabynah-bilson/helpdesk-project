@@ -19,11 +19,13 @@ import io.helpdesk.R
 import io.helpdesk.databinding.FragmentPostTicketBinding
 import io.helpdesk.viewmodel.PostTicketUIState
 import io.helpdesk.viewmodel.TicketsViewModel
-import io.helpdesk.viewmodel.UsersViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
+/**
+ * Allow users aside SuperAdmin to create a new ticket
+ *
+ */
 class PostTicketFragment : Fragment() {
     private val args by navArgs<PostTicketFragmentArgs>()
     private var binding: FragmentPostTicketBinding? = null

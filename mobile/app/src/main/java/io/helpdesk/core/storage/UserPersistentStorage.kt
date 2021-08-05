@@ -21,6 +21,12 @@ interface BaseUserPersistentStorage {
 }
 
 class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPersistentStorage {
+    /**
+     * {
+     *  "user-id" : "qpwoieoqie939824934opiqe",
+     *  "user-type" : 0, -> ADMIN
+     * }
+     */
     private val prefs = context.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE)
     private val _loginState = MutableStateFlow<Boolean>(false)
 
@@ -71,6 +77,9 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
     override suspend fun clear() {
         userId = null
     }
+
+
+//    private static final String USER_ID_KEY = "";
 
     companion object {
         private const val USER_ID_KEY = "helpdesk.user_id"

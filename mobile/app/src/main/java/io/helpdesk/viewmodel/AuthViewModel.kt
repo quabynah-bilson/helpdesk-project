@@ -28,7 +28,6 @@ class AuthViewModel @Inject constructor(private val authRepository: BaseAuthenti
         if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
             _authState.emit(AuthState.Error("cannot validate fields"))
         } else {
-            _authState.emit(AuthState.Loading)
             authRepository.login(email, password).collectLatest { result ->
                 when (result) {
                     is Result.Loading, Result.Initial -> _authState.emit(AuthState.Loading)

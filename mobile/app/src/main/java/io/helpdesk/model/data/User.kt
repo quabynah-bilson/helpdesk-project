@@ -10,6 +10,9 @@ import kotlinx.parcelize.Parcelize
 
 enum class UserType { Technician, Customer, SuperAdmin, All }
 
+// val (immutable variable) -> meaning that the value once set cannot be changed
+// var (mutable variable) -> meaning that the value once set can be changed later
+
 /**
  * user data model
  */
@@ -17,7 +20,8 @@ enum class UserType { Technician, Customer, SuperAdmin, All }
 @Entity(tableName = User.TABLE_NAME)
 data class User(
     @PrimaryKey
-    @ColumnInfo(name = "_id") val id: String,
+    @ColumnInfo(name = "_id")
+    val id: String,
     @SerializedName("username")
     @ColumnInfo(name = "username")
     val email: String,
@@ -36,14 +40,5 @@ data class User(
 
     companion object {
         const val TABLE_NAME = "users"
-        fun parser(map: LinkedTreeMap<String, Any?>) = User(
-            id = map["_id"].toString(),
-            name = map["name"].toString(),
-            email = map["username"].toString(),
-            phone = map["phoneNumber"].toString(),
-            avatar = map["avatar"].toString(),
-            token = map["token"].toString(),
-            type = UserType.values()[(map["user_type"] as Double).toInt()],
-        )
     }
 }

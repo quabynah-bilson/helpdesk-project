@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.ktx.initialize
 import com.google.firebase.messaging.FirebaseMessaging
@@ -29,6 +30,7 @@ class HelpDeskApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+        // logging to the console
         if (DEBUG) Timber.plant(Timber.DebugTree())
 
         // initialize firebase
@@ -41,14 +43,6 @@ class HelpDeskApp : Application(), Configuration.Provider {
 
         // create notification channels
         NotificationUtil.createChannels(applicationContext)
-
-        // fixme -> remove this line
-//        NotificationUtil.push(
-//            this,
-//            title = "Hello world",
-//            message = "This is so cool",
-//            payload = "helpdesk payload",
-//        )
     }
 
     override fun onTerminate() {

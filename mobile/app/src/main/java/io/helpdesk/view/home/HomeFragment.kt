@@ -90,8 +90,7 @@ class HomeFragment : Fragment() {
             TabLayoutMediator(tabLayout, pager) { tab, position ->
                 when (position) {
                     0 -> tab.text = getString(R.string.fragment_faqs)
-                    1 -> tab.text = getString(R.string.fragment_tickets)
-                    else -> tab.text = getString(R.string.fragment_live_chat)
+                    else -> tab.text = getString(R.string.fragment_tickets)
                 }
             }.attach()
 

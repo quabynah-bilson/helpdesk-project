@@ -2,16 +2,12 @@ package io.helpdesk.view.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.navigation.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import io.helpdesk.R
 import io.helpdesk.databinding.ItemFaqBinding
 import io.helpdesk.model.data.Question
-import io.helpdesk.view.home.HomeFragmentDirections
 
 /**
  * recyclerview adapter implementation for [PagingDataAdapter]
@@ -29,8 +25,6 @@ class QuestionsListAdapter :
             faqAnswer.isVisible = expanded ?: false
 
             faqContainer.setOnClickListener {
-//                binding.root.findNavController()
-//                    .navigate(R.id.nav_post_ticket, bundleOf("question" to item))
                 expanded = !(expanded ?: true)
             }
         }

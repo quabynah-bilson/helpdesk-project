@@ -10,11 +10,11 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import io.helpdesk.core.util.deserializeJson
 import io.helpdesk.model.data.Question
-import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.User
 import io.helpdesk.model.db.LocalDatabase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -31,6 +31,7 @@ class LocalDatabaseWorker @AssistedInject constructor(
 
     // data access objects
     private val faqsDao = db.faqDao()
+    private val usersDao = db.userDao()
 
     // remote database
     private val firestore = FirebaseFirestore.getInstance()
@@ -38,6 +39,22 @@ class LocalDatabaseWorker @AssistedInject constructor(
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         // faqs
         try {
+            /*FirebaseFirestore.getInstance().collection("users")
+                .get()
+                .addOnFailureListener { println("user-from-firestore ${it.localizedMessage}") }
+                .addOnCompleteListener { snapshot ->
+                    if (snapshot.isSuccessful) {
+                        val users = snapshot.result?.toObjects(User::class.java)
+                        GlobalScope.launch {
+                            users?.let { usersDao.insertAll(it) }
+                        }
+
+//                        println("user-from-firestore -> users -> ${}")
+                    } else {
+                        println("user-from-firestore -> " + snapshot.exception?.localizedMessage)
+                    }
+                }*/
+
             val faqs =
                 applicationContext.deserializeJson("faqs.json")
             faqsDao.insertAll(faqs)

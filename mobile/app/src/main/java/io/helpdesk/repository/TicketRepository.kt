@@ -57,7 +57,7 @@ class TicketRepository @Inject constructor(
         trySend(Result.Loading)
 
         // evaluate user auth state
-        if (storage.userId != null) {
+        if (!storage.userId.isNullOrEmpty()) {
             firestore.collection(User.TABLE_NAME).get()
                 .fold<User>(scope, { users ->
                     userDao.insertAll(users)
@@ -81,7 +81,6 @@ class TicketRepository @Inject constructor(
                             description = description,
                             priority = ticketPriority,
                             technician = technicians[Random.nextInt(technicians.size)].id,
-
                         )
                         launch(Dispatchers.IO) { dao.insert(ticket) }
                         ticketCollection

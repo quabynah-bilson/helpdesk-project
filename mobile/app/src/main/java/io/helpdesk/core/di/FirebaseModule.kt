@@ -2,7 +2,6 @@ package io.helpdesk.core.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -26,14 +25,5 @@ object FirebaseModule {
 
     @Singleton
     @Provides
-    fun provideStorage(): StorageReference =
-        FirebaseStorage.getInstance().reference.child("default-bucket")
-
-    @Singleton
-    @Provides
     fun provideMessaging(): FirebaseMessaging = FirebaseMessaging.getInstance()
-
-    @Singleton
-    @Provides
-    fun provideFunctions(): FirebaseFunctions = FirebaseFunctions.getInstance()
 }

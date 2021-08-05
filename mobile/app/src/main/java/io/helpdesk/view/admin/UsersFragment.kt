@@ -55,6 +55,9 @@ class UsersFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
                 queryUserType.collectLatest { type ->
                     userType = type
                     usersViewModel.run {
+                        /**
+                         * Loads all users based on the user type passed in
+                         */
                         loadUsers(type)
                         loadTechniciansState.collectLatest { state ->
                             if (state is UserUIState.Success) {

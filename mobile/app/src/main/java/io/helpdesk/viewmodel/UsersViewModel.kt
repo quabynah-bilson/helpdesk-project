@@ -42,6 +42,7 @@ class UsersViewModel @Inject constructor(
 
     suspend fun loadUsers(userType: UserType = UserType.Technician) = ioScope {
         repository.usersByType(userType).collectLatest { result ->
+            println("result-type -> $result")
             when (result) {
                 is Result.Success -> {
                     val users = result.data
