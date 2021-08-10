@@ -39,7 +39,11 @@ abstract class LocalDatabase : RoomDatabase() {
 
         @JvmStatic
         fun get(context: Context): LocalDatabase = instance ?: synchronized(this) {
-            instance ?: Room.databaseBuilder(context, LocalDatabase::class.java, "helpdesk.db")
+            instance ?: Room.databaseBuilder(
+                context,
+                LocalDatabase::class.java,
+                "wisdom.helpdesk.db"
+            )
                 .fallbackToDestructiveMigration()
                 .addCallback(object : Callback() {
                     override fun onOpen(db: SupportSQLiteDatabase) {

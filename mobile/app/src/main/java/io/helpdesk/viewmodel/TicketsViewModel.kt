@@ -60,14 +60,12 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
     fun postNewTicket(
         title: String,
         description: String = "",
-        navController: NavController,
     ) = ioScope {
         repository.postNewTicket(title, description).collectLatest { result ->
             when (result) {
                 is Result.Error -> _postTicketUIState.emit(PostTicketUIState.Error(result.toString()))
                 is Result.Success -> {
                     _postTicketUIState.emit(PostTicketUIState.Success)
-                    uiScope { navController.popBackStack() }
                 }
                 else -> _postTicketUIState.emit(PostTicketUIState.Loading)
             }

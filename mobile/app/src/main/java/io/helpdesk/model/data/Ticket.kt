@@ -2,10 +2,7 @@ package io.helpdesk.model.data
 
 import android.os.Parcelable
 import androidx.room.*
-import com.google.gson.annotations.SerializedName
-import com.google.gson.internal.LinkedTreeMap
 import kotlinx.parcelize.Parcelize
-import java.sql.Date
 
 enum class TicketCompletionState {
     Pending,
@@ -40,10 +37,10 @@ data class Ticket(
     val linkedTickets: List<String> = emptyList(),
     var priority: TicketPriority = TicketPriority.Medium,
     @ColumnInfo(name = "createdAt")
-    val timestamp: String = Date(System.currentTimeMillis()).toString(),
-    val dueDate: String = Date(System.currentTimeMillis() + 720000000).toString(),
+    val timestamp: Long = System.currentTimeMillis(),
+    val dueDate: Long = System.currentTimeMillis() + 720000000,
     var deleted: Boolean = false,
-    var commentUpdatedAt: String? = null,
+    var commentUpdatedAt: Long? = null,
 ) : Parcelable {
 
     // no-arg constructor for deserialization

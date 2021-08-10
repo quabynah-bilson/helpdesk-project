@@ -1,7 +1,6 @@
 package io.helpdesk
 
 import android.os.Bundle
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -11,7 +10,6 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.databinding.ActivityMainBinding
 import io.helpdesk.model.data.UserType
@@ -88,38 +86,6 @@ class MainActivity : AppCompatActivity() {
                                         || destination.id == R.id.nav_register
                                     ) 0 else resources.getDimensionPixelOffset(R.dimen.spacing_64)
                                 )
-
-                                onBackPressedDispatcher.addCallback(
-                                    this@MainActivity,
-                                    object : OnBackPressedCallback(true) {
-                                        override fun handleOnBackPressed() {
-                                            when {
-                                                user?.type == UserType.Customer -> {
-                                                    finish()
-                                                }
-
-                                                destination.id == R.id.nav_users -> {
-                                                    MaterialAlertDialogBuilder(this@MainActivity).apply {
-                                                        setTitle(getString(R.string.leave_app_prompt_title))
-                                                        setMessage(getString(R.string.leave_app_prompt_content))
-                                                        setPositiveButton("yes") { dialog, _ ->
-                                                            run {
-                                                                // leave app
-                                                                dialog.dismiss()
-                                                                finish()
-                                                            }
-                                                        }
-                                                        setNegativeButton("no") { dialog, _ -> dialog.cancel() }
-                                                        create()
-                                                    }.show()
-                                                }
-                                                else -> {
-                                                    // otherwise, select the initial page
-                                                    navController.navigate(R.id.nav_users)
-                                                }
-                                            }
-                                        }
-                                    })
                             }
 
                             else -> {

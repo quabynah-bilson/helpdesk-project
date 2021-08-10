@@ -91,7 +91,6 @@ class PostTicketFragment : Fragment() {
 
                 ticketsViewModel.postNewTicket(
                     title = titleField.text.toString(),
-                    navController = navController,
                     description = descField.text.toString(),
                 )
             }

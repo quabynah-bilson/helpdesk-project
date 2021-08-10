@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -20,7 +20,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import io.helpdesk.R
-import io.helpdesk.core.util.visible
 import io.helpdesk.databinding.FragmentHomeBinding
 import io.helpdesk.view.shared.FaqsFragment
 import io.helpdesk.view.shared.TicketsFragment
@@ -65,6 +64,22 @@ class HomeFragment : Fragment() {
             statusBarColor = ContextCompat.getColor(requireContext(), R.color.helpdesk_blue_800)
         }
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, enabled = true) {
+            MaterialAlertDialogBuilder(requireContext()).apply {
+                setTitle(getString(R.string.leave_app_prompt_title))
+                setMessage(getString(R.string.leave_app_prompt_content))
+                setPositiveButton("yes") { dialog, _ ->
+                    run {
+                        // leave app
+                        dialog.dismiss()
+                        requireActivity().finish()
+                    }
+                }
+                setNegativeButton("no") { dialog, _ -> dialog.cancel() }
+                create()
+            }.show()
+        }
 
         binding?.run {
             // setup FAB

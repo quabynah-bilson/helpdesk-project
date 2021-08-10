@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -48,6 +49,22 @@ class UsersFragment : Fragment(), PopupMenu.OnMenuItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, enabled = true) {
+            MaterialAlertDialogBuilder(requireContext()).apply {
+                setTitle(getString(R.string.leave_app_prompt_title))
+                setMessage(getString(R.string.leave_app_prompt_content))
+                setPositiveButton("yes") { dialog, _ ->
+                    run {
+                        // leave app
+                        dialog.dismiss()
+                        requireActivity().finish()
+                    }
+                }
+                setNegativeButton("no") { dialog, _ -> dialog.cancel() }
+                create()
+            }.show()
+        }
 
         binding?.run {
             lifecycleScope.launchWhenCreated {

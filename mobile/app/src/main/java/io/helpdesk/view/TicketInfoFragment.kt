@@ -28,7 +28,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.sql.Date
-import java.time.Instant
 import java.util.*
 
 
@@ -74,7 +73,10 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                 }
             }
 
-            backButton.setOnClickListener { findNavController().popBackStack() }
+            backButton.setOnClickListener {
+                /*requireActivity().onBackPressed()*/
+                findNavController().navigateUp()
+            }
 
             // get requestor for ticket
             lifecycleScope.launchWhenCreated {
@@ -114,7 +116,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && ticket != null) {
                             ticketTimestamp.text = parseTicketDate(ticket!!.timestamp)
 
-                            if (!ticket!!.commentUpdatedAt.isNullOrEmpty()) {
+                            if (ticket!!.commentUpdatedAt != null) {
                                 ticketCommentTimestamp.text =
                                     parseTicketDate(ticket!!.commentUpdatedAt!!)
                             }
@@ -150,7 +152,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
         ticketsViewModel.updateTicket(
             ticket = binding?.ticket?.copy(
                 comment = feedback,
-                commentUpdatedAt = Date(System.currentTimeMillis()).toString(),
+                commentUpdatedAt = System.currentTimeMillis(),
             )
         )
     }
@@ -228,14 +230,14 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun parseTicketDate(timestamp: String): String =
-        with(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())) {
+    private fun parseTicketDate(timestamp: Long): String =
+        with(SimpleDateFormat("EEE, MMM d 'at' HH:mm", Locale.getDefault())) {
             val logger = Timber.tag("date-parser")
             var format = "not set"
             try {
-                val date = Date.from(Instant.parse(timestamp))
-                format = format(date)
-                println("parsed-date -> $format")
+                val date = Date(timestamp)
+                format = format(calendar.time)
+                logger.d("parsed-date -> $format")
             } catch (e: Exception) {
                 logger.e(e.localizedMessage)
             }
