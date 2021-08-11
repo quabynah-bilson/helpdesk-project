@@ -2,12 +2,10 @@ package io.helpdesk.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.helpdesk.core.util.Result
 import io.helpdesk.core.util.ioScope
-import io.helpdesk.core.util.uiScope
 import io.helpdesk.model.data.Ticket
 import io.helpdesk.model.data.UserAndTicket
 import io.helpdesk.repository.BaseTicketRepository
@@ -27,21 +25,19 @@ class TicketsViewModel @Inject constructor(private val repository: BaseTicketRep
     val ticketsUIState: StateFlow<LatestTicketUIState> = _ticketsUIState
     val postTicketUIState: StateFlow<PostTicketUIState> = _postTicketUIState
 
-    init {
-        ioScope {
-            repository.allTickets().collectLatest { result ->
-                when (result) {
-                    is Result.Error -> _ticketsUIState.emit(LatestTicketUIState.Error(result.toString()))
+    suspend fun getAllTickets() = ioScope {
+        repository.allTickets().collectLatest { result ->
+            when (result) {
+                is Result.Error -> _ticketsUIState.emit(LatestTicketUIState.Error(result.toString()))
 
-                    is Result.Success -> _ticketsUIState.emit(
-                        LatestTicketUIState.Success(
-                            PagingData.from(
-                                result.data
-                            )
+                is Result.Success -> _ticketsUIState.emit(
+                    LatestTicketUIState.Success(
+                        PagingData.from(
+                            result.data
                         )
                     )
-                    else -> _ticketsUIState.emit(LatestTicketUIState.Loading)
-                }
+                )
+                else -> _ticketsUIState.emit(LatestTicketUIState.Loading)
             }
         }
     }

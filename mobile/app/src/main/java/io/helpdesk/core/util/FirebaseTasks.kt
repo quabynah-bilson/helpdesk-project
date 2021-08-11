@@ -49,7 +49,6 @@ suspend inline fun <reified T> CollectionReference.observeCollection(
         }
 
         if (snapshot != null) {
-            Timber.tag("task-completion").i("successful -> ${snapshot.documents}")
             scope.launch {
                 successBlock(snapshot.toObjects(T::class.java) ?: mutableListOf())
             }

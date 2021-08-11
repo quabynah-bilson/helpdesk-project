@@ -17,7 +17,10 @@ import io.helpdesk.view.recyclerview.TicketsListAdapter
 import io.helpdesk.viewmodel.LatestTicketUIState
 import io.helpdesk.viewmodel.TicketsViewModel
 import io.helpdesk.viewmodel.UsersViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -38,35 +41,17 @@ class TicketsFragment : Fragment() {
         return binding?.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        GlobalScope.launch(Dispatchers.Main) { ticketsViewModel.getAllTickets() }
+    }
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // get adapter
         val ticketsAdapter = TicketsListAdapter()
-
-        // observe UI state
-        lifecycleScope.launchWhenCreated {
-
-            ticketsViewModel.ticketsUIState.collectLatest { state ->
-                binding?.run {
-                    // update UI based on current state
-                    if (state is LatestTicketUIState.Success) {
-                        ticketsAdapter.submitData(state.tickets)
-                        Timber.tag("tickets").d("# of tickets -> ${ticketsAdapter.itemCount}")
-                        ticketsList.isVisible = ticketsAdapter.itemCount > 0
-                        container.isVisible = ticketsAdapter.itemCount == 0
-                    } else if (state is LatestTicketUIState.Error) {
-                        Snackbar.make(container, state.reason, Snackbar.LENGTH_LONG).show()
-                        // show empty view
-                        container.isVisible = true
-                    }
-
-                    // show loading view
-                    progressBinding?.root?.isVisible = state is LatestTicketUIState.Loading
-                }
-
-            }
-        }
 
         // perform binding
         binding?.run {
@@ -80,9 +65,37 @@ class TicketsFragment : Fragment() {
                     isAdmin = currentUser?.type == UserType.SuperAdmin
                 }
             }
+
+            /* lifecycleScope.launchWhenStarted {
+             }*/
+
             executePendingBindings()
         }
+
+
+        // observe UI state
+        lifecycleScope.launchWhenCreated {
+            ticketsViewModel.run {
+                ticketsUIState.collectLatest { state ->
+                    binding?.run {
+                        // update UI based on current state
+                        if (state is LatestTicketUIState.Success) {
+                            ticketsAdapter.submitData(state.tickets)
+                            Timber.tag("tickets").d("# of tickets -> ${ticketsAdapter.itemCount}")
+                            ticketsList.isVisible = ticketsAdapter.itemCount > 0
+                            container.isVisible = ticketsAdapter.itemCount == 0
+                        } else if (state is LatestTicketUIState.Error) {
+                            Snackbar.make(container, state.reason, Snackbar.LENGTH_LONG).show()
+                            // show empty view
+                            container.isVisible = true
+                        }
+
+                        // show loading view
+                        progressBinding?.root?.isVisible = state is LatestTicketUIState.Loading
+                    }
+
+                }
+            }
+        }
     }
-
-
 }

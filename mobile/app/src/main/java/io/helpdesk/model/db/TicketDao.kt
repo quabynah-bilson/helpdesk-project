@@ -15,7 +15,7 @@ interface TicketDao : BaseDao<Ticket> {
     fun allTicketsForCustomer(user: String): Flow<List<UserAndTicket>>
 
     @Transaction
-    @Query("select * from tickets where technician = :technician and not deleted order by priority desc")
+    @Query("select * from tickets where user = :technician or technician = :technician and not deleted order by priority desc")
     fun allTicketsForTechnician(technician: String): Flow<List<UserAndTicket>>
 
     @Transaction

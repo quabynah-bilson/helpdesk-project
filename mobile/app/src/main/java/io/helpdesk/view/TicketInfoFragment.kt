@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import io.helpdesk.R
 import io.helpdesk.core.util.getColorInt
 import io.helpdesk.databinding.FragmentTicketInfoBinding
@@ -23,8 +24,7 @@ import io.helpdesk.model.data.*
 import io.helpdesk.view.bottomsheet.*
 import io.helpdesk.viewmodel.TicketsViewModel
 import io.helpdesk.viewmodel.UsersViewModel
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.sql.Date
@@ -85,11 +85,15 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                 }
             }
 
+            // get technician details
+            lifecycleScope.launch(Dispatchers.Main) { getTechnicianInfo() }
+
             // get current user
             lifecycleScope.launchWhenResumed {
                 usersViewModel.currentUser().collectLatest { currentUser ->
                     Timber.tag("user details").d("current user -> $currentUser")
-                    updateTicketStatus.isVisible = currentUser?.type != UserType.Customer
+                    updateTicketStatus.isVisible =
+                        currentUser?.type != UserType.Customer && args.ticket.user != currentUser?.id
                     deleteTicket.isInvisible = currentUser?.id != args.ticket.user
                     updateTicketStatus.setOnClickListener {
                         currentUser?.type?.let { type ->
@@ -106,46 +110,54 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                 }
             }
 
-            lifecycleScope.launchWhenStarted {
-                // get technician
-                usersViewModel.getUserById(args.ticket.technician).collectLatest { technician ->
-                    if (technician != null) binding?.technician = technician
-                    ticketsViewModel.getTicketById(args.ticket.id).collectLatest { data ->
-                        ticket = data
-                        ticketVM = ticketsViewModel
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && ticket != null) {
-                            ticketTimestamp.text = parseTicketDate(ticket!!.timestamp)
+            executePendingBindings()
+        }
+    }
 
-                            if (ticket!!.commentUpdatedAt != null) {
-                                ticketCommentTimestamp.text =
-                                    parseTicketDate(ticket!!.commentUpdatedAt!!)
-                            }
-                        }
-                        ticketStatusColor = when (data?.status) {
-                            TicketCompletionState.Cancelled -> requireContext().getColorInt(
-                                R.color.ticket_status_cancelled
-                            )
-                            TicketCompletionState.Pending -> requireContext().getColorInt(
-                                R.color.ticket_status_pending
-                            )
-                            TicketCompletionState.Done -> requireContext().getColorInt(
-                                R.color.ticket_status_done
-                            )
+    private suspend fun getTechnicianInfo() {
+        // get technician
+        usersViewModel.getUserById(args.ticket.technician).collectLatest { technician ->
+            if (technician != null) binding?.technician = technician
+            ticketsViewModel.getTicketById(args.ticket.id).collectLatest { data ->
+                binding?.run {
+                    ticket = data
+                    ticketVM = ticketsViewModel
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && ticket != null) {
+                        ticketTimestamp.text = parseTicketDate(ticket!!.timestamp)
 
-                            else -> requireContext().getColorInt(
-                                R.color.ticket_status_pending
-                            )
+                        if (ticket!!.commentUpdatedAt != null) {
+                            ticketCommentTimestamp.text =
+                                parseTicketDate(ticket!!.commentUpdatedAt!!)
                         }
                     }
+                    ticketStatusColor = when (data?.status) {
+                        TicketCompletionState.Cancelled -> requireContext().getColorInt(
+                            R.color.ticket_status_cancelled
+                        )
+                        TicketCompletionState.Pending -> requireContext().getColorInt(
+                            R.color.ticket_status_pending
+                        )
+                        TicketCompletionState.Done -> requireContext().getColorInt(
+                            R.color.ticket_status_done
+                        )
 
+                        else -> requireContext().getColorInt(
+                            R.color.ticket_status_pending
+                        )
+                    }
                 }
             }
-            executePendingBindings()
         }
     }
 
     override fun onItemSelected(technician: User) {
         ticketsViewModel.updateTicket(ticket = binding?.ticket?.copy(technician = technician.id))
+        if (binding != null) Snackbar.make(
+            binding!!.root,
+            "Ticket reassigned successfully",
+            Snackbar.LENGTH_SHORT
+        ).show()
+        findNavController().navigateUp()
     }
 
     override fun onComplete(feedback: String) {
@@ -221,6 +233,7 @@ class TicketInfoFragment : Fragment(), OnTicketOptionSelectListener, OnTechnicia
                         show()
                     }
                 }
+
                 TicketOptionsItem.Reassign -> {
                     TechniciansBottomSheet.newInstance(this@TicketInfoFragment)
                         .show(this, TechniciansBottomSheet.TAG)

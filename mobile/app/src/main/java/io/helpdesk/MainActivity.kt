@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavHost
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
@@ -23,7 +24,7 @@ import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private val usersViewModel by viewModels<UsersViewModel>()
 
@@ -32,26 +33,33 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupUI()
+    }
+
+    fun setupUI() {
         // initialize navigation controller for fragments
         val navHost = supportFragmentManager.findFragmentById(R.id.nav_fragment) as NavHostFragment
         navController = navHost.navController
 
         // Setting up bottom navigation requires that you also set up your navigation graph and menu xml
-        binding.run {
-            bottomNav.setupWithNavController(navController)
+        binding.bottomNav.setupWithNavController(navController)
 
-            // show bottom navigation only for admins and for selected destinations
-            lifecycleScope.launchWhenCreated {
-                usersViewModel.currentUser().collectLatest { user ->
-                    Timber.tag("current-user").i("user -> $user")
-                    navController.addOnDestinationChangedListener { _, destination, _ ->
-                        val supportedDestinations = arrayOf(
-                            R.id.nav_users,
-                            R.id.nav_faqs,
-                            R.id.nav_tickets
-                        )
-                        bottomNav.isVisible =
-                            supportedDestinations.contains(destination.id) && user?.type == UserType.SuperAdmin
+        // show bottom navigation only for admins and for selected destinations
+        lifecycleScope.launchWhenCreated {
+            usersViewModel.currentUser().collectLatest { user ->
+                Timber.tag("current-user").i("user -> $user")
+                navController.addOnDestinationChangedListener { _, destination, _ ->
+                    Timber.tag("nav-destination").i("destination [${destination.id}]")
+                    val supportedDestinations = arrayOf(
+                        R.id.nav_users,
+                        R.id.nav_faqs,
+                        R.id.nav_tickets,
+                    )
+
+                    binding.run {
+                        bottomNav.isVisible = user != null &&
+                                user.type == UserType.SuperAdmin &&
+                                supportedDestinations.contains(destination.id)
 
                         when (destination.id) {
                             R.id.nav_users,

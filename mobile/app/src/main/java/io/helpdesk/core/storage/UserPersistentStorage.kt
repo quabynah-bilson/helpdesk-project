@@ -76,6 +76,10 @@ class UserPersistentStorage @Inject constructor(context: Context) : BaseUserPers
 
     override suspend fun clear() {
         userId = null
+        prefs.edit {
+            clear()
+            apply()
+        }
     }
 
 
